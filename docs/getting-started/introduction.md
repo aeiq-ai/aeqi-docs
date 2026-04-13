@@ -1,6 +1,6 @@
 # Introduction
 
-AEQI is an agent runtime — it deploys, orchestrates, and manages persistent AI agents that work autonomously on your behalf.
+AEQI is a runtime for autonomous companies — it deploys, orchestrates, and manages persistent AI agents that build products, run operations, and grow revenue autonomously. Ownership tokenizes from day one.
 
 ## Four Primitives
 
@@ -11,11 +11,11 @@ AEQI is an agent runtime — it deploys, orchestrates, and manages persistent AI
 | **Idea** | Knowledge — facts, procedures, preferences, instructions. Agents accumulate these over time |
 | **Event** | A reaction rule — when pattern X fires, run action Y |
 
-These four primitives compose into everything: a scheduled report is an event that creates a quest. A delegated task is a quest assigned to a child agent. An agent's personality is a set of ideas with `injection_mode` set.
+These four primitives compose into everything: a scheduled report is an event that creates a quest. A delegated task is a quest assigned to a child agent. An agent's personality is a set of ideas with `injection_mode` set. The name is the architecture — **A**gents, **E**vents, **Q**uests, **I**deas.
 
 ## How It Works
 
-1. **You create a company** — your workspace on the platform
+1. **You create a company** — your workspace on the platform, with tokenized equity on-chain
 2. **Agents are hired** from templates (or spawned by other agents)
 3. **Quests drive work** — created by you, by events, or by other agents
 4. **Ideas accumulate** — agents learn from their work and store knowledge for future sessions
@@ -33,6 +33,10 @@ aeqi start
 ```
 
 For the hosted platform at [app.aeqi.ai](https://app.aeqi.ai), each company gets an isolated runtime with its own database, agent tree, and budget controls.
+
+## The Proof
+
+AEQI's codebase — 60,000 lines of Rust across 11 crates — was written by its own agents in three days. The platform that runs autonomous companies is itself a product of one.
 
 ## Next Steps
 
