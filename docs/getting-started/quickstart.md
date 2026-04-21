@@ -1,56 +1,60 @@
 # Quickstart
 
-Get AEQI running locally in under 5 minutes.
+Self-hosted AEQI, running locally in under 5 minutes. For the hosted platform, see [Claude Code + AEQI](/docs/guides/claude-code).
 
-## Install
+## 1. Install
 
-### Option A: Install Script
+Install script (Linux, macOS, WSL):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/aeqiai/aeqi/main/scripts/install.sh | sh
 ```
 
-### Option B: Build from Source
-
-Requires Rust stable.
+Or build from source (requires Rust stable):
 
 ```bash
 git clone https://github.com/aeqiai/aeqi.git
 cd aeqi
 cargo build --release
+# binary at target/release/aeqi
 ```
 
-The binary is at `target/release/aeqi`.
+See [Installation](/docs/installation) for Cargo, Docker, and manual source builds.
 
-## Setup
-
-Run the setup wizard:
+## 2. Configure
 
 ```bash
 aeqi setup
 ```
 
-It auto-detects your environment — if you're inside a git repo it configures the current workspace, otherwise it writes config to `~/.aeqi/`. SQLite databases are created automatically.
+The wizard detects your environment: inside a git repo it configures the current workspace, otherwise it writes to `~/.aeqi/`. SQLite databases are created on first run.
 
-## Start
+Set an LLM provider key:
+
+```bash
+aeqi secrets set OPENROUTER_API_KEY sk-or-...
+```
+
+OpenRouter, Anthropic, and Ollama are supported.
+
+## 3. Start
 
 ```bash
 aeqi start
 ```
 
-This runs the daemon, web server, and embedded dashboard in a single process.
+Runs the daemon, REST API, and dashboard in one process. Default port is `8400`.
 
-## Open Dashboard
+## 4. Open the Dashboard
 
-Navigate to `http://127.0.0.1:8400` and authenticate.
-
-## Connect Claude Code (MCP)
-
-If you're on the hosted platform, create API keys at [app.aeqi.ai/company](https://app.aeqi.ai/company?tab=api-keys):
-
-```bash
-export AEQI_API_KEY=ak_...      # your account key
-export AEQI_SECRET_KEY=sk_...   # your company secret key
+```
+http://127.0.0.1:8400
 ```
 
-The MCP server authenticates on startup and connects directly to your company's runtime. See [API & MCP](/docs/api/authentication) for details.
+Sign in and hire your first agent.
+
+## Next Steps
+
+- [Concepts: Agents](/docs/concepts/agents) — the agent tree and identity model
+- [Concepts: Quests](/docs/concepts/quests) — how work gets dispatched
+- [Claude Code + AEQI](/docs/guides/claude-code) — drive your runtime from the IDE

@@ -1,45 +1,42 @@
 # Introduction
 
-AEQI is a runtime for autonomous companies — it deploys, orchestrates, and manages persistent AI agents that build products, run operations, and grow revenue autonomously. Ownership tokenizes from day one.
+AEQI is a runtime for autonomous companies. One Rust binary, SQLite state, self-hostable. Agents, events, quests, and ideas run under a single process — daemon, REST API, and dashboard UI embedded.
 
 ## Four Primitives
 
-| Primitive | What it is |
-|-----------|-----------|
-| **Agent** | Persistent identity with memory, capabilities, and a place in a hierarchy |
-| **Quest** | A unit of work — trackable, assignable, with dependencies and outcomes |
-| **Idea** | Knowledge — facts, procedures, preferences, instructions. Agents accumulate these over time |
-| **Event** | A reaction rule — when pattern X fires, run action Y |
+| Primitive | Question | What it is |
+|-----------|----------|-----------|
+| **Agent** | WHO | Persistent identity with memory, tools, and a place in the tree |
+| **Event** | WHEN | Trigger rule — when pattern X fires, run action Y |
+| **Quest** | WHAT | Unit of work with status, dependencies, and outcome |
+| **Idea** | HOW | Knowledge — facts, procedures, preferences, instructions |
 
-These four primitives compose into everything: a scheduled report is an event that creates a quest. A delegated task is a quest assigned to a child agent. An agent's personality is a set of ideas with `injection_mode` set. The name is the architecture — **A**gents, **E**vents, **Q**uests, **I**deas.
+The name is the architecture: **A**gents, **E**vents, **Q**uests, **I**deas. Everything composes from these four. A scheduled report is an event that creates a quest. A delegated task is a quest assigned to a child agent. An agent's identity is a set of ideas with `injection_mode = 'always'`.
 
-## How It Works
-
-1. **You create a company** — your workspace on the platform, with tokenized equity on-chain
-2. **Agents are hired** from templates (or spawned by other agents)
-3. **Quests drive work** — created by you, by events, or by other agents
-4. **Ideas accumulate** — agents learn from their work and store knowledge for future sessions
-5. **Events automate** — lifecycle hooks and schedules keep things running without you
-
-## Architecture
-
-AEQI is a single Rust binary. The daemon, web server, and dashboard UI are all embedded. SQLite is the only storage dependency — no Postgres, no Redis, no message queue.
+## Runtime Topology
 
 ```
 aeqi start
-├── daemon (orchestration, workers, scheduler)
-├── web server (REST API on /api)
-└── dashboard UI (embedded via rust-embed)
+├── daemon        orchestration, workers, scheduler
+├── REST API      :8400 (self-hosted), :8443 (platform)
+└── dashboard     rust-embed static assets
 ```
 
-For the hosted platform at [app.aeqi.ai](https://app.aeqi.ai), each company gets an isolated runtime with its own database, agent tree, and budget controls.
+Quests execute inside isolated git worktrees with per-turn commits. Tool permissions are enforced per-agent via `bwrap` sandbox. Model-agnostic — OpenRouter, Anthropic, Ollama.
 
-## The Proof
+On the hosted platform at [app.aeqi.ai](https://app.aeqi.ai), each company gets its own runtime with its own databases, agent tree, and budget controls.
 
-AEQI's codebase — 60,000 lines of Rust across 11 crates — was written by its own agents in three days. The platform that runs autonomous companies is itself a product of one.
+## Storage
+
+| Database | Contents |
+|----------|----------|
+| `sessions.db` | Quests, sessions, transcripts |
+| `aeqi.db` | Ideas, agents, events |
+
+No Postgres, no Redis, no message queue.
 
 ## Next Steps
 
-- [Quickstart](/docs/quickstart) — get running in 5 minutes
-- [Installation](/docs/installation) — all installation methods
-- [API & MCP](/docs/api/authentication) — connect programmatically
+- [Quickstart](/docs/quickstart) — run AEQI locally in under 5 minutes
+- [Concepts: Agents](/docs/concepts/agents) — the agent tree and identity model
+- [Claude Code guide](/docs/guides/claude-code) — connect your IDE via MCP

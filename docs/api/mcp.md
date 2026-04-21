@@ -1,24 +1,17 @@
 # MCP Integration
 
-AEQI exposes a [Model Context Protocol](https://modelcontextprotocol.io/) server that gives AI coding assistants like Claude Code direct access to your company's agent runtime.
+AEQI exposes a [Model Context Protocol](https://modelcontextprotocol.io/) server. AI coding assistants — Claude Code, Cursor, and anything else MCP-compatible — get direct access to your company's runtime.
 
 ## Setup
-
-### 1. Get Your Keys
-
-- **API Key** (`ak_`): [Account → API](https://app.aeqi.ai/account?tab=api)
-- **Secret Key** (`sk_`): [Company → API Keys](https://app.aeqi.ai/company?tab=api-keys)
-
-### 2. Configure Environment
 
 ```bash
 export AEQI_API_KEY=ak_...
 export AEQI_SECRET_KEY=sk_...
 ```
 
-### 3. Add to Claude Code
+Get keys from [Account → API](https://app.aeqi.ai/account?tab=api) and [Company → API Keys](https://app.aeqi.ai/company?tab=api-keys). See [Authentication](/docs/api/authentication).
 
-Add AEQI as an MCP server in your Claude Code configuration:
+Add to your Claude Code config:
 
 ```json
 {
@@ -35,54 +28,61 @@ Add AEQI as an MCP server in your Claude Code configuration:
 }
 ```
 
-On startup, `aeqi mcp` authenticates against the platform and connects to your company's runtime. All tool calls go directly to your agents.
+On startup, `aeqi mcp` authenticates with the platform and connects to your company's runtime. Tool calls route directly to your agents.
 
-## Available Tools
+## Tools
 
-### Discovery
+All core tools use an action-based pattern: `tool(action='...', ...)`.
 
-| Tool | Description |
-|------|-------------|
-| `aeqi_projects` | List all projects with repo paths and prefixes |
-| `aeqi_primer` | Get a project's primer context (architecture, rules, build/deploy) |
-| `aeqi_prompts` | List or retrieve prompts (identities, skills, workflows) |
-| `aeqi_status` | Live status: active workers, budget, costs, pending tasks |
+### Primitives
 
-### Core
+| Tool | Actions | Purpose |
+|------|---------|---------|
+| `agents` | `hire`, `retire`, `list`, `delegate` | Agent lifecycle (WHO) |
+| `events` | `create`, `list`, `enable`, `disable`, `delete` | Triggers and schedules (WHEN) |
+| `quests` | `create`, `list`, `show`, `update`, `close`, `cancel` | Work items (WHAT) |
+| `ideas` | `store`, `search`, `update`, `delete` | Knowledge (HOW) |
 
-| Tool | Actions | Description |
-|------|---------|-------------|
-| `ideas` | `store`, `search`, `delete` | Semantic memory — store and retrieve knowledge |
-| `quests` | `create`, `list`, `show`, `update`, `close`, `cancel` | Task management with dependencies and priorities |
-| `agents` | `hire`, `retire`, `list`, `delegate` | Agent lifecycle and delegation |
-| `events` | `create`, `list`, `enable`, `disable`, `delete` | Scheduled and lifecycle event handlers |
+### Adjuncts
+
+| Tool | Actions | Purpose |
+|------|---------|---------|
 | `notes` | `read`, `post`, `get`, `query`, `claim`, `release`, `delete` | Ephemeral signals and resource locks |
 | `code` | `search`, `context`, `impact`, `file`, `stats`, `index` | Code intelligence graph |
 
-### Tool Pattern
+### Discovery
 
-Core tools use a unified action-based pattern:
+| Tool | Returns |
+|------|---------|
+| `aeqi_projects` | Projects with repo paths and prefixes |
+| `aeqi_primer` | A project's primer (architecture, rules, build/deploy) |
+| `aeqi_prompts` | Registered skills and workflows |
+| `aeqi_status` | Live runtime — active workers, budget, costs, pending work |
 
-```
-tool_name(action='...', param1='...', param2='...')
-```
+### Examples
 
-For example:
 ```
 quests(action='create', project='myproject', subject='Fix login bug')
 ideas(action='search', project='myproject', query='authentication patterns')
 agents(action='list', status='active')
-events(action='create', agent='myagent', schedule='0 9 * * *', content='Daily standup summary')
+events(action='create', agent='myagent', schedule='0 9 * * *',
+       content='Post daily standup summary')
 ```
 
-## Environment Variables
+## Environment
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `AEQI_SECRET_KEY` | Yes | — | Company secret key (`sk_...`) |
-| `AEQI_API_KEY` | No | — | Account API key (`ak_...`) for analytics |
-| `AEQI_PLATFORM_URL` | No | `http://127.0.0.1:8443` | Platform URL for key validation |
+| `AEQI_API_KEY` | No | — | Account key (`ak_...`), for analytics |
+| `AEQI_PLATFORM_URL` | No | `https://app.aeqi.ai` | Platform URL for key validation |
 
 ## Self-Hosted
 
-For self-hosted deployments without the platform, the MCP server falls back to connecting to the local daemon at `~/.aeqi/rm.sock`. No keys required — just have `aeqi daemon start` running.
+Without the platform, the MCP server connects to the local daemon over a unix socket at `~/.aeqi/rm.sock`. No keys required — just have `aeqi start` running.
+
+## Next Steps
+
+- [Authentication](/docs/api/authentication) — key creation and rotation
+- [Claude Code + AEQI](/docs/guides/claude-code) — hooks, primer, full settings
+- [REST API](/docs/api/rest) — HTTP endpoints for the same operations

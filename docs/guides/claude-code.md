@@ -1,25 +1,26 @@
 # Claude Code + AEQI
 
-Connect Claude Code to your AEQI company runtime. Your AI coding assistant gets persistent memory, quest tracking, agent delegation, and event automation — all through MCP.
+Connect Claude Code to your AEQI runtime over MCP. Claude Code gets persistent memory, quest tracking, agent delegation, and event automation — driving the same primitives the dashboard does.
 
 ## Prerequisites
 
-- AEQI account with a company ([app.aeqi.ai](https://app.aeqi.ai))
-- Pro subscription (MCP access requires Pro tier)
-- Claude Code installed
-- `aeqi` CLI binary ([installation](/docs/installation))
+- AEQI account with a company at [app.aeqi.ai](https://app.aeqi.ai)
+- Pro tier (MCP access requires Pro or above)
+- Claude Code
+- `aeqi` CLI — see [Installation](/docs/installation)
 
-## 1. Generate Keys
+## 1. Keys
 
-You need two keys:
+Two keys, both from the dashboard:
 
-**API Key** (`ak_`) — identifies your account. Generate once at [Account → API](https://app.aeqi.ai/account?tab=api).
+- **Account key** (`ak_`) — [Account → API](https://app.aeqi.ai/account?tab=api). One per account.
+- **Secret key** (`sk_`) — [Company → API Keys](https://app.aeqi.ai/company?tab=api-keys). One per integration.
 
-**Secret Key** (`sk_`) — authenticates access to your company. Create at [Company → API Keys](https://app.aeqi.ai/company?tab=api-keys). You can create multiple — one for Claude Code, one for CI, etc.
+See [Authentication](/docs/api/authentication) for rotation.
 
-## 2. Configure MCP Server
+## 2. MCP Server
 
-Add AEQI to your Claude Code settings (`~/.claude/settings.json`):
+Add AEQI to `~/.claude/settings.json`:
 
 ```json
 {
@@ -36,148 +37,109 @@ Add AEQI to your Claude Code settings (`~/.claude/settings.json`):
 }
 ```
 
-On startup, the MCP server authenticates against the platform and connects directly to your company's runtime. All tool calls go to your agents.
+`aeqi mcp` authenticates with the platform on startup, then routes tool calls directly to your company's runtime.
 
-If you're self-hosting, also set `AEQI_CONFIG` pointing to your `aeqi.toml`, and omit the keys — the MCP server connects to your local daemon automatically.
+For self-hosted, omit the keys and set `AEQI_CONFIG` to your `aeqi.toml`. The MCP server connects to the local daemon over `~/.aeqi/rm.sock`.
 
-## 3. Available Tools
+## 3. Tools
 
-Once connected, Claude Code has access to:
+Once connected, Claude Code can call:
 
-| Tool | What it does |
-|------|-------------|
-| `ideas` | Store and search persistent knowledge (`store`, `search`, `delete`) |
-| `quests` | Create and manage work items (`create`, `list`, `show`, `update`, `close`, `cancel`) |
-| `agents` | Manage agents (`hire`, `retire`, `list`, `delegate`) |
-| `events` | Automate with schedules and lifecycle hooks (`create`, `list`, `enable`, `disable`, `delete`) |
-| `notes` | Ephemeral signals and file locks (`claim`, `release`, `post`, `read`) |
-| `code` | Code intelligence graph (`search`, `context`, `impact`, `index`) |
-| `aeqi_status` | Budget, active workers, costs |
-| `aeqi_primer` | Project context and architecture |
-| `aeqi_prompts` | Load skills and workflows |
+| Tool | Actions |
+|------|---------|
+| `ideas` | `store`, `search`, `update`, `delete` |
+| `quests` | `create`, `list`, `show`, `update`, `close`, `cancel` |
+| `agents` | `hire`, `retire`, `list`, `delegate` |
+| `events` | `create`, `list`, `enable`, `disable`, `delete` |
+| `notes` | `claim`, `release`, `post`, `read`, `query`, `delete` |
+| `code` | `search`, `context`, `impact`, `index` |
+| `aeqi_status` | budget, active workers, costs |
+| `aeqi_primer` | project context and architecture |
+| `aeqi_prompts` | skills and workflows |
 
-## 4. Set Up Hooks
+Full catalog: [MCP Integration](/docs/api/mcp).
 
-Hooks make Claude Code work WITH AEQI automatically. Add these to your `settings.json`:
+## 4. Hooks
 
-### Recall Gate (require context before editing)
+Hooks make Claude Code work with AEQI automatically. Add each block under `"hooks"` in `settings.json`.
 
-Before Claude Code edits files, require it to search your project's ideas first. This ensures it has context before making changes.
-
-```json
-{
-  "PreToolUse": [
-    {
-      "matcher": "Edit",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "/path/to/aeqi/scripts/hook-run.sh check-recall.sh"
-        }
-      ]
-    },
-    {
-      "matcher": "Write",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "/path/to/aeqi/scripts/hook-run.sh check-recall.sh"
-        }
-      ]
-    }
-  ]
-}
-```
-
-### Post-Tool Hooks (track what happened)
-
-After idea searches/stores, track that context was loaded:
+### Recall gate — require context before editing
 
 ```json
-{
-  "PostToolUse": [
-    {
-      "matcher": "mcp__aeqi__ideas",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "/path/to/aeqi/scripts/hook-run.sh mark-recall.sh"
-        }
-      ]
-    }
-  ]
-}
+"PreToolUse": [
+  {
+    "matcher": "Edit",
+    "hooks": [{ "type": "command", "command": "aeqi/scripts/hook-run.sh check-recall.sh" }]
+  },
+  {
+    "matcher": "Write",
+    "hooks": [{ "type": "command", "command": "aeqi/scripts/hook-run.sh check-recall.sh" }]
+  }
+]
 ```
 
-### Session Primer (inject context on startup)
+Blocks `Edit`/`Write` until `ideas(action='search')` has run for the current context.
 
-Load project context automatically when Claude Code starts:
+### Mark recall after ideas tool calls
 
 ```json
-{
-  "SessionStart": [
-    {
-      "matcher": "startup",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "/path/to/aeqi/scripts/session-primer.sh startup"
-        }
-      ]
-    }
-  ]
-}
+"PostToolUse": [
+  {
+    "matcher": "mcp__aeqi__ideas",
+    "hooks": [{ "type": "command", "command": "aeqi/scripts/hook-run.sh mark-recall.sh" }]
+  }
+]
 ```
 
-### Session Finalize (clean up on exit)
-
-Re-index code graph and clean session state:
+### Session primer — inject project context on startup
 
 ```json
-{
-  "Stop": [
-    {
-      "matcher": "",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "/path/to/aeqi/scripts/session-finalize.sh"
-        }
-      ]
-    }
-  ]
-}
+"SessionStart": [
+  {
+    "matcher": "startup",
+    "hooks": [{ "type": "command", "command": "aeqi/scripts/session-primer.sh startup" }]
+  }
+]
 ```
 
-## 5. Write CLAUDE.md
+Loads the active project's primer — architecture, rules, open quests, agent status — into the session as Claude Code starts.
 
-Your project's `CLAUDE.md` tells Claude Code how to work with AEQI:
+### Session finalize — re-index on exit
+
+```json
+"Stop": [
+  {
+    "matcher": "",
+    "hooks": [{ "type": "command", "command": "aeqi/scripts/session-finalize.sh" }]
+  }
+]
+```
+
+Re-indexes the code graph and clears session state.
+
+## 5. CLAUDE.md
+
+Keep `CLAUDE.md` minimal — the primer hook injects everything else.
 
 ```markdown
 # My Project
 
-Solo developer. All projects are mine. Do not ask for confirmation — decide and execute.
+Solo developer. All projects are mine. Decide and execute.
 
 AEQI MCP provides context, memory, workflow, and coordination.
 The session primer is the system prompt.
 ```
 
-This is minimal — AEQI's session primer hook injects the full project context (architecture, active quests, agent status) on every startup.
+## How It Fits Together
 
-## 6. The Workflow
+1. **Startup** — `SessionStart` runs the primer, loading project context and graph status
+2. **Before editing** — `PreToolUse` requires an `ideas(action='search')` first
+3. **During work** — Claude Code stores learnings as ideas, creates and closes quests, delegates to agents
+4. **Exit** — `Stop` re-indexes the code graph and clears session state
 
-With everything connected, your Claude Code session:
+Knowledge accumulates across sessions. Next time you (or another agent) starts, the primer loads the latest state.
 
-1. **Starts** → session primer fires, loads project context + graph status
-2. **Before editing** → recall gate requires `ideas(action='search')` first
-3. **During work** → stores learnings as ideas, creates/closes quests, delegates to agents
-4. **On exit** → finalizer re-indexes code graph, cleans session state
-
-Knowledge accumulates across sessions. The next time you (or another Claude Code instance) starts, the primer loads the latest context and the recall gate ensures continuity.
-
-## Example: Full Settings
-
-Here's a complete `settings.json` for reference:
+## Full `settings.json`
 
 ```json
 {
@@ -223,3 +185,9 @@ Here's a complete `settings.json` for reference:
   }
 }
 ```
+
+## Next Steps
+
+- [MCP Integration](/docs/api/mcp) — full tool catalog and env vars
+- [Authentication](/docs/api/authentication) — key rotation
+- [Concepts: Agents](/docs/concepts/agents) — what your MCP tools are driving

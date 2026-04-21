@@ -1,10 +1,10 @@
 # Agents
 
-Agents are persistent AI identities. They have names, memory, capabilities, and a position in a hierarchy.
+Agents are persistent identities — WHO in the four-primitive model. They have names, ideas (memory), tools, and a position in a tree.
 
-## Agent Tree
+## The Agent Tree
 
-Agents form a parent-child tree. A company's root agent can hire child agents from templates, and those children can hire their own.
+Every company has a root agent. Each agent can hire children, and those children can hire their own.
 
 ```
 luca-eich (root)
@@ -14,7 +14,7 @@ luca-eich (root)
     └── frontend-dev
 ```
 
-Hiring and retiring agents is done through the `agents` tool or the dashboard:
+Hire and retire through the `agents` MCP tool (inside Claude Code or any MCP client):
 
 ```
 agents(action='hire', template='researcher')
@@ -22,31 +22,42 @@ agents(action='retire', agent='researcher')
 agents(action='list', status='active')
 ```
 
+Or via the [REST API](/docs/api/rest).
+
 ## Identity
 
-An agent's identity comes from its **ideas** — instructions, personality, expertise, and accumulated knowledge stored in the semantic memory system.
+An agent's identity is a set of ideas with `injection_mode = 'always'` — they load into context on every session. Roles, tone, expertise, standing instructions all live in ideas, not code.
 
-| Field | What it does |
-|-------|-------------|
+| Field | Purpose |
+|-------|---------|
 | `name` | Display label and lookup key |
-| `parent_id` | Position in the agent tree |
-| `model` | Preferred LLM model (inheritable from parent) |
-| `capabilities` | Permissions (e.g., `spawn_agents`, `web_access`) |
+| `parent_id` | Position in the tree |
+| `model` | Preferred LLM (inheritable from parent) |
+| `capabilities` | Tool permissions (e.g. `spawn_agents`, `web_access`) |
 | `status` | `active`, `paused`, or `retired` |
 
 ## Sessions
 
-When an agent works on a quest, it runs inside a **session** — an execution transcript with tool calls, messages, and outcomes. A quest can have multiple sessions (retries, handoffs). A session can exist without a quest (ad-hoc chat).
+When an agent executes a quest, it runs inside a **session** — a transcript of messages, tool calls, and outcomes. One quest can span multiple sessions (retries, handoffs). A session can exist without a quest (ad-hoc chat).
+
+Sessions and quests are stored together in `sessions.db`.
 
 ## Lifecycle Events
 
-Every agent gets default lifecycle event handlers:
+Every agent ships with default event handlers. Override per-agent to customize behavior.
 
-- `on_quest_received` — new work arrives
-- `on_quest_completed` — work finished, reflect and store learnings
-- `on_quest_failed` — work failed, decide whether to retry
-- `on_child_completed` / `on_child_failed` — child agent outcomes
-- `on_idea_received` — new knowledge shared
-- `on_budget_exceeded` — cost limit hit
+| Event | Fires when |
+|-------|-----------|
+| `on_quest_received` | New work is assigned |
+| `on_quest_completed` | Quest finishes — reflect, store learnings |
+| `on_quest_failed` | Quest fails — decide whether to retry |
+| `on_child_completed` | A child agent finishes work |
+| `on_child_failed` | A child agent fails |
+| `on_idea_received` | New knowledge is shared with this agent |
+| `on_budget_exceeded` | Spend cap hit |
 
-These are customizable per agent.
+## Next Steps
+
+- [Quests](/docs/concepts/quests) — how work is created and closed
+- [Memory (Ideas)](/docs/concepts/memory) — how identity and knowledge are stored
+- [REST API — Agents](/docs/api/rest) — programmatic agent management
