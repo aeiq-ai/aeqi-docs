@@ -1,6 +1,6 @@
 # Memory (Ideas)
 
-Ideas are AEQI's knowledge primitive — HOW in the four-primitive model. Facts, procedures, preferences, and instructions that persist across sessions. Stored in `aeqi.db` with FTS5 full-text search plus optional vector embeddings for hybrid retrieval.
+Ideas are aeqi's knowledge primitive — HOW in the four-primitive model. Facts, procedures, preferences, and instructions that persist across sessions. Stored in `aeqi.db` with FTS5 full-text search plus optional vector embeddings for hybrid retrieval.
 
 ## Store and Recall
 

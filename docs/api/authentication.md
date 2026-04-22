@@ -1,6 +1,6 @@
 # Authentication
 
-AEQI uses a two-key model for programmatic access.
+aeqi uses a two-key model for programmatic access.
 
 ## Key Types
 
@@ -58,4 +58,4 @@ MCP and REST access require **Pro** or above. Trial and Starter can use the dash
 
 - [MCP Integration](/docs/api/mcp) — Claude Code and MCP tool catalog
 - [REST API](/docs/api/rest) — endpoint reference
-- [Claude Code + AEQI](/docs/guides/claude-code) — end-to-end IDE setup
+- [Claude Code + aeqi](/docs/guides/claude-code) — end-to-end IDE setup

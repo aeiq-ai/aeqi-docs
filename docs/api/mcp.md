@@ -1,6 +1,6 @@
 # MCP Integration
 
-AEQI exposes a [Model Context Protocol](https://modelcontextprotocol.io/) server. AI coding assistants — Claude Code, Cursor, and anything else MCP-compatible — get direct access to your company's runtime.
+aeqi exposes a [Model Context Protocol](https://modelcontextprotocol.io/) server. AI coding assistants — Claude Code, Cursor, and anything else MCP-compatible — get direct access to your company's runtime.
 
 ## Setup
 
@@ -84,5 +84,5 @@ Without the platform, the MCP server connects to the local daemon over a unix so
 ## Next Steps
 
 - [Authentication](/docs/api/authentication) — key creation and rotation
-- [Claude Code + AEQI](/docs/guides/claude-code) — hooks, primer, full settings
+- [Claude Code + aeqi](/docs/guides/claude-code) — hooks, primer, full settings
 - [REST API](/docs/api/rest) — HTTP endpoints for the same operations

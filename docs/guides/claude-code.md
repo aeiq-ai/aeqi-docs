@@ -1,10 +1,10 @@
-# Claude Code + AEQI
+# Claude Code + aeqi
 
-Connect Claude Code to your AEQI runtime over MCP. Claude Code gets persistent memory, quest tracking, agent delegation, and event automation — driving the same primitives the dashboard does.
+Connect Claude Code to your aeqi runtime over MCP. Claude Code gets persistent memory, quest tracking, agent delegation, and event automation — driving the same primitives the dashboard does.
 
 ## Prerequisites
 
-- AEQI account with a company at [app.aeqi.ai](https://app.aeqi.ai)
+- aeqi account with a company at [app.aeqi.ai](https://app.aeqi.ai)
 - Pro tier (MCP access requires Pro or above)
 - Claude Code
 - `aeqi` CLI — see [Installation](/docs/installation)
@@ -20,7 +20,7 @@ See [Authentication](/docs/api/authentication) for rotation.
 
 ## 2. MCP Server
 
-Add AEQI to `~/.claude/settings.json`:
+Add aeqi to `~/.claude/settings.json`:
 
 ```json
 {
@@ -61,7 +61,7 @@ Full catalog: [MCP Integration](/docs/api/mcp).
 
 ## 4. Hooks
 
-Hooks make Claude Code work with AEQI automatically. Add each block under `"hooks"` in `settings.json`.
+Hooks make Claude Code work with aeqi automatically. Add each block under `"hooks"` in `settings.json`.
 
 ### Recall gate — require context before editing
 
@@ -126,7 +126,7 @@ Keep `CLAUDE.md` minimal — the primer hook injects everything else.
 
 Solo developer. All projects are mine. Decide and execute.
 
-AEQI MCP provides context, memory, workflow, and coordination.
+aeqi MCP provides context, memory, workflow, and coordination.
 The session primer is the system prompt.
 ```
 

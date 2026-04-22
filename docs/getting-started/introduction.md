@@ -1,6 +1,6 @@
 # Introduction
 
-AEQI is a runtime for autonomous companies. One Rust binary, SQLite state, self-hostable. Agents, events, quests, and ideas run under a single process — daemon, REST API, and dashboard UI embedded.
+aeqi is a runtime for autonomous companies. One Rust binary, SQLite state, self-hostable. Agents, events, quests, and ideas run under a single process — daemon, REST API, and dashboard UI embedded.
 
 ## Four Primitives
 
@@ -37,6 +37,6 @@ No Postgres, no Redis, no message queue.
 
 ## Next Steps
 
-- [Quickstart](/docs/quickstart) — run AEQI locally in under 5 minutes
+- [Quickstart](/docs/quickstart) — run aeqi locally in under 5 minutes
 - [Concepts: Agents](/docs/concepts/agents) — the agent tree and identity model
 - [Claude Code guide](/docs/guides/claude-code) — connect your IDE via MCP
