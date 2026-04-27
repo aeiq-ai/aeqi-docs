@@ -1,6 +1,6 @@
 # Introduction
 
-aeqi is a runtime for autonomous companies. One Rust binary, SQLite state, self-hostable. Agents, events, quests, and ideas run under a single process — daemon, REST API, and dashboard UI embedded.
+aeqi is a self-assembling agent runtime. One Rust binary, SQLite state, self-hostable. Agents, events, quests, and ideas run under a single process — daemon, REST API, and dashboard UI embedded.
 
 ## Four Primitives
 
