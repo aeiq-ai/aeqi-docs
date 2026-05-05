@@ -3,6 +3,7 @@
 ## Getting Started
 
 - [Introduction](/docs/introduction) — aeqi as the operating system for autonomous companies; architecture overview.
+- [Deploy Your First TRUST](/docs/getting-started/deploy-your-first-trust) — Create and launch an on-chain TRUST (smart account with role-based governance) in 3 minutes. Start with Entity blueprint, fund your treasury, invite team members.
 - [Quickstart](/docs/quickstart) — Deploy aeqi locally in under 5 minutes.
 - [Claude Code + aeqi](/docs/guides/claude-code) — Connect Claude Code over MCP to unlock persistent memory, quests, agents, and events.
 
