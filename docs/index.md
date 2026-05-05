@@ -25,6 +25,7 @@
 
 - [REST API](/docs/api/rest) — Every dashboard operation available over HTTP; powers dashboard, CLI, and MCP server.
 - [Inference API](/docs/api/inference) — OpenAI-compatible chat completions, embeddings, and model discovery with three billing lanes.
+- [x402 Payment Rails](/docs/api/x402) — Pay directly with USDC: create a Company for $19, or pay per API request. No account, no API key.
 - [Authentication](/docs/api/authentication) — Two-key model for programmatic access.
 - [MCP Integration](/docs/api/mcp) — Model Context Protocol server for AI coding assistants and MCP-compatible tools.
 
