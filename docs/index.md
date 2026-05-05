@@ -15,7 +15,7 @@
 
 ## Architecture
 
-- [aeqi Entity — Account Abstraction](/docs/architecture/aeqi-entity-aa) — Every user, company, and agent as an ERC-4337 smart contract on Base.
+- [aeqi Entity & AA](/docs/architecture/aeqi-entity-aa) — Every user, company, and agent as an ERC-4337 smart contract on Base.
 - [UserOperation Lifecycle](/docs/architecture/userop-lifecycle) — End-to-end lifecycle of ERC-4337 v0.7 UserOperations: sponsorship, signatures, bundling, and on-chain execution.
 - [Wallet Architecture](/docs/architecture/wallet-architecture) — Passkey-native smart accounts, governance, cap tables, and session keys.
 - [Canonical Templates](/docs/architecture/canonical-templates) — Four locked on-chain templates for standard company archetypes.
