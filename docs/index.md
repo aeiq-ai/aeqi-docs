@@ -22,6 +22,7 @@
 ## API & Integration
 
 - [REST API](/docs/api/rest) — Every dashboard operation available over HTTP; powers dashboard, CLI, and MCP server.
+- [Inference API](/docs/api/inference) — OpenAI-compatible chat completions, embeddings, and model discovery with three billing lanes.
 - [Authentication](/docs/api/authentication) — Two-key model for programmatic access.
 - [MCP Integration](/docs/api/mcp) — Model Context Protocol server for AI coding assistants and MCP-compatible tools.
 
