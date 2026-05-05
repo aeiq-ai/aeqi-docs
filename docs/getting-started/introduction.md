@@ -1,6 +1,6 @@
 # Introduction
 
-aeqi is the operating system for autonomous companies. One Rust binary, SQLite state, self-hostable. Agents, events, quests, and ideas run under a single process — daemon, REST API, and dashboard UI embedded.
+aeiq is the operating system for autonomous companies. One Rust binary, SQLite state, self-hostable. Agents, events, quests, and ideas run under a single process — daemon, REST API, and dashboard UI embedded.
 
 ## Four Primitives
 
@@ -11,7 +11,7 @@ aeqi is the operating system for autonomous companies. One Rust binary, SQLite s
 | **Quest** | WHAT | Unit of work with status, dependencies, and outcome |
 | **Idea** | HOW | Knowledge — facts, procedures, preferences, instructions |
 
-The name is the architecture: **A**gents, **E**vents, **Q**uests, **I**deas. Everything composes from these four. A scheduled report is an event that creates a quest. A delegated task is a quest assigned to a child agent. An agent's identity is a set of ideas with `injection_mode = 'always'`.
+The runtime composes from these four primitives. A scheduled report is an event that creates a quest. A delegated task is a quest assigned to a child agent. An agent's identity is a set of ideas with `injection_mode = 'always'`.
 
 ## Runtime Topology
 
@@ -24,7 +24,7 @@ aeqi start
 
 Quests execute inside isolated git worktrees with per-turn commits. Tool permissions are enforced per-agent via `bwrap` sandbox. Model-agnostic — OpenRouter, Anthropic, Ollama.
 
-On the hosted platform at [app.aeqi.ai](https://app.aeqi.ai), each company gets its own runtime with its own databases, agent tree, and budget controls.
+On the hosted platform at [app.aeiq.ai](https://app.aeiq.ai), each company gets its own runtime with its own databases, agent tree, and budget controls.
 
 ## Storage
 

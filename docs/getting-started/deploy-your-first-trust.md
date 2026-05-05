@@ -20,7 +20,7 @@ No crypto experience required. You can fund the account with USDC directly or pa
 
 ## Step 1: Sign Up
 
-Go to [aeqi.ai](https://aeqi.ai) and click "Start a company."
+Go to [aeqi.ai](https://aeiq.ai) and click "Start a company."
 
 Sign up with:
 - Email + password, or
@@ -227,7 +227,7 @@ Check [basescan.org](https://basescan.org) for your tx hash (in the browser cons
 
 The indexer has a ~30-second delay. Refresh after a minute. If it's still missing, check:
 ```bash
-curl https://api.aeqi.io/api/trusts/<your-address>
+curl https://app.aeiq.ai/api/trusts/<your-address>
 ```
 
 If it 404s, the registration didn't index. Contact support with your tx hash.
@@ -246,11 +246,11 @@ Your TRUST is accessible over REST and x402 payment rails:
 
 ```bash
 # REST: list your treasury balances
-curl https://api.aeqi.io/api/trusts/<address>/treasury \
+curl https://app.aeiq.ai/api/trusts/<address>/treasury \
   -H "Authorization: Bearer YOUR_SESSION_TOKEN"
 
 # x402: pay per API call with USDC
-curl https://api.aeqi.io/api/agents \
+curl https://app.aeiq.ai/api/agents \
   -H "HTTP-402: true" \
   -H "HTTP-402-Payment: <signed-USDC-payment>"
 ```
@@ -263,7 +263,7 @@ See [REST API](/docs/api/rest), [Inference API](/docs/api/inference), and [x402 
 - **After:** $49/month (card) or $45/month (USDC)
 
 Includes:
-- $25/month in inference credits (Claude model access for your agents)
+- Included inference credits for agent work
 - Unlimited quests, agents, ideas, and transactions
 
 See [Pricing](/docs/pricing) for details on usage overage and inference top-ups.

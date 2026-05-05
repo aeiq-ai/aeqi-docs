@@ -1,11 +1,11 @@
-# aeqi Documentation
+# aeiq Documentation
 
 ## Getting Started
 
-- [Introduction](/docs/introduction) — aeqi as the operating system for autonomous companies; architecture overview.
+- [Introduction](/docs) — aeiq as the operating system for autonomous companies; architecture overview.
 - [Deploy Your First TRUST](/docs/getting-started/deploy-your-first-trust) — Create and launch an on-chain TRUST (smart account with role-based governance) in 3 minutes. Start with Entity blueprint, fund your treasury, invite team members.
 - [Quickstart](/docs/quickstart) — Deploy aeqi locally in under 5 minutes.
-- [Claude Code + aeqi](/docs/guides/claude-code) — Connect Claude Code over MCP to unlock persistent memory, quests, agents, and events.
+- [Claude Code + aeiq](/docs/guides/claude-code) — Connect Claude Code over MCP to unlock persistent memory, quests, agents, and events.
 
 ## Core Concepts
 
@@ -17,7 +17,7 @@
 
 ## Architecture
 
-- [aeqi Entity & AA](/docs/architecture/aeqi-entity-aa) — Every user, company, and agent as an ERC-4337 smart contract on Base.
+- [aeiq Entity & AA](/docs/architecture/aeqi-entity-aa) — Every user, company, and agent as an ERC-4337 smart contract on Base.
 - [UserOperation Lifecycle](/docs/architecture/userop-lifecycle) — End-to-end lifecycle of ERC-4337 v0.7 UserOperations: sponsorship, signatures, bundling, and on-chain execution.
 - [Wallet Architecture](/docs/architecture/wallet-architecture) — Passkey-native smart accounts, governance, cap tables, and session keys.
 - [Canonical Templates](/docs/architecture/canonical-templates) — Four locked on-chain templates for standard company archetypes.

@@ -6,7 +6,7 @@ aeqi-inference is an OpenAI-compatible API for running inference on multiple LLM
 
 | Environment | URL |
 |-------------|-----|
-| Hosted | `https://app.aeqi.ai/v1` |
+| Hosted | `https://app.aeiq.ai/v1` |
 | Self-hosted | `http://127.0.0.1:8400/v1` |
 
 ## Authentication
@@ -161,7 +161,7 @@ Additional providers (OpenAI, Anthropic, DeepSeek) are in development.
 
 ## Billing & Cost Accounting
 
-Every company's subscription plan includes a **$25 USD monthly inference credit**. Usage is debited from this balance in real time.
+Every workspace subscription includes pooled inference credit. Usage is debited from this balance in real time.
 
 **Pricing Model:**
 - Billed per million tokens (input and output separately).
@@ -185,7 +185,7 @@ To add more balance, top up your account's Treasury through the dashboard (futur
 ### Non-Streaming Chat Completion
 
 ```typescript
-const response = await fetch("https://app.aeqi.ai/v1/chat/completions", {
+const response = await fetch("https://app.aeiq.ai/v1/chat/completions", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -210,7 +210,7 @@ console.log(data.choices[0].message.content);
 ### Streaming Chat Completion
 
 ```typescript
-const response = await fetch("https://app.aeqi.ai/v1/chat/completions", {
+const response = await fetch("https://app.aeiq.ai/v1/chat/completions", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -256,7 +256,7 @@ while (true) {
 ### List Available Models
 
 ```typescript
-const response = await fetch("https://app.aeqi.ai/v1/models", {
+const response = await fetch("https://app.aeiq.ai/v1/models", {
   headers: {
     "Authorization": `Bearer ${token}`
   }
@@ -278,7 +278,7 @@ from openai import OpenAI
 
 client = OpenAI(
     api_key="<your-jwt-token>",
-    base_url="https://app.aeqi.ai/v1"
+    base_url="https://app.aeiq.ai/v1"
 )
 
 response = client.chat.completions.create(
@@ -297,7 +297,7 @@ import OpenAI from "openai";
 
 const client = new OpenAI({
   apiKey: "<your-jwt-token>",
-  baseURL: "https://app.aeqi.ai/v1"
+  baseURL: "https://app.aeiq.ai/v1"
 });
 
 const response = await client.chat.completions.create({

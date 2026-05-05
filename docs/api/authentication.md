@@ -1,6 +1,6 @@
 # Authentication
 
-aeqi uses a two-key model for programmatic access.
+aeiq uses a two-key model for programmatic access.
 
 ## Key Types
 
@@ -13,9 +13,9 @@ MCP requires both. REST requires the secret key (plus an `X-Company` header); th
 
 ## Create Keys
 
-**Account key** — [Account → API](https://app.aeqi.ai/account?tab=api). One per account, persists across all your companies.
+**Account key** — [Account → API](https://app.aeiq.ai/account?tab=api). One per account, persists across all your companies.
 
-**Secret key** — [Company → API Keys](https://app.aeqi.ai/company?tab=api-keys). One per integration (Claude Code, CI, etc.).
+**Secret key** — [Company → API Keys](https://app.aeiq.ai/company?tab=api-keys). One per integration (Claude Code, CI, etc.).
 
 ## Use
 
@@ -31,7 +31,7 @@ The MCP server validates against the platform on startup, then connects directly
 ### REST
 
 ```bash
-curl https://app.aeqi.ai/api/status \
+curl https://app.aeiq.ai/api/status \
   -H "Authorization: Bearer sk_..." \
   -H "X-Company: your-company-name"
 ```
@@ -58,4 +58,4 @@ MCP and REST access require **Pro** or above. Trial and Starter can use the dash
 
 - [MCP Integration](/docs/api/mcp) — Claude Code and MCP tool catalog
 - [REST API](/docs/api/rest) — endpoint reference
-- [Claude Code + aeqi](/docs/guides/claude-code) — end-to-end IDE setup
+- [Claude Code + aeiq](/docs/guides/claude-code) — end-to-end IDE setup

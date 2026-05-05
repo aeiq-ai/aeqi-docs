@@ -71,7 +71,7 @@ The resulting hex string is 130 characters (65 bytes, with `04` prefix for uncom
 ### Build the CLI tool
 
 ```bash
-git clone https://github.com/aeqi/aeqi.git
+git clone https://github.com/aeqiai/aeqi.git
 cd aeqi
 cargo build -p aeqi-paymaster --bin migrate_to_passkey --release
 ```
@@ -308,4 +308,4 @@ Tier 1 tests run in CI. Tier 2 tests are automatically skipped if `ANVIL_URL` is
 - **Retire EOA:** Once confident, remove the EOA signer via `removeSigner(...)`.
 - **Governance:** Your Entity contract is now ready for multi-signer governance, session keys, and delegated execution.
 
-For questions or issues, contact aeqi support or open an issue on [GitHub](https://github.com/aeqi/aeqi).
+For questions or issues, contact aeqi support or open an issue on [GitHub](https://github.com/aeqiai/aeqi).

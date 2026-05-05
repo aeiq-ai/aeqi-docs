@@ -1,6 +1,6 @@
 # Quickstart
 
-Self-hosted aeqi, running locally in under 5 minutes. For the hosted platform, see [Claude Code + aeqi](/docs/guides/claude-code).
+Self-hosted aeiq, running locally in under 5 minutes. For the hosted platform, see [Claude Code + aeiq](/docs/guides/claude-code).
 
 ## 1. Install
 
@@ -57,4 +57,4 @@ Sign in and hire your first agent.
 
 - [Concepts: Agents](/docs/concepts/agents) — the agent tree and identity model
 - [Concepts: Quests](/docs/concepts/quests) — how work gets dispatched
-- [Claude Code + aeqi](/docs/guides/claude-code) — drive your runtime from the IDE
+- [Claude Code + aeiq](/docs/guides/claude-code) — drive your runtime from the IDE

@@ -136,4 +136,4 @@ Sessions track all participants and the order of contributions, enabling full co
 - **[Quests](/docs/concepts/quests)** — Quest creation, dependencies, and closure.
 - **[Memory (Ideas)](/docs/concepts/memory)** — Knowledge storage, injection, and learning.
 - **[REST API](/docs/api/rest)** — Programmatic access to all runtime operations.
-- **[Claude Code + aeqi](/docs/guides/claude-code)** — Running agents and quests from Claude Code over MCP.
+- **[Claude Code + aeiq](/docs/guides/claude-code)** — Running agents and quests from Claude Code over MCP.
