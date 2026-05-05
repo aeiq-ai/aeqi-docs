@@ -29,3 +29,4 @@
 
 - [Factory Flow](/docs/factory-flow) — Company genesis, registration, and initialization.
 - [IPFS Content Addressing](/docs/guides/ipfs-content-addressing) — CID handling for on-chain and off-chain IPFS storage.
+- [Transaction & Governance](/docs/guides/transaction-governance) — Best practices for transaction handling, proposals, error handling, and security.
