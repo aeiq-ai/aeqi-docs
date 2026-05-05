@@ -8,6 +8,7 @@
 
 ## Core Concepts
 
+- [Agent Runtime Overview](/docs/concepts/agent-runtime-overview) — The four-primitive mental model (Agents, Events, Quests, Ideas), runtime lifecycle, sessions, and multi-agent coordination.
 - [Agents](/docs/concepts/agents) — WHO in the four-primitive model; persistent identities with positions in the agent tree.
 - [Quests](/docs/concepts/quests) — WHAT in the four-primitive model; units of work with status, assignees, dependencies, and outcomes.
 - [Memory (Ideas)](/docs/concepts/memory) — HOW in the four-primitive model; persistent facts, procedures, and preferences with full-text search.
