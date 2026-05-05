@@ -29,5 +29,6 @@
 ## Operations & Guides
 
 - [Factory Flow](/docs/factory-flow) — Company genesis, registration, and initialization.
+- [Wallet Migration](/docs/guides/wallet-migration) — Phase 1 to Phase 2 migration: add passkey signer to your Entity.
 - [IPFS Content Addressing](/docs/guides/ipfs-content-addressing) — CID handling for on-chain and off-chain IPFS storage.
 - [Transaction & Governance](/docs/guides/transaction-governance) — Best practices for transaction handling, proposals, error handling, and security.
