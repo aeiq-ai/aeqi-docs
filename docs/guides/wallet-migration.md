@@ -2,7 +2,7 @@
 
 **Status:** Shipped 2026-05-05. Passkey-native smart accounts (Phase 2) operational.
 
-Migrate your AEQI Entity from Phase 1 (custodial EOA signer) to Phase 2 (passkey-native with on-device signing). This guide covers the `migrate-to-passkey` CLI tool.
+Migrate your aeqi Entity from Phase 1 (custodial EOA signer) to Phase 2 (passkey-native with on-device signing). This guide covers the `migrate-to-passkey` CLI tool.
 
 ---
 

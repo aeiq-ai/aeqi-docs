@@ -1,6 +1,6 @@
 # Four Canonical Templates
 
-AEQI uses four locked on-chain templates. Each is a pre-configured module set for a specific company archetype. Many off-chain blueprints can map to one template (N-to-1 mapping).
+aeqi uses four locked on-chain templates. Each is a pre-configured module set for a specific company archetype. Many off-chain blueprints can map to one template (N-to-1 mapping).
 
 ## The two-layer architecture
 

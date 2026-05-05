@@ -15,7 +15,7 @@
 
 ## Architecture
 
-- [AEQI Entity — Account Abstraction](/docs/architecture/aeqi-entity-aa) — Every user, company, and agent as an ERC-4337 smart contract on Base.
+- [aeqi Entity — Account Abstraction](/docs/architecture/aeqi-entity-aa) — Every user, company, and agent as an ERC-4337 smart contract on Base.
 - [Wallet Architecture](/docs/architecture/wallet-architecture) — Passkey-native smart accounts, governance, cap tables, and session keys.
 - [Canonical Templates](/docs/architecture/canonical-templates) — Four locked on-chain templates for standard company archetypes.
 

@@ -1,10 +1,10 @@
-# AEQI Entity — Account Abstraction
+# aeqi Entity — Account Abstraction
 
-Every user, company, and agent on AEQI is represented by an **AEQI Entity** — a smart contract on Base that implements ERC-4337 account abstraction. One contract template, three configurations.
+Every user, company, and agent on aeqi is represented by an **aeqi Entity** — a smart contract on Base that implements ERC-4337 account abstraction. One contract template, three configurations.
 
 ## The Entity as a primitive
 
-An **Entity** is AEQI's on-chain primitive for identity, ownership, and execution. It is not an account in the traditional sense (a keypair). It is a **smart contract** that owns itself.
+An **Entity** is aeqi's on-chain primitive for identity, ownership, and execution. It is not an account in the traditional sense (a keypair). It is a **smart contract** that owns itself.
 
 | Configuration | Owners | On-chain behavior |
 |---|---|---|
@@ -14,7 +14,7 @@ An **Entity** is AEQI's on-chain primitive for identity, ownership, and executio
 
 ## The contract anatomy
 
-AEQI Entity is a comprehensive template written end-to-end. It is NOT built on Safe.
+aeqi Entity is a comprehensive template written end-to-end. It is NOT built on Safe.
 
 ### IAccount interface (ERC-4337)
 
@@ -35,11 +35,11 @@ interface IAccount {
 }
 ```
 
-AEQI Entity implements this interface. It accepts UserOps signed by any registered signer (passkey, EOA, multi-sig).
+aeqi Entity implements this interface. It accepts UserOps signed by any registered signer (passkey, EOA, multi-sig).
 
 ### Signers module
 
-Flexible signer configuration. Each AEQI Entity can have multiple signers of different types.
+Flexible signer configuration. Each aeqi Entity can have multiple signers of different types.
 
 ```solidity
 struct PasskeySigner {
@@ -195,9 +195,9 @@ aeqi takes the `recoveryFacilitator` role. Cannot sign or move funds; can only r
 
 ### We own the primitive
 
-Writing AEQI Entity end-to-end means:
+Writing aeqi Entity end-to-end means:
 - Full control of the contract ABI
-- Etherscan recognizes it as "AEQI Entity," not "Safe with modules"
+- Etherscan recognizes it as "aeqi Entity," not "Safe with modules"
 - Upgrade independence from Safe's roadmap
 - Full audit coverage of our exact model
 
@@ -230,7 +230,7 @@ When a user signs up:
 
 ### With ERC-4337 infrastructure
 
-AEQI Entities are standard ERC-4337 smart accounts. They work with:
+aeqi Entities are standard ERC-4337 smart accounts. They work with:
 - Any ERC-4337 bundler (not just aeqi's silius)
 - Any 4337-compatible wallet UI (not just aeqi.ai)
 - Mainnet, Base, Optimism, Arbitrum (any chain with EntryPoint deployed)
@@ -256,7 +256,7 @@ The Entity is the source of truth. aeqi is the convenience layer.
 
 | Term | Meaning |
 |---|---|
-| **AEQI Entity** | The smart contract primitive for users, companies, and agents on AEQI. One template, three configurations. |
+| **aeqi Entity** | The smart contract primitive for users, companies, and agents on aeqi. One template, three configurations. |
 | **ERC-4337** | Ethereum account abstraction standard. Defines UserOps, EntryPoint, bundlers, paymasters. |
 | **UserOp** | A "pseudo-transaction" signed by a smart account user instead of a regular tx. Bundlers pack these into real txs. |
 | **EntryPoint** | Canonical singleton contract on every EVM chain. Validates and executes UserOps. Deployed by Ethereum Foundation. |

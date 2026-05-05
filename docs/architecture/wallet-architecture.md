@@ -1,6 +1,6 @@
 # Wallet Architecture & Account Abstraction
 
-AEQI uses a **passkey-native ERC-4337 smart account on Base**. Every account, company, and agent is an on-chain AEQI Entity — a comprehensive smart contract template with cap tables, roles, governance, and session keys.
+aeqi uses a **passkey-native ERC-4337 smart account on Base**. Every account, company, and agent is an on-chain aeqi Entity — a comprehensive smart contract template with cap tables, roles, governance, and session keys.
 
 ## The stack at a glance
 
@@ -8,7 +8,7 @@ AEQI uses a **passkey-native ERC-4337 smart account on Base**. Every account, co
 |---|---|
 | **Signer** | Passkey (P-256 WebAuthn) — primary; EOA (MetaMask) — secondary |
 | **Smart Account** | ERC-4337 on Base |
-| **Contract** | AEQI Entity (custom, written end-to-end) |
+| **Contract** | aeqi Entity (custom, written end-to-end) |
 | **Bundler** | silius (Rust, self-hosted) |
 | **Paymaster** | Custom contract + Rust signing service (self-hosted) |
 | **Recovery** | On-chain timelock-gated facilitator role + email identity backup |
@@ -19,7 +19,7 @@ AEQI uses a **passkey-native ERC-4337 smart account on Base**. Every account, co
 
 - Private key lives in device Secure Enclave (Apple T2, Android StrongBox, TPM) — recoverable by device OS, not held by any service
 - Smart account on-chain validates passkey signatures directly
-- AEQI never touches the key — we literally cannot sign
+- aeqi never touches the key — we literally cannot sign
 - Trust model: zero for signing, operational for convenience (bundler, paymaster, agents with bounded session keys)
 
 ## What changed in 2024
@@ -31,7 +31,7 @@ Two breakthroughs enabled this:
 
 The legacy providers (Privy, Magic, Dynamic) used MPC/TEE to solve the "user has email only" problem. Passkeys removed that constraint.
 
-## The AEQI Entity contract
+## The aeqi Entity contract
 
 One template, three configurations:
 
@@ -56,12 +56,12 @@ All on **one contract template**. Different module configurations per use case.
 
 Safe is the dominant multi-sig; we considered using it as a base.
 
-Decision: build AEQI Entity end-to-end ourselves.
+Decision: build aeqi Entity end-to-end ourselves.
 
 Reasons:
 
-1. AEQI's primitive is "company with cap table + roles + governance + agent delegation." Safe's primitive is "co-signature." Different primitives → different contracts.
-2. Full ownership of the ABI. Etherscan and tooling recognize it as "AEQI Entity," not "Safe with modules."
+1. aeqi's primitive is "company with cap table + roles + governance + agent delegation." Safe's primitive is "co-signature." Different primitives → different contracts.
+2. Full ownership of the ABI. Etherscan and tooling recognize it as "aeqi Entity," not "Safe with modules."
 3. Upgrade independence. Safe's roadmap moves on its own schedule; we don't want to be downstream.
 4. Audit posture. Custom contract is more work but covers exactly our model. Safe-modules approach still requires full audits for our modules on top of Safe audit coverage.
 
@@ -183,9 +183,9 @@ session key for agents (optional, or require per-tx approval).
 | **Bundler** | Adopt `silius` (Rust) | Self-host as sibling to aeqi-platform |
 | **Paymaster contract** | Write our own | ~80 lines Solidity. One per chain. |
 | **Paymaster backend** | Write our own | Rust service; signs paymaster approvals based on policy |
-| **AEQI Entity contract** | Write our own | Signers, cap table, roles, session keys, governance. Audit before mainnet. |
+| **aeqi Entity contract** | Write our own | Signers, cap table, roles, session keys, governance. Audit before mainnet. |
 | **Entity factory** | Write our own | CREATE2 deployer; deterministic addresses |
-| **Session-key module** | Write our own | On-chain policy enforcement for agent delegation (AEQI IP) |
+| **Session-key module** | Write our own | On-chain policy enforcement for agent delegation (aeqi IP) |
 | **EntryPoint** | Use canonical | EF-deployed singleton on every chain |
 
 On-server topology:
@@ -198,9 +198,9 @@ aeqi-host-<entity>.service  (per-tenant runtime)
 ```
 
 Plus three contracts per chain (Base mainnet + Sepolia staging):
-- AEQI Entity implementation
-- AEQI Entity factory
-- AEQI paymaster
+- aeqi Entity implementation
+- aeqi Entity factory
+- aeqi paymaster
 
 ## Pricing — per-Company
 
