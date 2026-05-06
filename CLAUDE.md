@@ -22,6 +22,19 @@ The `marked` dependency is for ad-hoc local rendering only. Production rendering
 - Don't say "prompts" — aeqi has four primitives (agents, ideas, quests, events).
 - Code blocks use the right fences: `bash`, `rust`, `typescript`, `tsx`, `json`.
 
+## Stub sections
+
+`platform/` and `self-hosting/` are intentionally sparse right now. Before adding content there, check `docs/index.md` — every file in those directories must be wired into the index. If a directory has no content yet, leave it empty (git ignores empty dirs); do NOT add placeholder `.gitkeep` or `_index.md` files.
+
+## Gap-scanning convention
+
+When a subagent scans for doc gaps, the canonical checklist is:
+
+1. Is there a `concepts/<primitive>.md` for each of the four primitives (Agents, Events, Quests, Ideas) **and** for TRUST?
+2. Is `platform/billing.md` current with the latest pricing model?
+3. Are `platform/` and `self-hosting/` still intentionally empty, or do shipped features now warrant content?
+4. Does `docs/index.md` link every file that exists in `docs/**/*.md`?
+
 ## Worktree workflow
 
 **Never edit `main` directly.** Cut a worktree off `main`:
