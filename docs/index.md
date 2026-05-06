@@ -42,6 +42,8 @@ aeqi has five primitives. Everything else is a saved view over them.
 - [Personality as an Idea](/docs/patterns/personality-as-idea) — agent identity lives in the universal data noun.
 - [Multi-scope integrations](/docs/patterns/multi-scope-integrations) — Entity > Role > Agent precedence.
 - [Public companies](/docs/patterns/public-companies) — opt-in registry, hire, raise, trade.
+- [Public profile flag](/docs/patterns/public-profile-flag) — one column, one route, one reserved-slug deny list.
+- [Cutover window](/docs/patterns/cutover-window) — `Retry-After: 5` + JSON body during runtime spin-up.
 
 ## Architecture — what's under the hood
 
@@ -84,3 +86,4 @@ aeqi has five primitives. Everything else is a saved view over them.
 - [Co-creation](/docs/blog/0002-co-creation) — blueprints spawn living workspaces.
 - [Everything is an Idea](/docs/blog/0003-everything-is-an-idea) — the database thesis.
 - [The co-creation surface lands](/docs/blog/0004-co-creation-surface) — v0.41.0 recap: ideas, channels, quests, personality, accounting.
+- [Stacks, profiles, and the first sketch of the Architect](/docs/blog/0005-stack-edges-and-public-profiles) — v0.42.0 recap: on-chain stack edges, public profiles, /studio stub, hero strip, tables in Ideas.
