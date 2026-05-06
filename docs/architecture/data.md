@@ -201,7 +201,14 @@ Restore is the reverse — drop the new files in place and restart the service.
 
 ## Per-tenant isolation
 
-Each tenant runtime has its own data directory under `/var/lib/aeqi/<entity_id>/`. The platform proxy routes `X-Entity` headers to the right tenant; the runtime never sees other tenants' data.
+Each tenant runtime has its own data directory; the platform proxy routes `X-Entity` headers to the right tenant and the runtime never sees other tenants' data. The data directory's location depends on whether the tenant runs sandboxed or in-host:
+
+| Placement | systemd unit | Data directory |
+|---|---|---|
+| **sandbox** (containerized) | `aeqi-sandbox-<entity_id>.service` | `/var/lib/aeqi/containers/<entity_id>/aeqi.db` |
+| **host** (in-host) | `aeqi-host-<entity_id>.service` | `$HOME/.aeqi/aeqi.db` (the unit sets `HOME=/home/claudedev`, so the runtime resolves data dir to `~/.aeqi`) |
+
+Operational note: a stale `/var/lib/aeqi/hosts/<slug>/aeqi.db` file may exist on hosts that ran the pre-2026-04-29 layout. No daemon opens it, so its schema doesn't auto-upgrade. When verifying a migration on a tenant DB, resolve the live path from the systemd unit (`Environment=HOME` and `WorkingDirectory`) rather than guessing — checking the dormant copy will mislead you.
 
 ## Related
 

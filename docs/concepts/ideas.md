@@ -115,3 +115,4 @@ Ideas live in `aeqi.db` (FTS5 full-text search + optional vector embeddings) on 
 - [Sessions](/docs/concepts/sessions) — Idea comments are session messages.
 - [Quests](/docs/concepts/quests) — Quests can wrap an Idea via `idea_id`.
 - [Composition](/docs/methodology/composition) — the wrapper pattern.
+- [Personality as an Idea](/docs/patterns/personality-as-idea) — agent identity lives here too.

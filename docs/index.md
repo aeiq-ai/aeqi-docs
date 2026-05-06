@@ -38,6 +38,8 @@ aeqi has five primitives. Everything else is a saved view over them.
 - [Executive Assistant](/docs/patterns/executive-assistant) — a shared EA serving the C-suite.
 - [Per-agent OAuth (Path B)](/docs/patterns/oauth-path-b) — connect Gmail, Calendar, etc. to an agent.
 - [Mention-gating](/docs/patterns/mention-gating) — Telegram + channel routing without spam.
+- [Inline mention spawn](/docs/patterns/inline-mention-spawn) — `@`-mentioning an unknown name spawns the agent.
+- [Personality as an Idea](/docs/patterns/personality-as-idea) — agent identity lives in the universal data noun.
 - [Multi-scope integrations](/docs/patterns/multi-scope-integrations) — Entity > Role > Agent precedence.
 - [Public companies](/docs/patterns/public-companies) — opt-in registry, hire, raise, trade.
 
@@ -81,3 +83,4 @@ aeqi has five primitives. Everything else is a saved view over them.
 - [Hello, aeqi](/docs/blog/0001-hello) — what aeqi is, written for the world.
 - [Co-creation](/docs/blog/0002-co-creation) — blueprints spawn living workspaces.
 - [Everything is an Idea](/docs/blog/0003-everything-is-an-idea) — the database thesis.
+- [The co-creation surface lands](/docs/blog/0004-co-creation-surface) — v0.41.0 recap: ideas, channels, quests, personality, accounting.

@@ -105,3 +105,4 @@ The legacy `awaiting_at` column will retire in Wave 5; the canonical mechanism i
 - [Quests](/docs/concepts/quests) — Quests have an attached session for activity + tool calls.
 - [Channels](/docs/concepts/agent-runtime-overview) — the transport layer for bridged sessions.
 - [Mention-gating](/docs/patterns/mention-gating) — how channel mentions wake agents.
+- [Inline mention spawn](/docs/patterns/inline-mention-spawn) — mentioning an unknown name spawns the agent.
