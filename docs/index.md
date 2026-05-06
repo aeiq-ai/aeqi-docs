@@ -11,6 +11,7 @@
 
 - [Agent Runtime Overview](/docs/concepts/agent-runtime-overview) — The four-primitive mental model (Agents, Events, Quests, Ideas), runtime lifecycle, sessions, and multi-agent coordination.
 - [Agents](/docs/concepts/agents) — WHO in the four-primitive model; persistent identities with positions in the agent tree.
+- [TRUST](/docs/concepts/trust) — The on-chain smart account at the heart of every company: roles, treasury, governance, and agent runtime in one contract.
 - [Quests](/docs/concepts/quests) — WHAT in the four-primitive model; units of work with status, assignees, dependencies, and outcomes.
 - [Memory (Ideas)](/docs/concepts/memory) — HOW in the four-primitive model; persistent facts, procedures, and preferences with full-text search.
 - [Wallets & Identity](/docs/concepts/wallets-and-identity) — On-chain representation and identity management.
@@ -29,6 +30,10 @@
 - [x402 Payment Rails](/docs/api/x402) — Pay directly with USDC: create a Company for $19, or pay per API request. No account, no API key.
 - [Authentication](/docs/api/authentication) — Two-key model for programmatic access.
 - [MCP Integration](/docs/api/mcp) — Model Context Protocol server for AI coding assistants and MCP-compatible tools.
+
+## Platform
+
+- [Billing](/docs/platform/billing) — Workspace model, pricing, company cap, inference credits, and x402 genesis.
 
 ## Operations & Guides
 
