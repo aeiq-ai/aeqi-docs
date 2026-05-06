@@ -26,6 +26,18 @@ The `marked` dependency is for ad-hoc local rendering only. Production rendering
 
 `platform/` and `self-hosting/` are intentionally sparse right now. Before adding content there, check `docs/index.md` — every file in those directories must be wired into the index. If a directory has no content yet, leave it empty (git ignores empty dirs); do NOT add placeholder `.gitkeep` or `_index.md` files.
 
+## Landing renders only what it routes
+
+aeqi-landing renders docs through **explicit `<Route>` declarations** in `aeqi-landing/src/docs/Docs.tsx` — NOT a generic markdown crawler. A new markdown file in this repo is invisible to users until a paired `<Route path="..." element={<MD file="..." />} />` lands in `Docs.tsx`.
+
+When a docs ship adds new files (especially new top-level directories like `methodology/`, `patterns/`, `reference/`, `blog/`):
+
+1. Land the markdown here (`/ship` in aeqi-docs).
+2. Cut a worktree on aeqi-landing. Add a `<Route>` per new file in `src/docs/Docs.tsx`.
+3. `/ship` from aeqi-landing — its build pulls the latest aeqi-docs and bundles the new content with the new routes.
+
+Until step 2 ships, the markdown lands in main (durable) but `https://aeqi.ai/docs/<new-path>` 404s. Don't claim "shipped to users" without the landing-side wire.
+
 ## Gap-scanning convention
 
 When a subagent scans for doc gaps, the canonical checklist is:
