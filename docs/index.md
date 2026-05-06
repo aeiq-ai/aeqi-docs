@@ -1,43 +1,83 @@
-# aeiq Documentation
+# aeqi Documentation
 
-## Getting Started
+aeqi is the company OS for the agent economy. Build companies where humans set direction. Agents turn context into execution.
 
-- [Introduction](/docs) — aeiq as the operating system for autonomous companies; architecture overview.
-- [Deploy Your First TRUST](/docs/getting-started/deploy-your-first-trust) — Create and launch an on-chain TRUST (smart account with role-based governance) in 3 minutes. Start with Entity blueprint, fund your treasury, invite team members.
-- [Quickstart](/docs/quickstart) — Deploy aeqi locally in under 5 minutes.
-- [Claude Code + aeiq](/docs/guides/claude-code) — Connect Claude Code over MCP to unlock persistent memory, quests, agents, and events.
+This documentation is organized as a working manual: mission first, then how to use it, then how it's built.
 
-## Core Concepts
+## Start here
 
-- [Agent Runtime Overview](/docs/concepts/agent-runtime-overview) — The four-primitive mental model (Agents, Events, Quests, Ideas), runtime lifecycle, sessions, and multi-agent coordination.
-- [Agents](/docs/concepts/agents) — WHO in the four-primitive model; persistent identities with positions in the agent tree.
-- [TRUST](/docs/concepts/trust) — The on-chain smart account at the heart of every company: roles, treasury, governance, and agent runtime in one contract.
-- [Quests](/docs/concepts/quests) — WHAT in the four-primitive model; units of work with status, assignees, dependencies, and outcomes.
-- [Memory (Ideas)](/docs/concepts/memory) — HOW in the four-primitive model; persistent facts, procedures, and preferences with full-text search.
-- [Wallets & Identity](/docs/concepts/wallets-and-identity) — On-chain representation and identity management.
+- [Mission](/docs/mission) — why aeqi exists, the four W-primitives, why this is inevitable.
+- [Introduction](/docs/getting-started/introduction) — what aeqi is, four primitives, runtime topology.
+- [Getting started](/docs/getting-started/getting-started) — sign up, spawn your first company, send your first message, run your first quest.
+- [Quickstart (self-host)](/docs/quickstart) — deploy aeqi locally in under 5 minutes.
+- [Deploy your first TRUST](/docs/getting-started/deploy-your-first-trust) — create and launch an on-chain TRUST in 3 minutes.
 
-## Architecture
+## Concepts — the canonical mental model
 
-- [aeiq Entity & AA](/docs/architecture/aeqi-entity-aa) — Every user, company, and agent as an ERC-4337 smart contract on Base.
-- [UserOperation Lifecycle](/docs/architecture/userop-lifecycle) — End-to-end lifecycle of ERC-4337 v0.7 UserOperations: sponsorship, signatures, bundling, and on-chain execution.
-- [Wallet Architecture](/docs/architecture/wallet-architecture) — Passkey-native smart accounts, governance, cap tables, and session keys.
-- [Canonical Templates](/docs/architecture/canonical-templates) — Four locked on-chain templates for standard company archetypes.
+aeqi has five primitives. Everything else is a saved view over them.
 
-## API & Integration
+- [Agent runtime overview](/docs/concepts/agent-runtime-overview) — four-primitive mental model, runtime lifecycle, sessions, multi-agent coordination.
+- [Agents](/docs/concepts/agents) — runtime workers; **occupants**, not WHO themselves.
+- [Quests](/docs/concepts/quests) — **WHAT**: structured units of work with goal, worktree, status, outcome.
+- [Events](/docs/concepts/events) — **WHEN**: signals that wake agents and fire executions. Not a log.
+- [Memory (Ideas)](/docs/concepts/memory) — **HOW**: the universal data noun. Knowledge, files, structured records, comments.
+- [Roles](/docs/concepts/roles) — **WHO**: org-chart slots in an entity, occupied by humans or agents. Authority via DAG closure.
+- [Sessions](/docs/concepts/sessions) — universal conversation primitive (chat, inbox, comments, activity, channel-bridged).
+- [TRUST](/docs/concepts/trust) — on-chain identity: smart account, treasury, governance, ownership.
+- [Wallets & identity](/docs/concepts/wallets-and-identity) — wallet provisioning, custody states, sign-up doors.
 
-- [REST API](/docs/api/rest) — Every dashboard operation available over HTTP; powers dashboard, CLI, and MCP server.
-- [Inference API](/docs/api/inference) — OpenAI-compatible chat completions, embeddings, and model discovery with three billing lanes.
-- [x402 Payment Rails](/docs/api/x402) — Pay directly with USDC: create a Company for $19, or pay per API request. No account, no API key.
-- [Authentication](/docs/api/authentication) — Two-key model for programmatic access.
-- [MCP Integration](/docs/api/mcp) — Model Context Protocol server for AI coding assistants and MCP-compatible tools.
+## Methodology — how aeqi thinks
+
+- [Org architecture](/docs/methodology/org-architecture) — Companies, Roles, ownership tokens, governance.
+- [Agent collaboration](/docs/methodology/agent-collaboration) — how agents talk to humans and each other.
+- [Co-creation](/docs/methodology/co-creation) — blueprint spawns a living workspace; agents interview the user via Quests.
+- [Composition](/docs/methodology/composition) — Quest-wraps-Idea. Project-wraps-Idea. Same shape, repeated.
+
+## Patterns — what others have already shipped
+
+- [Executive Assistant](/docs/patterns/executive-assistant) — a shared EA serving the C-suite.
+- [Per-agent OAuth (Path B)](/docs/patterns/oauth-path-b) — connect Gmail, Calendar, etc. to an agent.
+- [Mention-gating](/docs/patterns/mention-gating) — Telegram + channel routing without spam.
+- [Multi-scope integrations](/docs/patterns/multi-scope-integrations) — Entity > Role > Agent precedence.
+- [Public companies](/docs/patterns/public-companies) — opt-in registry, hire, raise, trade.
+
+## Architecture — what's under the hood
+
+- [Runtime](/docs/architecture/runtime) — orchestrator, per-tenant sandboxes, IPC verbs.
+- [Platform](/docs/architecture/platform) — control plane, auth, proxy, integration surface.
+- [Chain](/docs/architecture/chain) — TRUST contract, factory, templates, ERC-4337 stack.
+- [Data](/docs/architecture/data) — schema overview (entities, agents, ideas, events, quests, sessions, channels, credentials).
+- [aeqi Entity & AA](/docs/architecture/aeqi-entity-aa) — every user, company, and agent as an ERC-4337 smart contract on Base.
+- [UserOperation lifecycle](/docs/architecture/userop-lifecycle) — sponsorship, signatures, bundling, on-chain execution.
+- [Wallet architecture](/docs/architecture/wallet-architecture) — passkey-native smart accounts, governance, cap tables, session keys.
+- [Canonical templates](/docs/architecture/canonical-templates) — four locked on-chain templates for standard archetypes.
+
+## Reference
+
+- [REST API](/docs/api/rest) — every dashboard operation over HTTP.
+- [MCP](/docs/api/mcp) — Model Context Protocol server.
+- [Inference API](/docs/api/inference) — OpenAI-compatible chat, embeddings, models.
+- [x402 payment rails](/docs/api/x402) — pay $19 in USDC, get a company.
+- [Authentication](/docs/api/authentication) — two-key model for programmatic access.
+- [IPC verbs](/docs/reference/ipc) — runtime IPC verb catalog.
+- [Contracts](/docs/reference/contracts) — Solidity ABIs and deploy addresses.
+- [Blueprint schema](/docs/reference/blueprint-schema) — single and stack blueprint shapes.
+- [CLI](/docs/reference/cli) — `aeqi` command reference.
+- [Factory flow](/docs/factory-flow) — company genesis on-chain.
+
+## Operations & guides
+
+- [Wallet migration](/docs/guides/wallet-migration) — Phase 1→2 passkey upgrade.
+- [IPFS content addressing](/docs/guides/ipfs-content-addressing) — CID handling for on-chain and off-chain storage.
+- [Transaction & governance](/docs/guides/transaction-governance) — proposal handling, error states, security.
+- [Claude Code + aeqi](/docs/guides/claude-code) — connect Claude Code over MCP.
 
 ## Platform
 
-- [Billing](/docs/platform/billing) — Workspace model, pricing, company cap, inference credits, and x402 genesis.
+- [Billing](/docs/platform/billing) — workspace model, pricing, company cap, inference credits, x402 genesis.
 
-## Operations & Guides
+## Blog
 
-- [Factory Flow](/docs/factory-flow) — Company genesis, registration, and initialization.
-- [Wallet Migration](/docs/guides/wallet-migration) — Phase 1 to Phase 2 migration: add passkey signer to your Entity.
-- [IPFS Content Addressing](/docs/guides/ipfs-content-addressing) — CID handling for on-chain and off-chain IPFS storage.
-- [Transaction & Governance](/docs/guides/transaction-governance) — Best practices for transaction handling, proposals, error handling, and security.
+- [Hello, aeqi](/docs/blog/0001-hello) — what aeqi is, written for the world.
+- [Co-creation](/docs/blog/0002-co-creation) — blueprints spawn living workspaces.
+- [Everything is an Idea](/docs/blog/0003-everything-is-an-idea) — the database thesis.
