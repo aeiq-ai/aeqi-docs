@@ -33,6 +33,7 @@ aeqi has five primitives. Everything else is a saved view over them.
 - [Co-creation](/docs/methodology/co-creation) — blueprint spawns a living workspace; agents interview the user via Quests.
 - [The Architect](/docs/methodology/architect) — `/studio` chat surface: brief → draft → refine → deploy. Co-creation, one turn earlier.
 - [Composition](/docs/methodology/composition) — Quest-wraps-Idea. Project-wraps-Idea. Same shape, repeated.
+- [The inbox is the chat](/docs/methodology/inbox-is-the-chat) — five surfaces, one Composer + SessionRail. Multi-participant native.
 
 ## Patterns — what others have already shipped
 
