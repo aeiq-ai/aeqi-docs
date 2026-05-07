@@ -56,6 +56,7 @@ aeqi has five primitives. Everything else is a saved view over them.
 - [UserOperation lifecycle](/docs/architecture/userop-lifecycle) — sponsorship, signatures, bundling, on-chain execution.
 - [Wallet architecture](/docs/architecture/wallet-architecture) — passkey-native smart accounts, governance, cap tables, session keys.
 - [Canonical templates](/docs/architecture/canonical-templates) — four locked on-chain templates for standard archetypes.
+- [Templates and modules: the Beacon-impl wiring trap](/docs/architecture/templates-and-modules) — how templates compose modules, the `BeaconProxy_ImplementationNotFound()` trap, and the wiring discipline.
 
 ## Reference
 
