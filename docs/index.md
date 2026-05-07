@@ -31,6 +31,7 @@ aeqi has five primitives. Everything else is a saved view over them.
 - [Org architecture](/docs/methodology/org-architecture) — Companies, Roles, ownership tokens, governance.
 - [Agent collaboration](/docs/methodology/agent-collaboration) — how agents talk to humans and each other.
 - [Co-creation](/docs/methodology/co-creation) — blueprint spawns a living workspace; agents interview the user via Quests.
+- [The Architect](/docs/methodology/architect) — `/studio` chat surface: brief → draft → refine → deploy. Co-creation, one turn earlier.
 - [Composition](/docs/methodology/composition) — Quest-wraps-Idea. Project-wraps-Idea. Same shape, repeated.
 
 ## Patterns — what others have already shipped

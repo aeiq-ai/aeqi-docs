@@ -81,13 +81,29 @@ A function gets a Company-rail tab only when its UI diverges enough from existin
 
 Default: **don't promote**. Promote only when the UI shape is genuinely different.
 
-## Typed properties (shipping)
+## Typed properties and views
 
-Today Ideas have `name + content + tags`. The next lift is **typed properties** — strings, numbers, dates, selects, multi-selects, relations, person/agent references — plus typed views (table, board, gallery, timeline, list). Same lift Notion did to unify pages and databases.
+Ideas carry typed properties on top of `name + content + tags`. Each Idea has a `properties` JSONB bag — strings, numbers, dates, selects, multi-selects — plus a self-referential `parent_idea_id` so Ideas form trees. The Ideas surface in the dashboard renders three view modes against the same substrate:
 
-When typed properties ship, "saved view over Ideas" becomes "Notion-style database query." The page surface stays the same; the property substrate enables ad-hoc structured records.
+| View | Shape |
+|---|---|
+| **List** (default) | Linear, ranked rows. The browse-and-search default. |
+| **Table** | Sortable columns over flattened properties. The structured-records view. |
+| **Kanban** | Lanes by `status` (or any select property). Drag a card across lanes to update the property. |
 
-Until then: properties is a JSON blob. Don't promise typed-DB UX in user-facing copy beyond "Ideas with tags."
+The view mode is URL-persisted (`?view=list|table|kanban`), so a saved link is a saved view.
+
+The property bag is typed at the view layer, not the schema layer. Adding a new property to one Idea does not migrate the others — it just appears as a column when a view is configured to read it. This is the same shape Notion uses to unify pages and databases.
+
+### Children — Ideas inside Ideas
+
+`parent_idea_id` makes Ideas a tree. An Idea's detail page renders its children below the body — so a "Hiring" Idea can carry `kind:recruit` candidates as children, a "Q3 Roadmap" Idea can carry `kind:roadmap_item` children, and so on. Children are searchable as Ideas in their own right; the parent is just one of their tags.
+
+### Why this is the wedge
+
+CRM, Hiring, Marketing, Docs, Files, SOPs, Roadmaps — every one of these is now expressible as a saved view over Ideas. No new tables, no new primitives, no schema migration per domain. The five user-facing primitives stay locked while domain coverage expands through view configuration.
+
+When a function eventually deserves its own rail tab (Hiring with a custom kanban shape, say), the underlying data is still Ideas — the rail just renders a tailored view over them.
 
 ## Composition: Quest wraps Idea
 
