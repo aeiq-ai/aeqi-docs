@@ -70,7 +70,7 @@ Live in the AEQI tenant:
 
 - Agent `c0ba8326`
 - Role `98488ed4`
-- Channel `d60c36bb-93fc-4555-aefc-f0eed03e713f` (Telegram bot `@aeqi_ea_bot`, allowed group `-5133857242` "ÆIQ").
+- Channel `d60c36bb-93fc-4555-aefc-f0eed03e713f` (Telegram bot `@aeqi_ea_bot`, allowed group `-5133857242` "ÆQI").
 
 The bot is mention-gated and DMs always-act.
 
