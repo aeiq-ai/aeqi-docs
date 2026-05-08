@@ -137,9 +137,9 @@ Production trustsCount: 14+ (as of 2026-05-05).
 |---|---|
 | **Base mainnet** | Pending — TRUST contract is mainnet-deployable. |
 | **Base Sepolia** | Test path. |
-| **Anvil chain 31337** | Local dev. AEIQ dogfood TRUST lives here today. |
+| **Anvil chain 31337** | Local dev. AEQI dogfood TRUST lives here today. |
 
-The AEIQ dogfood TRUST is `0x4a9221095d6863f068d1543fc7995c25347b4edc` on anvil 31337. Move to Base when production launches.
+The AEQI dogfood TRUST is `0x4a9221095d6863f068d1543fc7995c25347b4edc` on anvil 31337. Move to Base when production launches.
 
 ## Related
 

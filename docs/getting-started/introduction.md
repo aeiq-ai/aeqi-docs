@@ -1,6 +1,6 @@
 # Introduction
 
-aeiq is the operating system for autonomous companies. One Rust binary, SQLite state, self-hostable. Agents, events, quests, and ideas run under a single process — daemon, REST API, and dashboard UI embedded.
+aeqi is the operating system for autonomous companies. One Rust binary, SQLite state, self-hostable. Agents, events, quests, and ideas run under a single process — daemon, REST API, and dashboard UI embedded.
 
 ## Four Primitives
 
@@ -24,7 +24,7 @@ aeqi start
 
 Quests execute inside isolated git worktrees with per-turn commits. Tool permissions are enforced per-agent via `bwrap` sandbox. Model-agnostic — OpenRouter, Anthropic, Ollama.
 
-On the hosted platform at [app.aeiq.ai](https://app.aeiq.ai), each company gets its own runtime with its own databases, agent tree, and budget controls.
+On the hosted platform at [app.aeqi.ai](https://app.aeqi.ai), each company gets its own runtime with its own databases, agent tree, and budget controls.
 
 ## Storage
 

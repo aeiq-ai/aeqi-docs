@@ -125,7 +125,7 @@ You've used all five primitives. From here:
 
 Screenshots in this guide live at `docs/img/0*.png`. To regenerate:
 
-1. Sign in to the AEIQ tenant at `https://app.aeqi.ai/c/59bc9fd3-956a-4104-aaf8-83253fde840c/overview`.
+1. Sign in to the AEQI tenant at `https://app.aeqi.ai/c/59bc9fd3-956a-4104-aaf8-83253fde840c/overview`.
 2. Resize the viewport to 1440×900.
 3. Capture each surface listed above. Optimize PNG to web (`optipng -o7`).
 4. Replace `docs/img/0*.png` with the new files.

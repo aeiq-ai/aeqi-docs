@@ -26,7 +26,7 @@ aeqi treats identity and on-chain agency as two distinct layers. **Users** are t
 
 **Frontend wallet display on dashboard** (originally Phase 2 stretch) is also still pending — `/api/auth/me` returns `wallets[]` but no component renders it yet.
 
-**Deployment note:** the code is on `main` in both repos. The app at https://app.aeiq.ai must be redeployed (`./scripts/deploy.sh` on the host) for users to see the new wallet UI. Until that runs, browsing to `/signup` or `/login` will show the pre-Phase-4 layout from the previously deployed bundle.
+**Deployment note:** the code is on `main` in both repos. The app at https://app.aeqi.ai must be redeployed (`./scripts/deploy.sh` on the host) for users to see the new wallet UI. Until that runs, browsing to `/signup` or `/login` will show the pre-Phase-4 layout from the previously deployed bundle.
 
 ## Principles
 

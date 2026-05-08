@@ -1,6 +1,6 @@
 # MCP Integration
 
-aeiq exposes a [Model Context Protocol](https://modelcontextprotocol.io/) server. AI coding assistants — Claude Code, Cursor, and anything else MCP-compatible — get direct access to your company's runtime.
+aeqi exposes a [Model Context Protocol](https://modelcontextprotocol.io/) server. AI coding assistants — Claude Code, Cursor, and anything else MCP-compatible — get direct access to your company's runtime.
 
 ## Setup
 
@@ -9,7 +9,7 @@ export AEQI_API_KEY=ak_...
 export AEQI_SECRET_KEY=sk_...
 ```
 
-Get keys from [Account → API](https://app.aeiq.ai/account?tab=api) and [Company → API Keys](https://app.aeiq.ai/company?tab=api-keys). See [Authentication](/docs/api/authentication).
+Get keys from [Account → API](https://app.aeqi.ai/account?tab=api) and [Company → API Keys](https://app.aeqi.ai/company?tab=api-keys). See [Authentication](/docs/api/authentication).
 
 Add to your Claude Code config:
 
@@ -75,7 +75,7 @@ events(action='create', agent='myagent', schedule='0 9 * * *',
 |----------|----------|---------|-------------|
 | `AEQI_SECRET_KEY` | Yes | — | Company secret key (`sk_...`) |
 | `AEQI_API_KEY` | No | — | Account key (`ak_...`), for analytics |
-| `AEQI_PLATFORM_URL` | No | `https://app.aeiq.ai` | Platform URL for key validation |
+| `AEQI_PLATFORM_URL` | No | `https://app.aeqi.ai` | Platform URL for key validation |
 
 ## Self-Hosted
 
@@ -84,5 +84,5 @@ Without the platform, the MCP server connects to the local daemon over a unix so
 ## Next Steps
 
 - [Authentication](/docs/api/authentication) — key creation and rotation
-- [Claude Code + aeiq](/docs/guides/claude-code) — hooks, primer, full settings
+- [Claude Code + aeqi](/docs/guides/claude-code) — hooks, primer, full settings
 - [REST API](/docs/api/rest) — HTTP endpoints for the same operations

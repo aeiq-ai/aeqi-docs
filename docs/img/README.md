@@ -13,4 +13,4 @@ Place getting-started and primitive-page screenshots here as PNG files.
 
 Optimize each PNG to web (`optipng -o7 <file>`).
 
-To regenerate from the AEIQ dogfood tenant, see the **Capturing screenshots** section in `getting-started/getting-started.md`.
+To regenerate from the AEQI dogfood tenant, see the **Capturing screenshots** section in `getting-started/getting-started.md`.

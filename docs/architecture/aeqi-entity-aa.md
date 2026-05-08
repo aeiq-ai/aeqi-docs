@@ -1,10 +1,10 @@
-# aeiq Entity — Account Abstraction
+# aeqi Entity — Account Abstraction
 
-Every user, company, and agent on aeiq is represented by an **aeiq Entity** — a smart contract on Base that implements ERC-4337 account abstraction. One contract template, three configurations.
+Every user, company, and agent on aeqi is represented by an **aeqi Entity** — a smart contract on Base that implements ERC-4337 account abstraction. One contract template, three configurations.
 
 ## The Entity as a primitive
 
-An **Entity** is aeiq's on-chain primitive for identity, ownership, and execution. It is not an account in the traditional sense (a keypair). It is a **smart contract** that owns itself.
+An **Entity** is aeqi's on-chain primitive for identity, ownership, and execution. It is not an account in the traditional sense (a keypair). It is a **smart contract** that owns itself.
 
 | Configuration | Owners | On-chain behavior |
 |---|---|---|
@@ -14,7 +14,7 @@ An **Entity** is aeiq's on-chain primitive for identity, ownership, and executio
 
 ## The contract anatomy
 
-aeiq Entity is a comprehensive template written end-to-end. It is NOT built on Safe.
+aeqi Entity is a comprehensive template written end-to-end. It is NOT built on Safe.
 
 ### IAccount interface (ERC-4337)
 
@@ -35,11 +35,11 @@ interface IAccount {
 }
 ```
 
-aeiq Entity implements this interface. It accepts UserOps signed by any registered signer (passkey, EOA, multi-sig).
+aeqi Entity implements this interface. It accepts UserOps signed by any registered signer (passkey, EOA, multi-sig).
 
 ### Signers module
 
-Flexible signer configuration. Each aeiq Entity can have multiple signers of different types.
+Flexible signer configuration. Each aeqi Entity can have multiple signers of different types.
 
 ```solidity
 struct PasskeySigner {

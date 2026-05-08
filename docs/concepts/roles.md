@@ -84,7 +84,7 @@ A vacant role can be filled via invite. The Roles tab → role row → **Invite*
 | Accept | Invitee creates an account (if needed) and binds. |
 | Bind | `roles.occupant_kind='human'`, `occupant_id=<user_id>`. |
 
-Open invites for the AEIQ dogfood: CEO, CTO, COO seats are pending until founder cofounders redeem.
+Open invites for the AEQI dogfood: CEO, CTO, COO seats are pending until founder cofounders redeem.
 
 ## HTTP API
 

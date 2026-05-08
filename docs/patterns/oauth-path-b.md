@@ -2,7 +2,7 @@
 
 Agents OAuth into third-party providers (Gmail, Calendar, Slack, GitHub, Notion) with **per-agent credentials**. The agent is the principal; the user consents on the agent's behalf.
 
-This is the canonical aeqi pattern. Founder pick, 2026-05-06: "we should just use the app to connect the hello@aeiq.ai email per oauth to the agent — that's the right path logically."
+This is the canonical aeqi pattern. Founder pick, 2026-05-06: "we should just use the app to connect the hello@aeqi.ai email per oauth to the agent — that's the right path logically."
 
 ## Why per-agent (not per-user)
 
@@ -12,7 +12,7 @@ Three viable patterns:
 |---|---|---|
 | **A. OAuth user-flow** | Tokens land on a user, then bound to an agent at runtime. | Hack. The agent isn't the principal; revocation gets weird. |
 | **B. Per-agent OAuth** *(canonical)* | Each agent has its own OAuth identity. "Connect Google" on agent settings → user consents on behalf of the agent → tokens scoped `(scope_kind=Agent, scope_id=<agent_id>, provider="google")`. | Clean. Same flow customer orgs use. |
-| **C. Service Account + DWD** | One service account impersonates any `*@aeiq.ai` mailbox. | Admin-only setup; not viable for customer orgs. Can coexist for internal automation. |
+| **C. Service Account + DWD** | One service account impersonates any `*@aeqi.ai` mailbox. | Admin-only setup; not viable for customer orgs. Can coexist for internal automation. |
 
 Path B is what ships in product.
 

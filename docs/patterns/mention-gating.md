@@ -70,7 +70,7 @@ Layer 1 is always on for everything. Layer 2 fires per channel-specific gate.
 
 ## Mention-routes-to-spawn
 
-A channel can also be configured so a mention spawns a **new agent** rather than firing a turn on the existing one. Use case: a generic "@aeiq help" pattern that creates a fresh agent for the asker.
+A channel can also be configured so a mention spawns a **new agent** rather than firing a turn on the existing one. Use case: a generic "@aeqi help" pattern that creates a fresh agent for the asker.
 
 Configuration:
 

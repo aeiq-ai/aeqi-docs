@@ -74,7 +74,7 @@ function execute(uint256 proposalId) external;
 | Contract | Address |
 |---|---|
 | Factory | (per dev session — varies by `forge script` run) |
-| AEIQ dogfood TRUST | `0x4a9221095d6863f068d1543fc7995c25347b4edc` |
+| AEQI dogfood TRUST | `0x4a9221095d6863f068d1543fc7995c25347b4edc` |
 
 Run `forge script script/Deploy.s.sol --rpc-url http://localhost:8545 --broadcast` to (re)deploy locally.
 

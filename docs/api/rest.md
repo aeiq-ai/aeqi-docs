@@ -6,7 +6,7 @@ The aeqi platform exposes a REST API for entity management, authentication, and 
 
 | Environment | URL |
 |-------------|-----|
-| Hosted | `https://app.aeiq.ai/api` |
+| Hosted | `https://app.aeqi.ai/api` |
 | Self-hosted | `http://127.0.0.1:8400/api` |
 
 ## Authentication

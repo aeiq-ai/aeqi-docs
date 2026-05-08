@@ -52,7 +52,7 @@ A scheduled event is a row with `cron='<expr>'` and a tool call to fire when the
 | Monthly | Compliance check. Subscription review. |
 | Quarterly | OKRs. Board prep. |
 
-The AEIQ dogfood tenant ships with 28 scheduled events out of the box. Most stay paused until the founder turns them on.
+The AEQI dogfood tenant ships with 28 scheduled events out of the box. Most stay paused until the founder turns them on.
 
 ## Lifecycle events
 
