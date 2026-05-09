@@ -129,7 +129,7 @@ query {
 POST /api/companies/create
 ```
 
-Create a new Company via HTTP 402 payment in USDC (EIP-3009 compatible).
+Create a new Company via HTTP 402 payment in USDC on Solana.
 
 **Auth:** HTTP 402 payment header + signature verification. No user JWT required.
 

@@ -3,10 +3,8 @@
 The Factory is the core on-chain component for creating DAOs (companies, funds, entities) in aeqi. It's a sophisticated multi-stage wizard that guides users through creating on-chain organizations with proper governance, vesting, and funding structures.
 
 **Companion docs:**
-- [`aeqi-entity-aa-design.md`](https://aeqi.ai/docs) — what TRUST is and registerTRUST contract shape
-- [`click-to-dao-smoke-test.md`](https://aeqi.ai/docs) — end-to-end flow verification recipe
-- [`click-to-dao-troubleshooting.md`](https://aeqi.ai/docs) — operational diagnostics
-- [`aeqi-economy-plan.md`](https://aeqi.ai/docs) — sequencing and rollout context
+- [TRUST](/docs/concepts/trust) — the on-chain identity primitive each company gets.
+- [Canonical templates](/docs/architecture/canonical-templates) — the four locked TRUST archetypes.
 
 ## Architecture Philosophy
 

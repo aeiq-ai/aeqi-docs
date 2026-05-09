@@ -115,7 +115,7 @@ There's no separate "Portfolio" page. Treasury *is* the portfolio.
 
 Subscription does NOT debit treasury — failure modes diverge (a Company with no treasury but an active product still needs to keep running). Inference top-ups CAN debit treasury (it's the Company's own usage). Treasury is the Company's own money.
 
-See [Three money flows kept distinct](/docs/architecture/chain) for the full reasoning.
+Three money flows kept distinct: subscription (workspace), inference (top-ups), treasury (the Company's own money).
 
 ## Templates — the locked-in shapes
 
@@ -152,4 +152,4 @@ The wizard provisions all entities in topo-sorted order. On-chain edges (TokenOw
 - [Roles](/docs/concepts/roles)
 - [TRUST](/docs/concepts/trust)
 - [Canonical templates](/docs/architecture/canonical-templates)
-- [Wallet architecture](/docs/architecture/wallet-architecture)
+- [Wallets & identity](/docs/concepts/wallets-and-identity)

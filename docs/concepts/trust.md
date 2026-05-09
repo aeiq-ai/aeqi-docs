@@ -15,7 +15,7 @@ TRUST
 └── IPFS metadata  (name, description, operating agreement)
 ```
 
-A TRUST is an [ERC-4337](https://eips.ethereum.org/EIPS/eip-4337) smart account. Its address is stable and deterministic — it is your company's identity on-chain. The same address appears on blockchain explorers, in API calls, in IPFS references, and in wallet UIs.
+A TRUST is a Solana smart account, controlled by a secp256r1 passkey, with native fee payment from the program. Its address is stable and deterministic — it is your company's identity on-chain. The same address appears on Solana explorers, in API calls, in IPFS references, and in wallet UIs.
 
 ## What a TRUST is not
 
@@ -158,8 +158,6 @@ The trust posture this produces is asymmetric and worth naming: if Privy is hack
 
 ## See Also
 
-- [Deploy Your First TRUST](/docs/getting-started/deploy-your-first-trust) — create a TRUST in 3 minutes
 - [Factory Flow Reference](/docs/factory-flow) — deep dive into wizard stages and on-chain registration
 - [Canonical Templates](/docs/architecture/canonical-templates) — the four on-chain archetypes
-- [aeqi Entity & Account Abstraction](/docs/architecture/aeqi-entity-aa) — ERC-4337 implementation details
-- [Wallet Architecture](/docs/architecture/wallet-architecture) — passkey signers, session keys, recovery
+- [Wallets & Identity](/docs/concepts/wallets-and-identity) — passkey signer model + sign-up doors

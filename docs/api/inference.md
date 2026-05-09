@@ -314,7 +314,7 @@ console.log(response.choices[0].message.content);
 
 - **Embeddings:** Full text-embedding model support via `POST /v1/embeddings`.
 - **Treasury Lane:** Direct USDC debit from company treasury via smart contract signatures.
-- **x402 Lane:** HTTP 402 + EIP-3009 USDC transfer for pay-per-request inference.
+- **x402 Lane:** HTTP 402 + USDC on Solana for pay-per-request inference.
 - **Additional Providers:** OpenAI, Anthropic, DeepSeek model routing.
 - **Persistent Billing:** SQLite-backed balance tracking and invoice generation.
 - **Advanced Parameters:** Vision models, function calling, JSON mode, tool use.

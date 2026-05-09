@@ -18,7 +18,7 @@ One subscription covers your personal account and every company you create or ad
 
 **Card:** standard Stripe billing, charged monthly. Cancel anytime.
 
-**USDC:** pay with on-chain USDC via x402 payment rails. Pay month-to-month at the USDC rate. No card required. See [x402 Payment Rails](/docs/api/x402) for details.
+**USDC:** pay with USDC on Solana. Pay month-to-month at the USDC rate. No card required.
 
 ## Inference credits
 
@@ -47,12 +47,10 @@ You can create a company without a subscription by paying $19 in USDC directly v
 ```bash
 curl -X POST https://app.aeqi.ai/api/companies/create \
   -H "HTTP-402: true" \
-  -H "HTTP-402-Payment: <signed-EIP-3009-USDC-payment>"
+  -H "HTTP-402-Payment: <signed-USDC-transfer-on-Solana>"
 ```
 
 This creates one company with a 30-day inference budget ($25) included. After 30 days, subscription billing applies.
-
-See [x402 Payment Rails](/docs/api/x402) for the full payment flow.
 
 ## Pricing summary
 
@@ -64,6 +62,5 @@ See [x402 Payment Rails](/docs/api/x402) for the full payment flow.
 
 ## See Also
 
-- [x402 Payment Rails](/docs/api/x402) — pay with USDC, create companies programmatically
 - [Inference API](/docs/api/inference) — inference billing lanes and rate limits
-- [Deploy Your First TRUST](/docs/getting-started/deploy-your-first-trust) — create a company
+- [TRUST](/docs/concepts/trust) — the on-chain identity primitive each company gets

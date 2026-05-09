@@ -44,15 +44,15 @@ A fifth primitive is the universal noun for everything that gets stored: the **I
 
 A company runtime that lives only in a database is software, not an institution. To be an institution, the rules must be enforceable. To be enforceable, they must be on-chain.
 
-Every Company in aeqi is a **TRUST** — an [ERC-4337](https://eips.ethereum.org/EIPS/eip-4337) smart account on Base. The TRUST contract holds:
+Every Company in aeqi is a **TRUST** — a Solana smart account, controlled by a secp256r1 passkey, with native fee payment from the program. The TRUST holds:
 
-- **The treasury** — ETH, USDC, ERC-20s. Roles can spend within budget; the board can move freely.
+- **The treasury** — SOL, USDC (Token-2022), other SPL tokens. Roles can spend within budget; the board can move freely.
 - **The role graph** — directors, executives, contributors, advisors. Authority is the transitive closure over `role_edges` — a DAG, not a tree, because boards are flat sets at the top.
 - **Ownership tokens** — the cap table. Equity issuance, vesting, cliffs, transfer restrictions, all native.
 - **Governance** — proposals, votes, execution queue. The board can table a proposal; quorum + timelock executes it.
 - **Agent runtime hooks** — on-chain attestation that a runtime agent acted on behalf of a role. Optional layer.
 
-A TRUST is not a multisig. Gnosis Safe is a threshold signature contract; we add a role graph, governance, vesting, and an agent runtime on top of (or instead of) a 1-of-N signer set. A TRUST is not a DAO. "DAO" implies token-vote governance as the primary mechanism; a solo-founder TRUST has no token and no governance module enabled. A TRUST is general-purpose: pick the template, get the right configuration.
+A TRUST is not a multisig. Squads is a threshold signature program; we add a role graph, governance, vesting, and an agent runtime on top of (or instead of) a 1-of-N signer set. A TRUST is not a DAO. "DAO" implies token-vote governance as the primary mechanism; a solo-founder TRUST has no token and no governance module enabled. A TRUST is general-purpose: pick the template, get the right configuration.
 
 ## Capture and expand
 

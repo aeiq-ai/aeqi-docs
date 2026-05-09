@@ -10,7 +10,6 @@ This documentation is organized as a working manual: mission first, then how to 
 - [Introduction](/docs/getting-started/introduction) — what aeqi is, four primitives, runtime topology.
 - [Getting started](/docs/getting-started/getting-started) — sign up, spawn your first company, send your first message, run your first quest.
 - [Quickstart (self-host)](/docs/quickstart) — deploy aeqi locally in under 5 minutes.
-- [Deploy your first TRUST](/docs/getting-started/deploy-your-first-trust) — create and launch an on-chain TRUST in 3 minutes.
 
 ## Concepts — the canonical mental model
 
@@ -51,30 +50,25 @@ aeqi has five primitives. Everything else is a saved view over them.
 
 - [Runtime](/docs/architecture/runtime) — orchestrator, per-tenant sandboxes, IPC verbs.
 - [Platform](/docs/architecture/platform) — control plane, auth, proxy, integration surface.
-- [Chain](/docs/architecture/chain) — TRUST contract, factory, templates, ERC-4337 stack.
 - [Data](/docs/architecture/data) — schema overview (entities, agents, ideas, events, quests, sessions, channels, credentials).
-- [aeqi Entity & AA](/docs/architecture/aeqi-entity-aa) — every user, company, and agent as an ERC-4337 smart contract on Base.
-- [UserOperation lifecycle](/docs/architecture/userop-lifecycle) — sponsorship, signatures, bundling, on-chain execution.
-- [Wallet architecture](/docs/architecture/wallet-architecture) — passkey-native smart accounts, governance, cap tables, session keys.
 - [Canonical templates](/docs/architecture/canonical-templates) — four locked on-chain templates for standard archetypes.
-- [Templates and modules: the Beacon-impl wiring trap](/docs/architecture/templates-and-modules) — how templates compose modules, the `BeaconProxy_ImplementationNotFound()` trap, and the wiring discipline.
+- [Templates and modules](/docs/architecture/templates-and-modules) — how templates compose modules and the wiring discipline.
+
+> **On-chain layer:** in flight as a Solana protocol rewrite. Anchor programs (`aeqi_trust`, `aeqi_role`, `aeqi_governance`, `aeqi_treasury`) replace the prior EVM-Base ERC-4337 stack. Architecture docs for the new on-chain shape will land alongside the program implementations.
 
 ## Reference
 
 - [REST API](/docs/api/rest) — every dashboard operation over HTTP.
 - [MCP](/docs/api/mcp) — Model Context Protocol server.
 - [Inference API](/docs/api/inference) — OpenAI-compatible chat, embeddings, models.
-- [x402 payment rails](/docs/api/x402) — pay $19 in USDC, get a company.
 - [Authentication](/docs/api/authentication) — two-key model for programmatic access.
 - [IPC verbs](/docs/reference/ipc) — runtime IPC verb catalog.
-- [Contracts](/docs/reference/contracts) — Solidity ABIs and deploy addresses.
 - [Blueprint schema](/docs/reference/blueprint-schema) — single and stack blueprint shapes.
 - [CLI](/docs/reference/cli) — `aeqi` command reference.
 - [Factory flow](/docs/factory-flow) — company genesis on-chain.
 
 ## Operations & guides
 
-- [Wallet migration](/docs/guides/wallet-migration) — Phase 1→2 passkey upgrade.
 - [IPFS content addressing](/docs/guides/ipfs-content-addressing) — CID handling for on-chain and off-chain storage.
 - [Transaction & governance](/docs/guides/transaction-governance) — proposal handling, error states, security.
 - [Claude Code + aeqi](/docs/guides/claude-code) — connect Claude Code over MCP.

@@ -75,7 +75,7 @@ Even before æconomy ships fully, x402 already enables programmatic public parti
 - The Company is provisioned, the TRUST is registered, and the caller becomes the Director.
 - Recursive case: an agent inside Company A spawns Company B as a subsidiary by calling our endpoint with $19 USDC.
 
-See [x402 payment rails](/docs/api/x402) for the protocol.
+x402 (HTTP 402 + USDC on Solana) is the protocol: an unauthenticated client gets a 402 with payment requirements, signs a USDC transfer, retries.
 
 ## Why these stay opt-in
 
@@ -88,5 +88,4 @@ Three reasons:
 ## Related
 
 - [TRUST](/docs/concepts/trust)
-- [x402 payment rails](/docs/api/x402)
 - [Canonical templates](/docs/architecture/canonical-templates)

@@ -9,7 +9,7 @@ aeqi-platform is the control plane for hosted aeqi. It owns auth, the public API
 | **Public auth** | `/api/auth/*` — sign-up, login, magic links, OAuth, SIWE, session JWT. |
 | **Proxy** | `/api/*` other than auth — routes to per-tenant runtime by `entity_id`. |
 | **OAuth callbacks** | `/api/integrations/<provider>/callback` — public routes for OAuth handshake completion. |
-| **x402** | `/api/companies/create` (programmatic genesis), `/v1/*` (inference), gated on EIP-3009 USDC. |
+| **x402** | `/api/companies/create` (programmatic genesis), `/v1/*` (inference), gated on USDC on Solana. |
 | **Provisioning** | `POST /api/start` (single Company) and `POST /api/start/stack` (multi-Company). Spawns tenant runtimes. |
 | **Billing** | Stripe webhooks. Subscription state. Workspace cap enforcement. |
 | **Indexer** | Watches on-chain TRUST events; updates `runtime_placements` rows. |
@@ -35,7 +35,7 @@ Five paths, all canonical (see [Wallets & identity](/docs/concepts/wallets-and-i
 | Google OAuth | `oauth_google.sub` |
 | GitHub OAuth | `oauth_github.sub` |
 | Passkey (WebAuthn) | `passkey.credential_id` |
-| External wallet (SIWE) | `wallet.address` |
+| External wallet (SIWS) | `wallet.address` |
 
 Every sign-up auto-provisions one custodial wallet — the only auto-created primitive in the system. Everything else (Companies, agents, ideas) the user creates explicitly.
 
@@ -86,19 +86,17 @@ POST /api/companies/create     ← x402-gated; pay $19 USDC for a Company
 GET/POST /v1/*                 ← x402-gated; pay-per-call USDC inference
 ```
 
-x402 (Coinbase's HTTP 402 + EIP-3009 USDC standard) provides agent-native payment. Unauthenticated callers get a 402 response with payment requirements; they sign EIP-3009 USDC and retry. Settled via Coinbase facilitator (Phase 1) or self-hosted facilitator (Phase 2).
-
-See [x402 payment rails](/docs/api/x402).
+x402 (HTTP 402 + USDC on Solana) provides agent-native payment. Unauthenticated callers get a 402 response with payment requirements; they sign a USDC transfer on Solana and retry. Settled via the platform's payment facilitator.
 
 ## Indexer
 
-A separate worker watches the Base chain for TRUST events:
+A separate worker watches Solana for TRUST events:
 
-- `TrustRegistered` → set `runtime_placements.trust_address`.
-- `RoleAssigned` → mirror Director-tier role assignments.
-- `ProposalCreated`, `ProposalVoted`, `ProposalExecuted` → populate the Governance tab data.
+- TRUST account created → set `runtime_placements.trust_address`.
+- Role assigned → mirror Director-tier role assignments.
+- Governance proposal created / voted / executed → populate the Governance tab data.
 
-The indexer reads via standard JSON-RPC; it doesn't need a separate subgraph.
+The indexer subscribes via Solana `programSubscribe` against the canonical Anchor program IDs and projects finalised state into Postgres; signature backfill catches any missed events.
 
 ## Order of route registration
 
@@ -113,14 +111,13 @@ This bites cleanly enough that it's worth its own memo. See `/home/claudedev/.cl
 | `aeqi-platform.service` | 8443 | Platform: auth, proxy, OAuth callbacks, x402, billing |
 | `aeqi-host-<entity_id>.service` | 8400+ | Per-tenant runtime |
 | `aeqi-ipfs.service` | 5001 | IPFS daemon (kubo) for content addressing |
-| `aeqi-paymaster.service` | TBD | Paymaster + bundler endpoint (rundler v0.11.0) |
-| `aeqi-bundler.service` | TBD | ERC-4337 bundler |
+| `aeqi-indexer.service` | 8501 | Solana indexer (programSubscribe + signature backfill) |
 
-The retired `aeqi-runtime.service` is no longer used — its responsibilities split into per-tenant `aeqi-host-*` units (2026-04-29).
+The retired `aeqi-runtime.service` is no longer used — its responsibilities split into per-tenant `aeqi-host-*` units (2026-04-29). The retired `aeqi-paymaster.service` and `aeqi-bundler.service` units are gone with the EVM stack — Solana uses native fee payment, no bundler or paymaster service required.
 
 ## Related
 
 - [Runtime](/docs/architecture/runtime)
-- [Wallet architecture](/docs/architecture/wallet-architecture)
+- [TRUST](/docs/concepts/trust) — on-chain identity primitive
 - [REST API](/docs/api/rest)
 - [Authentication](/docs/api/authentication)

@@ -116,14 +116,6 @@ aeqi treasury balance
 aeqi treasury transfer --to 0x... --amount 100 --asset USDC
 ```
 
-### `aeqi paymaster`
-
-Paymaster + AA migration tools.
-
-```bash
-aeqi-paymaster migrate-to-passkey <user_id>   # custodial → passkey-bound smart account
-```
-
 ### `aeqi mcp`
 
 Run the MCP server (Model Context Protocol). Used by Claude Code and other MCP-compatible clients.
