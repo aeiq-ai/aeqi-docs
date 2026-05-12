@@ -9,7 +9,7 @@ intent, agents coordinate execution, and every unit of work becomes operating
 memory, accountability, governance, and authority.
 
 This documentation explains the full system: the public execution runtime, the
-company primitives inside it, and the TRUST authority layer underneath.
+company primitives inside it, and the TRUST as the programmable company vehicle.
 
 ## Start here
 
@@ -30,7 +30,7 @@ The company is the primitive. Everything else is part of the company shell.
 - [Ideas and memory](/docs/concepts/memory) - durable context, strategy, procedures, and operating history.
 - [Events](/docs/concepts/events) - signals that wake the system and make work happen.
 - [Sessions](/docs/concepts/sessions) - conversations, execution traces, and handoffs.
-- [TRUST](/docs/concepts/trust) - treasury, governance, ownership, and authority beneath the runtime.
+- [TRUST](/docs/concepts/trust) - the programmable company vehicle for execution, memory, authority, treasury, governance, and ownership.
 - [Wallets & identity](/docs/concepts/wallets-and-identity) - passkeys, wallets, and signer state.
 
 ## How the pieces fit
@@ -42,7 +42,7 @@ The company is the primitive. Everything else is part of the company shell.
 5. Events wake agents and route work.
 6. Sessions record what happened.
 7. Ideas and memory make the company smarter over time.
-8. TRUST gives the company authority, treasury, governance, and ownership substrate.
+8. The company can become a TRUST: execution, memory, authority, treasury, governance, and ownership in one operating context.
 
 The product starts with execution because execution creates operating truth.
 Operating truth is what makes accountability, capital allocation, governance,

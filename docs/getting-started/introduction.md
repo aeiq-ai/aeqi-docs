@@ -28,7 +28,7 @@ contains the primitives needed to run:
 | **Ideas / Memory** | What does the company know? |
 | **Events** | When should the system wake up? |
 | **Sessions** | What happened, who participated, and what changed? |
-| **TRUST** | What owns treasury, governance, and ownership state? |
+| **TRUST** | What is the programmable company vehicle? |
 
 ## The execution loop
 
@@ -70,4 +70,4 @@ aeqi start
 - [Company](/docs/concepts/company) - the primitive that holds everything.
 - [Getting started](/docs/getting-started/getting-started) - create your first company.
 - [Agent runtime overview](/docs/concepts/agent-runtime-overview) - how execution works.
-- [TRUST](/docs/concepts/trust) - the authority and ownership substrate.
+- [TRUST](/docs/concepts/trust) - the programmable company vehicle.

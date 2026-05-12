@@ -69,9 +69,9 @@ The entry point is the agentic company runtime:
 - connect tools
 - let work compound into memory
 
-TRUST is the authority, treasury, governance, and ownership infrastructure
-beneath the runtime. It is not separate from the product. It is the substrate
-that lets the operating company become economically real.
+TRUST is the programmable company vehicle in aeqi. It is not separate from the
+product. It is the organization where agent execution, memory, authority,
+treasury, governance, and ownership live in one operating context.
 
 ## What aeqi is not
 

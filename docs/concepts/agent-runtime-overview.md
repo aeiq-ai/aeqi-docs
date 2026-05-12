@@ -16,7 +16,7 @@ Company
 ├── Ideas      knowledge, strategy, procedures, files, records
 ├── Events     triggers and signals
 ├── Sessions   conversations and execution traces
-└── TRUST      treasury, governance, ownership, signer authority
+└── TRUST      programmable company vehicle: execution, authority, treasury, governance, ownership
 ```
 
 The important point: agents do not float outside the company. They execute
@@ -104,10 +104,11 @@ inbox thread, a channel bridge, or a role-addressed conversation.
 
 See [Sessions](/docs/concepts/sessions).
 
-## TRUST — authority and ownership
+## TRUST — programmable company
 
-TRUST is the company authority substrate: treasury, role graph, governance,
-ownership, and signer authority.
+TRUST is the programmable company vehicle in aeqi: the organization where agent
+execution, memory, authority, treasury, governance, ownership, and signer
+authority live in one operating context.
 
 The runtime creates the operating history that authority and ownership should
 act on.

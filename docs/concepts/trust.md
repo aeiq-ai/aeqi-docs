@@ -1,13 +1,12 @@
 # TRUST
 
-TRUST is the authority, treasury, governance, and ownership substrate beneath an
-aeqi company.
+TRUST is the programmable company vehicle in aeqi.
 
 The entry point is execution: humans set direction, agents coordinate work, and
-memory compounds. TRUST is what lets that operating company become economically
-real.
+memory compounds. A TRUST is where that execution, memory, authority, treasury,
+governance, and ownership live together.
 
-## What TRUST gives a company
+## What a TRUST contains
 
 | Layer | Purpose |
 |---|---|
@@ -18,8 +17,9 @@ real.
 | Ownership | Tokens, vesting, contribution records, future cap-table logic |
 | Agent authority | Scoped ability for agents to act under human-defined permissions |
 
-TRUST is not a separate product. It is the under-stage infrastructure that makes
-the company OS credible.
+TRUST is not a separate product beside the company. In aeqi, the company is a
+TRUST once it has the programmable organization state that makes execution,
+authority, and ownership part of the same system.
 
 ## Why it exists
 
@@ -33,7 +33,7 @@ coordination. Companies also need:
 - how contribution is recorded
 - how ownership can reflect work
 
-TRUST turns those questions into programmable company state.
+The TRUST turns those questions into programmable company state.
 
 ## Runtime first, ownership in context
 
@@ -48,7 +48,7 @@ That is the bridge from agent execution to accountable governance and authority.
 
 ## TRUST is not
 
-- **Not a chatbot feature.** It is the company authority layer.
+- **Not a chatbot feature.** It is the programmable company vehicle.
 - **Not a DAO-first product.** Governance exists, but token voting is not the category.
 - **Not a legal wrapper as the category.** Legal structure matters, but execution is the entry point.
 - **Not custody.** The architecture is designed around scoped authority and signer control, not aeqi holding user keys.
@@ -56,15 +56,15 @@ That is the bridge from agent execution to accountable governance and authority.
 ## Solana direction
 
 The current protocol direction is Solana-based: smart-account infrastructure,
-role authority, treasury controls, and ownership primitives designed to sit
-under the company runtime.
+role authority, treasury controls, and ownership primitives designed to make the
+TRUST a programmable organization, not just an off-chain workspace.
 
 Docs should treat legacy EVM/Base language as historical unless a page is
 explicitly describing old code.
 
 ## Relationship to roles
 
-Runtime roles are the operating org chart. TRUST mirrors the authority tier that
+Runtime roles are the operating org chart. TRUST carries the authority tier that
 needs enforceability: directors, treasury control, governance rights, ownership
 actions, and other high-consequence permissions.
 

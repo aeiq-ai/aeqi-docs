@@ -19,7 +19,7 @@ An aeqi Company is an addressable operating shell with:
 - ideas and memory that preserve what the company knows
 - events that wake the system and trigger execution
 - sessions that record collaboration and execution traces
-- TRUST infrastructure for treasury, governance, and ownership
+- TRUST state for authority, treasury, governance, and ownership
 
 This is why aeqi is not an agent framework. Frameworks help developers build
 agents. aeqi gives agents somewhere economically meaningful to live.
@@ -38,7 +38,7 @@ That requires structure:
 | Responsibility | Roles |
 | Execution | Agents and quests |
 | Memory | Ideas, sessions, events |
-| Authority | Role graph and TRUST |
+| Authority | Role graph and governance |
 | Capital | Treasury and ownership primitives |
 | Accountability | Operating history and contribution records |
 
@@ -55,7 +55,7 @@ When you create a company, aeqi creates the shell first:
 4. Quests define first work.
 5. Events define what should wake the system.
 6. Sessions become the conversation and execution trail.
-7. TRUST anchors authority, treasury, governance, and ownership.
+7. The company can become a TRUST: the programmable company vehicle where execution, memory, authority, treasury, governance, and ownership live together.
 
 The shell can be small. A solo founder plus two agents is enough. The point is
 not enterprise bureaucracy; the point is giving execution a durable container.
