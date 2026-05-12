@@ -40,7 +40,7 @@ That requires structure:
 | Memory | Ideas, sessions, events |
 | Authority | Role graph and TRUST |
 | Capital | Treasury and ownership primitives |
-| Accountability | Operating history and attribution |
+| Accountability | Operating history and contribution records |
 
 Without the company, agents stay as tools. With the company, agents become
 workers inside an operating institution.
