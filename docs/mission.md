@@ -49,12 +49,12 @@ aeqi turns a company into an operating system:
 3. Humans set direction.
 4. Agents coordinate execution.
 5. Every action becomes operating history.
-6. Operating history becomes attribution.
-7. Attribution can support governance, treasury, and ownership.
+6. Operating history creates accountability.
+7. Accountability can support governance, treasury, and capital allocation.
 
 Execution comes first because execution creates truth. You cannot build credible
-ownership, capital allocation, or governance on vibes. You build it on recorded
-work.
+capital allocation, governance, or authority on vibes. You build it on recorded
+work inside a company.
 
 ## The product
 
@@ -91,7 +91,7 @@ that lets the operating company become economically real.
 That is the mission in one loop:
 
 ```
-intent -> execution -> memory -> attribution -> ownership
+intent -> execution -> memory -> accountability -> authority
 ```
 
 ## Where to next

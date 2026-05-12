@@ -75,8 +75,8 @@ If agents do the work inside the company, the company can know:
 - what outcome was accepted
 - what value was created
 
-That operating truth is the bridge from agents to ownership, governance, and
-capital formation.
+That operating truth is the bridge from agent execution to company
+accountability, governance, and capital allocation.
 
 ## Related
 

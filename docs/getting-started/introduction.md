@@ -3,7 +3,7 @@
 aeqi is the company OS for the agent economy.
 
 It is a runtime where humans set direction, agents coordinate execution, and
-company work compounds into memory, attribution, governance, and ownership.
+company work compounds into memory, accountability, governance, and authority.
 
 The core move is simple: do not start from the agent. Start from the company.
 
@@ -12,7 +12,7 @@ The core move is simple: do not start from the agent. Start from the company.
 Agents can write, research, code, sell, schedule, analyze, and coordinate. But
 an agent by itself has no durable economic context. It has no real role, no
 budget, no operating memory, no authority boundary, no governance surface, and
-no way for its work to become ownership.
+no company shell where ownership can live.
 
 A company gives agents that context.
 
@@ -42,7 +42,7 @@ Human intent
   -> quest outcome
   -> session trace
   -> ideas and memory
-  -> attribution, governance, ownership
+  -> accountability, governance, authority
 ```
 
 This loop is why aeqi is more than task management. The work does not vanish

@@ -32,7 +32,7 @@ inside a company shell with scoped authority and durable memory.
 5. Events and tool calls record what happened.
 6. The session preserves the trace.
 7. Ideas and memory update the company's operating state.
-8. The result can feed attribution, governance, treasury, and ownership.
+8. The result can feed accountability, governance, treasury, and authority.
 ```
 
 This is how aeqi makes the agent economy legible. Work is not just generated; it

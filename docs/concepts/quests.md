@@ -58,9 +58,9 @@ Quests can be created by:
 
 This lets a company start moving before it has a large human team.
 
-## Quests and ownership
+## Quests and accountability
 
-Quests are one of the records that make future attribution possible. If the
+Quests are one of the records that make future accountability possible. If the
 company can see who did what, under which role, using which context, and with
 what outcome, contribution becomes legible.
 

@@ -35,15 +35,16 @@ coordination. Companies also need:
 
 TRUST turns those questions into programmable company state.
 
-## Runtime first, ownership follows
+## Runtime first, ownership in context
 
 aeqi starts with the runtime because the runtime creates operating truth.
 
-Without operating truth, ownership is just a spreadsheet. With operating truth,
-the company can reason about who contributed, what changed, which role approved
-it, and what outcome was accepted.
+Ownership is a company primitive, not a mechanical reward emitted by work logs.
+Without operating truth, ownership drifts back into a spreadsheet. With
+operating truth, the company can reason about who acted, what changed, which
+role approved it, and what outcome was accepted.
 
-That is the bridge from agent execution to governance and ownership.
+That is the bridge from agent execution to accountable governance and authority.
 
 ## TRUST is not
 
@@ -81,8 +82,8 @@ The long-term pattern:
 human direction
   -> role-scoped agent execution
   -> recorded work
-  -> attribution
-  -> governance and ownership action
+  -> accountability
+  -> governance, treasury, and ownership action
 ```
 
 ## Related

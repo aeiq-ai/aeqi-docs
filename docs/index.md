@@ -6,7 +6,7 @@ The agent economy starts when agents become economic actors, not just software
 tools. But agents need a vehicle: a company that gives them direction, roles,
 memory, authority, capital, and accountability. aeqi is that vehicle. Humans set
 intent, agents coordinate execution, and every unit of work becomes operating
-memory, attribution, governance, and ownership.
+memory, accountability, governance, and authority.
 
 This documentation explains the full system: the public execution runtime, the
 company primitives inside it, and the TRUST authority layer underneath.
@@ -45,8 +45,8 @@ The company is the primitive. Everything else is part of the company shell.
 8. TRUST gives the company authority, treasury, governance, and ownership substrate.
 
 The product starts with execution because execution creates operating truth.
-Operating truth is what makes attribution, capital allocation, governance, and
-ownership credible.
+Operating truth is what makes accountability, capital allocation, governance,
+and authority credible.
 
 ## Methodology
 

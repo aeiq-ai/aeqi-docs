@@ -50,7 +50,7 @@ Agent identity can be represented as always-available ideas. Company strategy
 can be stored as evergreen ideas. Quest-specific context can be attached only to
 the work that needs it.
 
-## Memory and attribution
+## Memory and accountability
 
 Memory is not only for better answers. It is the beginning of operating truth.
 
@@ -64,7 +64,7 @@ When a company preserves:
 - the outcome
 
 then contribution becomes inspectable. That is the foundation for future
-compensation, governance, ownership, and capital allocation.
+compensation, governance, authority, and capital allocation.
 
 ## Related
 
