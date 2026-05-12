@@ -42,11 +42,11 @@ The company is the primitive. Everything else is part of the company shell.
 5. Events wake agents and route work.
 6. Sessions record what happened.
 7. Ideas and memory make the company smarter over time.
-8. TRUST gives the company a deeper authority, treasury, governance, and ownership substrate.
+8. TRUST gives the company authority, treasury, governance, and ownership substrate.
 
 The product starts with execution because execution creates operating truth.
-Operating truth is what later makes attribution, capital allocation, governance,
-and ownership credible.
+Operating truth is what makes attribution, capital allocation, governance, and
+ownership credible.
 
 ## Methodology
 

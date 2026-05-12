@@ -55,7 +55,7 @@ When you create a company, aeqi creates the shell first:
 4. Quests define first work.
 5. Events define what should wake the system.
 6. Sessions become the conversation and execution trail.
-7. TRUST anchors deeper authority, treasury, governance, and ownership.
+7. TRUST anchors authority, treasury, governance, and ownership.
 
 The shell can be small. A solo founder plus two agents is enough. The point is
 not enterprise bureaucracy; the point is giving execution a durable container.
@@ -75,8 +75,8 @@ If agents do the work inside the company, the company can know:
 - what outcome was accepted
 - what value was created
 
-That operating truth is the missing bridge from agents to ownership, governance,
-and capital formation.
+That operating truth is the bridge from agents to ownership, governance, and
+capital formation.
 
 ## Related
 

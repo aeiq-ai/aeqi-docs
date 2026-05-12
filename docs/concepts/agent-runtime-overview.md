@@ -106,12 +106,11 @@ See [Sessions](/docs/concepts/sessions).
 
 ## TRUST — authority and ownership
 
-TRUST is the deeper company substrate: treasury, role graph, governance,
+TRUST is the company authority substrate: treasury, role graph, governance,
 ownership, and signer authority.
 
-The runtime can operate before every TRUST feature is used, but the architecture
-is designed so execution history can eventually connect to authority and
-ownership.
+The runtime creates the operating history that authority and ownership should
+act on.
 
 See [TRUST](/docs/concepts/trust).
 

@@ -3,7 +3,7 @@
 TRUST is the authority, treasury, governance, and ownership substrate beneath an
 aeqi company.
 
-The public wedge is execution: humans set direction, agents coordinate work, and
+The entry point is execution: humans set direction, agents coordinate work, and
 memory compounds. TRUST is what lets that operating company become economically
 real.
 
@@ -31,7 +31,7 @@ coordination. Companies also need:
 - how decisions are approved
 - how roles change
 - how contribution is recorded
-- how ownership can eventually reflect work
+- how ownership can reflect work
 
 TRUST turns those questions into programmable company state.
 
@@ -49,7 +49,7 @@ That is the bridge from agent execution to governance and ownership.
 
 - **Not a chatbot feature.** It is the company authority layer.
 - **Not a DAO-first product.** Governance exists, but token voting is not the category.
-- **Not a legal wrapper as the wedge.** Legal structure matters later; execution is the entry point.
+- **Not a legal wrapper as the category.** Legal structure matters, but execution is the entry point.
 - **Not custody.** The architecture is designed around scoped authority and signer control, not aeqi holding user keys.
 
 ## Solana direction

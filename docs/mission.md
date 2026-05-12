@@ -58,7 +58,7 @@ work.
 
 ## The product
 
-The public wedge is the agentic company runtime:
+The entry point is the agentic company runtime:
 
 - start a company
 - define its mission
@@ -69,9 +69,9 @@ The public wedge is the agentic company runtime:
 - connect tools
 - let work compound into memory
 
-The deeper layer is TRUST: authority, treasury, governance, and ownership
-infrastructure beneath the runtime. TRUST is not separate from the product. It
-is the substrate that lets the operating company become economically real.
+TRUST is the authority, treasury, governance, and ownership infrastructure
+beneath the runtime. It is not separate from the product. It is the substrate
+that lets the operating company become economically real.
 
 ## What aeqi is not
 
