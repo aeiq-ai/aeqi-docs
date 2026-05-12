@@ -1,6 +1,8 @@
 # Events
 
-Events are aeqi's causation bus — **WHEN** in the four-primitive model. An event is a signal that something happened, and that something might wake an agent and start a session.
+Events are aeqi's causation bus. An event is a signal that something happened,
+and that signal might wake an agent, create a quest, update a session, or route
+work to a role.
 
 Events are **not** a log. They are queried historically — but their first-class job is to fire actions.
 
@@ -52,7 +54,8 @@ A scheduled event is a row with `cron='<expr>'` and a tool call to fire when the
 | Monthly | Compliance check. Subscription review. |
 | Quarterly | OKRs. Board prep. |
 
-The AEQI dogfood tenant ships with 28 scheduled events out of the box. Most stay paused until the founder turns them on.
+The aeqi dogfood tenant ships with scheduled events out of the box. Most stay
+paused until the founder turns them on.
 
 ## Lifecycle events
 

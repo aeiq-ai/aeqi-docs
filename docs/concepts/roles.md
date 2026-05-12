@@ -1,117 +1,89 @@
 # Roles
 
-Roles are aeqi's **WHO** primitive. A Role is the org-chart slot inside an entity, occupied by a human, an agent, or vacant. Authority flows along role edges; a Role doesn't *do* the work, an occupant does.
+Roles are how aeqi represents authority, responsibility, and scope inside a
+company.
 
-This was renamed from "Position" → "Role" in 2026-05-02. If you encounter "position" in old code or docs, treat it as the same primitive.
+A role is an org-chart seat. It can be occupied by a human, an agent, or remain
+vacant. The role persists even when the occupant changes.
 
-## The model
+## Why roles matter
 
-```
-roles(id, entity_id, title, occupant_kind, occupant_id, role_type, ...)
-role_edges(parent_role_id, child_role_id)   -- DAG, not tree
-```
+Agents need boundaries.
 
-| Field | Purpose |
+Without roles, every agent is just a bot with tools. With roles, the company can
+say:
+
+- what the agent is responsible for
+- which work it can accept
+- which tools it can use
+- which budget it can spend
+- who can supervise it
+- when it must escalate
+- whether it has authority or only execution scope
+
+Roles make agents accountable economic actors inside the company.
+
+## Role vs agent
+
+| Concept | Meaning |
 |---|---|
-| `entity_id` | The Company that owns this slot. A role belongs to exactly one company. |
-| `title` | "CEO", "Marketing Lead", "Director" — human-readable. |
-| `occupant_kind` | `human` \| `agent` \| `vacant`. |
-| `occupant_id` | The user or agent ID, or null when vacant. |
-| `role_type` | `director` \| `operational` \| `advisor`. Drives on-chain treatment. |
+| Role | The seat: CEO, CTO, Finance Lead, Researcher, Director |
+| Occupant | The human or agent currently filling that seat |
+| Authority | What the role is allowed to do |
+| Responsibility | What the role is expected to own |
 
-Two role tiers, kept orthogonal:
-
-| Tier | `role_type` | Where it lives | Power |
-|---|---|---|---|
-| **Board** | `director` | On-chain TRUST + runtime mirror | Governance: signs the smart account, votes proposals. |
-| **Org chart** | `operational` | Runtime only (`roles` + `role_edges`) | Operational: spawns agents, configures tools, routes work. |
-
-A founder typically holds both — one Director seat plus a CEO seat. They're the same human in two rows. See [Board vs org chart](/docs/methodology/org-architecture#board-vs-org-chart) for the full pattern.
-
-## Authority via DAG closure
-
-"Role X controls Role Y" iff there's a directed path from X to Y in `role_edges`, scoped to the same `entity_id`. The runtime computes this on demand via a recursive CTE — no ACL table.
+Example:
 
 ```
-Director (Founder)
-   |
-   +-- CEO
-        |
-        +-- COO --> Sales Lead --> Sales Rep
-        +-- CTO --> Eng Lead   --> Engineer
-        +-- CFO
+Role: Finance Lead
+Occupant: finance-agent
+Authority: read billing data, draft budget, propose payments
+Escalation: human Director approves treasury movement
 ```
 
-The CEO controls the COO, Sales Lead, and Sales Rep transitively. The CFO doesn't control engineering. Orthogonal sub-trees.
+If the company replaces `finance-agent`, the Finance Lead role remains. Its
+sessions, quests, policies, and history still belong to the company.
 
-Boards are flat — that's why it's a DAG, not a tree. Three founders all hold Director roles with no edges between them; they're a flat set at the top.
+## Authority graph
 
-## Roles vs. agents
+Roles form an authority graph. A Director can supervise a CEO. A CEO can
+supervise a Marketing Lead. A Marketing Lead can supervise a Growth Agent.
 
-Agents are entity-owned **assets** — `agents.entity_id NOT NULL`, with their own UUID distinct from any role's. An agent can occupy a role; the role is the slot, the agent is the occupant.
+```
+Director
+└── CEO
+    ├── Product Lead
+    ├── Engineering Lead
+    └── Marketing Lead
+        └── Growth Agent
+```
 
-The old "agents are WHO" framing collapsed when the same agent needed to occupy a fractional CFO role across three companies. Roles let one agent occupy seats in many entities; one human can hold roles across many companies; one role can be filled, vacated, and re-filled without losing its session history.
+Boards can be flat. Operating teams can be hierarchical. The graph belongs to
+the company, not to any single agent.
+
+## Runtime roles and TRUST roles
+
+Not every role needs on-chain authority.
+
+| Tier | Where it lives | Purpose |
+|---|---|---|
+| Operating role | Runtime | Work routing, tool scope, responsibility |
+| Authority role | TRUST + runtime mirror | Treasury, governance, ownership, signer authority |
+
+A content researcher can be runtime-only. A director, treasury controller, or
+governance seat should be reflected in TRUST.
 
 ## Role-addressed sessions
 
-A session can target a Role rather than a specific occupant. Messages route to whoever currently fills that seat. If the CEO turns over, the new CEO inherits the session queue. The session itself is preserved.
+Sessions can target a role instead of a person or agent.
 
-In the [Sessions](/docs/concepts/sessions) primitive: `message_to(target=<role_id>)`.
-
-## Role-scoped credentials
-
-Like agents, roles can hold scoped credentials — e.g., a CEO role can carry an OAuth token that any occupant inherits while in seat. Credential scopes are the precedence chain: **Entity > Role > Agent**, narrowest wins. See [Multi-scope integrations](/docs/patterns/multi-scope-integrations).
-
-## On-chain mirroring
-
-Director-tier roles mirror on-chain via `RoleModule.assignRole`. The TRUST contract records:
-
-- The role's keccak256-hashed name (`keccak256("DIRECTOR_ROLE")`).
-- The occupant's address.
-- Permissions inherited via the role module's bit flags.
-
-Operational-tier roles stay runtime-only. They don't get on-chain rows. Adding a Marketing Lead doesn't write to the chain.
-
-This means: don't ship director-typed roles for non-board seats. A bug pattern from 2026-05-06 created CFO/CMO/CLO/CISO as `role_type='director'`, which made the on-chain board count jump from 1 to 5. Fix: flip director→operational; only founders get Director rows.
-
-## Invites
-
-A vacant role can be filled via invite. The Roles tab → role row → **Invite** opens an email link with a one-time-use code. When the invitee accepts, they're bound as the role's occupant.
-
-| Step | What happens |
-|---|---|
-| Issue | Invite generated with `email`, `role_id`, `expires_at`. Email_sent=0 if SMTP not configured. |
-| Accept | Invitee creates an account (if needed) and binds. |
-| Bind | `roles.occupant_kind='human'`, `occupant_id=<user_id>`. |
-
-Open invites for the AEQI dogfood: CEO, CTO, COO seats are pending until founder cofounders redeem.
-
-## HTTP API
-
-```
-GET    /api/roles                  # list roles for the current entity
-POST   /api/roles                  # create a role
-PUT    /api/roles/{id}/occupant    # change occupant
-DELETE /api/roles/{id}             # delete (denied if occupied)
-```
-
-See the [REST API reference](/docs/api/rest).
-
-## What's gone (don't reach for these)
-
-The Phase-4 cleanup retired:
-
-- `agents.parent_id` — agents no longer chain through other agents; they're entity-owned assets.
-- `agent_directors` — humans→agents grants merged into roles.
-- `agent_ancestry` closure table — replaced by `role_edges` recursive CTE.
-- "Root agent" special-case — there is no root; the role with no incoming edges is the equivalent.
-- `entity.id == agent.id` collapse — entities now mint their own UUIDs.
-
-If you find these in old code, they're legacy. Don't recreate them.
+That means a message can go to "Marketing Lead" even if the current occupant
+changes later. The conversation history remains attached to the seat and the
+company keeps continuity.
 
 ## Related
 
-- [Agents](/docs/concepts/agents) — the occupant primitive.
-- [Sessions](/docs/concepts/sessions) — role-addressed conversations.
-- [TRUST](/docs/concepts/trust) — on-chain mirror of the director tier.
-- [Board vs org chart](/docs/methodology/org-architecture#board-vs-org-chart) — when to use which `role_type`.
+- [Company](/docs/concepts/company)
+- [Agents](/docs/concepts/agents)
+- [TRUST](/docs/concepts/trust)
+- [Org architecture](/docs/methodology/org-architecture)

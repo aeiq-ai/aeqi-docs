@@ -1,68 +1,76 @@
 # Quests
 
-Quests are units of work — WHAT in the four-primitive model. Each quest has status, an assignee, dependencies, and an outcome. Quests execute in isolated git worktrees with per-turn commits.
+Quests are units of work.
+
+They are how intent becomes execution inside an aeqi company. A quest has a
+goal, context, owner, assignee, session trace, status, and outcome.
+
+## Why quests exist
+
+Agents should not operate from vague chat drift. They need concrete work units
+with enough context to act and enough structure to be accountable.
+
+A quest gives the company a durable record of:
+
+- what was asked
+- who owned the responsibility
+- which agent executed
+- which context was used
+- what changed
+- what outcome was accepted
 
 ## Lifecycle
 
 ```
-pending → in_progress → done
-                      → cancelled
-                      → blocked
+pending -> in_progress -> done
+                       -> blocked
+                       -> cancelled
 ```
 
-## Create
-
-Through the `quests` MCP tool (inside Claude Code or any MCP client):
-
-```
-quests(action='create', project='myproject', subject='Fix login bug', priority='high')
-```
-
-Quests are also created by:
-
-- **Events** firing on a schedule (`cron` events)
-- **Lifecycle handlers** — e.g. a failed quest triggers a retry
-- **Other agents** delegating work down the tree
+The status is not just UI. It is company state. Events can fire when a quest is
+created, blocked, completed, or cancelled.
 
 ## Fields
 
-| Field | Description |
-|-------|-------------|
-| `subject` | Short title |
-| `description` | Detailed context |
-| `priority` | `low`, `normal`, `high`, `critical` |
-| `status` | `pending`, `in_progress`, `done`, `blocked`, `cancelled` |
-| `agent` | Assigned agent name |
-| `depends_on` | Quest IDs that must be `done` first |
-| `parent` | Parent quest ID (for sub-tasks) |
-| `idea_ids` | Ideas referenced as context |
+| Field | Purpose |
+|---|---|
+| Subject | Short title |
+| Description | Work brief and context |
+| Priority | Relative urgency |
+| Status | Current lifecycle state |
+| Owner role | Role responsible for the work |
+| Assigned agent | Agent executing the work |
+| Dependencies | Other quests that must finish first |
+| Ideas | Context attached to the quest |
+| Session | Conversation and execution trace |
+| Outcome | Accepted result |
 
-## Dependencies
+## Where quests come from
 
-A quest stays `pending` until every `depends_on` quest is `done`:
+Quests can be created by:
 
-```
-quests(action='create', project='p', subject='Deploy', depends_on='sg-001')
-```
+- a human giving direction
+- an agent decomposing work
+- an event firing
+- an integration signal
+- a recurring operating rhythm
+- a blueprint seeding kickoff work
 
-## Close and Cancel
+This lets a company start moving before it has a large human team.
 
-On completion, the closing agent records an outcome:
+## Quests and ownership
 
-```
-quests(action='close', quest_id='sg-001', result='Deployed v2.1 to production')
-```
+Quests are one of the records that make future attribution possible. If the
+company can see who did what, under which role, using which context, and with
+what outcome, contribution becomes legible.
 
-On cancellation, a reason:
+That does not mean every quest creates ownership. It means the operating history
+exists when the company needs to reason about contribution, compensation,
+governance, or capital allocation.
 
-```
-quests(action='cancel', quest_id='sg-001', reason='Blocked by upstream dependency')
-```
+## Related
 
-Quests and their session transcripts live in `sessions.db`.
-
-## Next Steps
-
-- [Agents](/docs/concepts/agents) — who executes quests
-- [Memory (Ideas)](/docs/concepts/memory) — context passed into quest execution
-- [REST API — Quests](/docs/api/rest) — HTTP endpoints
+- [Agents](/docs/concepts/agents)
+- [Roles](/docs/concepts/roles)
+- [Sessions](/docs/concepts/sessions)
+- [Events](/docs/concepts/events)

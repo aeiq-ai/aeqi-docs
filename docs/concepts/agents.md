@@ -1,63 +1,92 @@
 # Agents
 
-Agents are persistent identities — WHO in the four-primitive model. They have names, ideas (memory), tools, and a position in a tree.
+Agents are workers inside an aeqi company.
 
-## The Agent Tree
+They execute quests, ask questions, call tools, coordinate with humans and other
+agents, and store what they learn back into company memory.
 
-Every company has a root agent. Each agent can hire children, and those children can hire their own.
+Agents are not the primitive. The company is. Agents become valuable because the
+company gives them role, context, authority, memory, and accountability.
+
+## What an agent has
+
+| Part | Purpose |
+|---|---|
+| Identity | Name, description, model, standing context |
+| Role assignments | Where the agent sits in the company |
+| Tools | What systems it can use |
+| Memory access | Which ideas and records it can read |
+| Sessions | Where conversations and execution traces live |
+| Quests | Work assigned to the agent |
+| Policies | Limits on spending, integrations, tools, and escalation |
+
+## Agent vs role
+
+Roles define authority. Agents execute.
+
+An agent can occupy a role. A role can later be filled by a different agent or a
+human. This separation matters because authority belongs to the company, not to a
+floating bot.
+
+Example:
 
 ```
-luca-eich (root)
-├── researcher
-├── reviewer
-└── architect
-    └── frontend-dev
+Company: Atlas Studio
+Role: Marketing Lead
+Occupant: growth-agent
+Quest: Draft launch campaign
+Session: Campaign planning thread
+Outcome: Launch brief stored as an Idea
 ```
 
-Hire and retire through the `agents` MCP tool (inside Claude Code or any MCP client):
+If the company replaces `growth-agent`, the Marketing Lead role and its history
+remain.
 
-```
-agents(action='hire', template='researcher')
-agents(action='retire', agent='researcher')
-agents(action='list', status='active')
-```
+## How agents work
 
-Or via the [REST API](/docs/api/rest).
+Agents run inside sessions. A session gives them:
 
-## Identity
+- the company context
+- the assigned quest
+- relevant ideas and memory
+- role-scoped permissions
+- available tools
+- messages from humans or other agents
 
-An agent's identity is a set of ideas with `injection_mode = 'always'` — they load into context on every session. Roles, tone, expertise, standing instructions all live in ideas, not code.
+The agent executes, calls tools, asks for missing information, and records the
+outcome.
 
-| Field | Purpose |
-|-------|---------|
-| `name` | Display label and lookup key |
-| `parent_id` | Position in the tree |
-| `model` | Preferred LLM (inheritable from parent) |
-| `capabilities` | Tool permissions (e.g. `spawn_agents`, `web_access`) |
-| `status` | `active`, `paused`, or `retired` |
+## Hiring agents
 
-## Sessions
+Agents can be created from templates or composed directly from company context.
+Aeqi can start with a small operating team:
 
-When an agent executes a quest, it runs inside a **session** — a transcript of messages, tool calls, and outcomes. One quest can span multiple sessions (retries, handoffs). A session can exist without a quest (ad-hoc chat).
+- Executive Assistant
+- Research Agent
+- Product Agent
+- Engineering Agent
+- Finance Agent
+- Growth Agent
 
-Sessions and quests are stored together in `sessions.db`.
+Templates are only starting points. The real identity of an agent lives in the
+company's ideas, role assignments, and operating history.
 
-## Lifecycle Events
+## Accountability
 
-Every agent ships with default event handlers. Override per-agent to customize behavior.
+Every agent action should be traceable:
 
-| Event | Fires when |
-|-------|-----------|
-| `on_quest_received` | New work is assigned |
-| `on_quest_completed` | Quest finishes — reflect, store learnings |
-| `on_quest_failed` | Quest fails — decide whether to retry |
-| `on_child_completed` | A child agent finishes work |
-| `on_child_failed` | A child agent fails |
-| `on_idea_received` | New knowledge is shared with this agent |
-| `on_budget_exceeded` | Spend cap hit |
+- which company it acted for
+- which role gave it scope
+- which quest it executed
+- which session contains the trace
+- which ideas it used or created
+- what outcome was accepted
 
-## Next Steps
+This is the bridge from agent execution to operating truth.
 
-- [Quests](/docs/concepts/quests) — how work is created and closed
-- [Memory (Ideas)](/docs/concepts/memory) — how identity and knowledge are stored
-- [REST API — Agents](/docs/api/rest) — programmatic agent management
+## Related
+
+- [Company](/docs/concepts/company)
+- [Roles](/docs/concepts/roles)
+- [Quests](/docs/concepts/quests)
+- [Ideas and memory](/docs/concepts/memory)

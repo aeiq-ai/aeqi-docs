@@ -1,42 +1,73 @@
 # Introduction
 
-aeqi is the operating system for autonomous companies. One Rust binary, SQLite state, self-hostable. Agents, events, quests, and ideas run under a single process — daemon, REST API, and dashboard UI embedded.
+aeqi is the company OS for the agent economy.
 
-## Four Primitives
+It is a runtime where humans set direction, agents coordinate execution, and
+company work compounds into memory, attribution, governance, and ownership.
 
-| Primitive | Question | What it is |
-|-----------|----------|-----------|
-| **Agent** | WHO | Persistent identity with memory, tools, and a place in the tree |
-| **Event** | WHEN | Trigger rule — when pattern X fires, run action Y |
-| **Quest** | WHAT | Unit of work with status, dependencies, and outcome |
-| **Idea** | HOW | Knowledge — facts, procedures, preferences, instructions |
+The core move is simple: do not start from the agent. Start from the company.
 
-The runtime composes from these four primitives. A scheduled report is an event that creates a quest. A delegated task is a quest assigned to a child agent. An agent's identity is a set of ideas with `injection_mode = 'always'`.
+## Why the company is first
 
-## Runtime Topology
+Agents can write, research, code, sell, schedule, analyze, and coordinate. But
+an agent by itself has no durable economic context. It has no real role, no
+budget, no operating memory, no authority boundary, no governance surface, and
+no way for its work to become ownership.
+
+A company gives agents that context.
+
+In aeqi, a company is not a folder or workspace. It is an operating shell that
+contains the primitives needed to run:
+
+| Primitive | What it answers |
+|---|---|
+| **Company** | Where does the work belong? |
+| **Roles** | Who can act, and with what authority? |
+| **Agents** | Who executes? |
+| **Quests** | What work needs to be done? |
+| **Ideas / Memory** | What does the company know? |
+| **Events** | When should the system wake up? |
+| **Sessions** | What happened, who participated, and what changed? |
+| **TRUST** | What owns treasury, governance, and ownership state? |
+
+## The execution loop
+
+The runtime turns intent into execution:
+
+```
+Human intent
+  -> company context
+  -> role-scoped authority
+  -> agent execution
+  -> quest outcome
+  -> session trace
+  -> ideas and memory
+  -> attribution, governance, ownership
+```
+
+This loop is why aeqi is more than task management. The work does not vanish
+into chat history. It becomes company state.
+
+## Hosted and self-hosted
+
+On the hosted platform at [app.aeqi.ai](https://app.aeqi.ai), each company gets
+its own managed runtime with isolated state, agents, quests, sessions, and
+budget controls.
+
+For local or self-hosted use, aeqi runs as one Rust binary with embedded
+dashboard, REST API, MCP server, and SQLite state.
 
 ```
 aeqi start
 ├── daemon        orchestration, workers, scheduler
-├── REST API      :8400 (self-hosted), :8443 (platform)
-└── dashboard     rust-embed static assets
+├── REST API      dashboard and programmatic access
+├── MCP server    tools for agent clients
+└── dashboard     company control plane
 ```
 
-Quests execute inside isolated git worktrees with per-turn commits. Tool permissions are enforced per-agent via `bwrap` sandbox. Model-agnostic — OpenRouter, Anthropic, Ollama.
+## What comes next
 
-On the hosted platform at [app.aeqi.ai](https://app.aeqi.ai), each company gets its own runtime with its own databases, agent tree, and budget controls.
-
-## Storage
-
-| Database | Contents |
-|----------|----------|
-| `sessions.db` | Quests, sessions, transcripts |
-| `aeqi.db` | Ideas, agents, events |
-
-No Postgres, no Redis, no message queue.
-
-## Next Steps
-
-- [Quickstart](/docs/quickstart) — run aeqi locally in under 5 minutes
-- [Concepts: Agents](/docs/concepts/agents) — the agent tree and identity model
-- [Claude Code guide](/docs/guides/claude-code) — connect your IDE via MCP
+- [Company](/docs/concepts/company) - the primitive that holds everything.
+- [Getting started](/docs/getting-started/getting-started) - create your first company.
+- [Agent runtime overview](/docs/concepts/agent-runtime-overview) - how execution works.
+- [TRUST](/docs/concepts/trust) - the authority and ownership substrate.

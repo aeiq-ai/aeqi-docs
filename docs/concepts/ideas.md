@@ -1,6 +1,9 @@
 # Ideas
 
-Ideas are aeqi's universal data noun — **HOW** in the four-primitive model. Facts, procedures, preferences, instructions, files, structured records, comments. Anything that's stored is an Idea unless it's another primitive.
+Ideas are aeqi's universal data noun: facts, procedures, preferences,
+instructions, files, structured records, comments, decisions, and reusable
+context. Anything that should persist in the company is an Idea unless it is
+another core primitive.
 
 This page is the architectural view of Ideas. For the developer/MCP API surface (search, store, scopes, ranking), see [Memory (Ideas)](/docs/concepts/memory).
 
@@ -56,7 +59,7 @@ An agent's identity is a set of Ideas with `injection_mode=always`. The agent's 
 | Scope | Visibility |
 |---|---|
 | `domain` (default) | Project-level — all agents in the entity. |
-| `system` | Cross-entity — all agents, every entity (rare; system prompts). |
+| `system` | Cross-entity — all agents, every entity (rare; system context). |
 | `entity` | Agent-specific — only one agent. |
 
 ## Comments and activity

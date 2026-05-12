@@ -1,61 +1,74 @@
-# Memory (Ideas)
+# Ideas and Memory
 
-Ideas are aeqi's knowledge primitive — HOW in the four-primitive model. Facts, procedures, preferences, and instructions that persist across sessions. Stored in `aeqi.db` with FTS5 full-text search plus optional vector embeddings for hybrid retrieval.
+Ideas are the durable knowledge objects inside an aeqi company. Memory is what
+the company becomes as ideas, sessions, events, quests, and outcomes accumulate.
 
-## Store and Recall
+This is where work compounds.
 
-Through the `ideas` MCP tool (inside Claude Code or any MCP client):
+## What counts as an idea
 
-```
-ideas(action='search', project='myproject', query='authentication patterns')
-```
+An idea can be:
 
-```
-ideas(action='store', project='myproject', key='jwt-refresh',
-      content='Use rotating refresh tokens with 7-day expiry',
-      category='procedure')
-```
+- a strategy
+- a fact
+- a procedure
+- a customer note
+- a file
+- a decision
+- a policy
+- a research finding
+- a product requirement
+- an agent identity note
+- a standing instruction
+- a reusable operating pattern
 
-## Categories
+The name is intentionally broad. The company needs one universal noun for
+context.
 
-| Category | Use case |
-|----------|----------|
-| `fact` | Objective information (default) |
-| `procedure` | How to do something |
-| `preference` | User or system preferences |
-| `context` | Situational context |
-| `evergreen` | Permanent knowledge that does not decay |
+## Why memory matters
 
-## Scope
+Most companies leak context. Decisions vanish into chat, procedures become stale,
+and new contributors start from zero.
 
-| Scope | Visibility |
-|-------|-----------|
-| `domain` | Project-level (default) — all agents in the project |
-| `system` | Cross-project — all agents, every project |
-| `entity` | Agent-specific — one agent only |
+aeqi treats memory as operating infrastructure. Agents can retrieve what the
+company knows, add what they learn, and carry context forward into future work.
 
-## Ranking
+That makes the company smarter over time.
 
-Search combines three signals:
+## Activation modes
 
-- **Keyword relevance** — FTS5 BM25
-- **Semantic similarity** — vector cosine distance (when embeddings enabled)
-- **Temporal decay** — newer ideas rank higher; configurable half-life
+Ideas can be used in different ways:
 
-Recent learnings surface first. Old knowledge fades unless marked `evergreen`.
+| Mode | Behavior |
+|---|---|
+| Always | Loaded into relevant sessions by default |
+| Recall | Retrieved when needed |
+| Event | Activated by a trigger |
+| Attached | Bound to a quest, role, agent, or session |
 
-## Activation Modes
+Agent identity can be represented as always-available ideas. Company strategy
+can be stored as evergreen ideas. Quest-specific context can be attached only to
+the work that needs it.
 
-| Mode | Behavior | Use case |
-|------|----------|----------|
-| `always` | Loaded into every session | Identity, standing instructions |
-| `event` | Loaded when an event fires | Automated behaviors |
-| `recall` | Loaded via search | Accumulated knowledge |
+## Memory and attribution
 
-Identity lives in `always`-mode ideas — an agent's "personality" is just a set of always-injected ideas, not a separate prompt system.
+Memory is not only for better answers. It is the beginning of operating truth.
 
-## Next Steps
+When a company preserves:
 
-- [Agents](/docs/concepts/agents) — identity as always-injected ideas
-- [Quests](/docs/concepts/quests) — ideas referenced per quest via `idea_ids`
-- [REST API — Ideas](/docs/api/rest) — HTTP endpoints
+- the instruction
+- the context
+- the role
+- the agent
+- the work trace
+- the outcome
+
+then contribution becomes inspectable. That is the foundation for future
+compensation, governance, ownership, and capital allocation.
+
+## Related
+
+- [Company](/docs/concepts/company)
+- [Quests](/docs/concepts/quests)
+- [Sessions](/docs/concepts/sessions)
+- [Agent runtime overview](/docs/concepts/agent-runtime-overview)

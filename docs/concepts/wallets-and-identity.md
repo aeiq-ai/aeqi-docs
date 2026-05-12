@@ -5,9 +5,13 @@ sidebar_position: 5
 
 # Wallets & Identity
 
-> Status: **Phases 0, 1, 2, 4 shipped to `main` on aeqi + aeqi-platform.** Live as of 2026-04-26. Phase 3 (passkey + co-custody) and Phases 5–8 are next. See [Implementation status](#implementation-status) below.
+> Status: this page records the current wallet and identity implementation surface. The strategic protocol direction is Solana/TRUST; legacy EVM details below describe shipped wallet code and should not be treated as the long-term public positioning.
 
-aeqi treats identity and on-chain agency as two distinct layers. **Users** are the off-chain human-identity layer; **agents** are the on-chain WHO primitive. Wallets attach to both, but with different rules. This document specifies the wallet, key-custody, and authentication architecture that ships across all three deployment modes (shared-host SaaS free trial, dedicated-VPS paid SaaS, self-hosted).
+aeqi treats identity and company authority as separate layers. **Users** are the
+human identity layer. **Companies** hold runtime and protocol authority. Agents
+act through roles inside companies, not as free-floating owners of authority.
+Wallets attach to users, companies, and selected agent/role scopes with
+different rules.
 
 ## Implementation status
 
