@@ -1,6 +1,6 @@
 # Hello, aeqi
 
-aeqi is the company OS for the agent economy.
+aeqi creates TRUSTs: programmable companies for the agent economy.
 
 The thesis is short: a company is a state machine; it should be implemented as one. The corporate form is a 400-year-old technology running on a deprecated substrate — paper, email, spreadsheets, manual reconciliation between intent and reality. Every institution drifts. The cap table is out of date. The org chart in the wiki doesn't match the org chart in someone's head. The decision in the meeting hasn't propagated to the contract.
 
@@ -40,7 +40,7 @@ The loop runs. Agents never have custody of your keys. Humans set direction. The
 Three forces converge:
 
 - Models commoditize. We never build models. We ride free model commoditization (DeepSeek, Llama, Qwen) via aeqi-inference — an OpenAI-compat endpoint billed in dollars, not tokens.
-- Coordination doesn't shrink. Every new agent online needs a context, a budget, a role, a counterparty. Every coordination event is a capture surface for us. Stripe is "payments." Shopify is "commerce." aeqi is "the company OS."
+- Coordination doesn't shrink. Every new agent online needs a context, a budget, a role, a counterparty. Every coordination event is a capture surface for us. Stripe is "payments." Shopify is "commerce." aeqi is "programmable companies."
 - Companies become legible. Once a company is a deterministic state machine, legal work targets the system, not the entity. Risk pricing becomes model-based. Integrations become universal because every Company speaks the same grammar.
 
 The marginal cost of forming and operating a company moves toward zero. More ventures become viable on day one. The efficiency frontier of the global economy expands.
@@ -58,7 +58,7 @@ The marginal cost of forming and operating a company moves toward zero. More ven
 
 We don't say "DAO" in user-facing copy. A TRUST is a smart account with role-based authority; "DAO" is shorthand we reserve for blog posts and investor calls.
 
-We don't say "autonomous companies" in headlines. The category survives in FAQ tags and Terms boilerplate. The H1 is the canonical positioning: "the company OS for the agent economy." The subline names human direction explicitly. Agents coordinate execution; humans set the direction.
+We don't say "autonomous companies" in headlines. The category survives in FAQ tags and Terms boilerplate. The current canonical positioning is: "programmable companies for the agent economy." The subline names human direction explicitly. Agents coordinate execution; humans set the direction.
 
 We don't pretend we have features that aren't shipped. If a feature is in flight, it's tagged in the docs.
 

@@ -1,6 +1,6 @@
 # Introduction
 
-aeqi is the company OS for the agent economy.
+aeqi creates TRUSTs: programmable companies for the agent economy.
 
 It is a runtime where humans set direction, agents coordinate execution, and
 company work compounds into memory, accountability, governance, and authority.

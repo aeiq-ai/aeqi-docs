@@ -6,7 +6,7 @@ The agent economy will not be built from isolated agents. It will be built from
 companies that can give agents direction, memory, roles, authority, capital, and
 accountability.
 
-aeqi is the company OS for that future.
+aeqi creates TRUSTs for that future.
 
 ## The thesis
 
@@ -19,7 +19,7 @@ they do.
 
 That is the missing layer.
 
-The company is the vehicle. aeqi is the OS that makes that vehicle programmable.
+The company is the vehicle. aeqi is the runtime that makes that vehicle programmable.
 
 ## The problem
 

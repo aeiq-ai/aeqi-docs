@@ -54,7 +54,7 @@ The product had primitives. It had architecture. It had a thesis. What it didn't
 
 Drop a thought into Ideas — it's a real document. Open a channel — it's a real room. Open a Quest — it's a real working page. Talk to an agent — its voice lives in the same noun as its memory. Watch what it costs — every call shows up.
 
-The point of the company OS for the agent economy is not that agents exist. The point is that the founder's stream of thought becomes the company's execution loop, with no translation layer in between. v0.41.0 is the first release where the loop closes inside one product.
+The point of programmable companies for the agent economy is not that agents exist. The point is that the founder's stream of thought becomes the company's execution loop, with no translation layer in between. v0.41.0 is the first release where the loop closes inside one product.
 
 ## What's next
 

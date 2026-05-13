@@ -88,4 +88,4 @@ If you're building a blueprint:
 - [Blueprint schema](/docs/reference/blueprint-schema)
 - [Composition: same shape, repeated](/docs/methodology/composition)
 
-The Company OS for the agent economy is here. Spawn one. Talk to it.
+Programmable companies for the agent economy are here. Spawn one. Talk to it.

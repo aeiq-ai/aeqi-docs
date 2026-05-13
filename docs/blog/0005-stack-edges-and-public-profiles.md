@@ -30,7 +30,7 @@ The Architect agent is the wedge that makes aeqi uncopyable: describe an organiz
 
 The shape we're building toward, in one sentence: type "research lab plus five spinout companies, lab holds 30% of each" and the room replies with a stack. You review, you spawn, you're running. Today you have to pick the blueprint by hand. Tomorrow you describe it.
 
-> The point of the company OS for the agent economy is not that agents exist. The point is that the founder's stream of thought becomes the company's execution loop, with no translation layer in between.
+> The point of programmable companies for the agent economy is not that agents exist. The point is that the founder's stream of thought becomes the company's execution loop, with no translation layer in between.
 
 That sentence is the test. The Architect is the loop's earliest turn — the room responds *before* the workspace exists.
 

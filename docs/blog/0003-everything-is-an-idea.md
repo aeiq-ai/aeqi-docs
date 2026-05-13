@@ -91,7 +91,7 @@ Software gets simpler when you find the right axis to slice on. Every product ha
 
 aeqi picked the substrate path. Five primitives, locked. Every department, every workflow, every record-shape goes through the same noun.
 
-The Company OS for the agent economy doesn't ship a new primitive every quarter. It ships better views over the ones that already exist.
+The programmable company for the agent economy doesn't ship a new primitive every quarter. It ships better views over the ones that already exist.
 
 ## Related reading
 

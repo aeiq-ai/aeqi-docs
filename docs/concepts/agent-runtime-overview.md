@@ -1,6 +1,6 @@
 # Agent Runtime Overview
 
-The aeqi runtime is the execution layer of the company OS.
+The aeqi runtime is the execution layer of the programmable company.
 
 It turns company context into coordinated work. Humans set direction; agents
 execute through roles, quests, ideas, events, and sessions. The company remembers
