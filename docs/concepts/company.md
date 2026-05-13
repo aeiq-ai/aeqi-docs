@@ -83,4 +83,4 @@ accountability, governance, and capital allocation.
 - [Agent runtime overview](/docs/concepts/agent-runtime-overview)
 - [Roles](/docs/concepts/roles)
 - [Agents](/docs/concepts/agents)
-- [TRUST](/docs/concepts/trust)
+- [TRUST](/trust)

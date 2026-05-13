@@ -87,5 +87,5 @@ Three reasons:
 
 ## Related
 
-- [TRUST](/docs/concepts/trust)
+- [TRUST](/trust)
 - [Canonical templates](/docs/architecture/canonical-templates)

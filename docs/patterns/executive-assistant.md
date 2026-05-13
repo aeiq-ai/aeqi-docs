@@ -55,7 +55,7 @@ BotFather privacy mode MUST be **Disabled** for Layer 1 to work. Re-add the bot 
 
 ## Why "CEO Assistant" is wrong
 
-Tested 2026-05-06 in the AEQI dogfood. Founder's reflex: "shouldn't it be a bot which doesn't have that much authority or actually make it executive assistant of the whole C-suite?" Renaming the existing agent + retitling the role + clarifying the charter took the agent from "CEO's mouthpiece" framing to "shared exec resource" framing without any structural change.
+Tested 2026-05-06 in the aeqi reference company. Founder's reflex: "shouldn't it be a bot which doesn't have that much authority or actually make it executive assistant of the whole C-suite?" Renaming the existing agent + retitling the role + clarifying the charter took the agent from "CEO's mouthpiece" framing to "shared exec resource" framing without any structural change.
 
 Conversion path (if you started with a CEO Assistant):
 
@@ -64,15 +64,6 @@ Conversion path (if you started with a CEO Assistant):
 3. Replace the persona Idea with the charter Idea above.
 4. Restart the tenant.
 
-## Reference: AEQI dogfood
-
-Live in the AEQI tenant:
-
-- Agent `c0ba8326`
-- Role `98488ed4`
-- Channel `d60c36bb-93fc-4555-aefc-f0eed03e713f` (Telegram bot `@aeqi_ea_bot`, allowed group `-5133857242` "ÆQI").
-
-The bot is mention-gated and DMs always-act.
 
 ## Related
 

@@ -63,4 +63,4 @@ This creates one company with a 30-day inference budget ($25) included. After 30
 ## See Also
 
 - [Inference API](/docs/api/inference) — inference billing lanes and rate limits
-- [TRUST](/docs/concepts/trust) — the programmable company vehicle registered on-chain
+- [TRUST](/trust) — the programmable company vehicle registered on-chain

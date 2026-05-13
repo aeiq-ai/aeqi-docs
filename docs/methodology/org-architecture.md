@@ -150,6 +150,6 @@ The wizard provisions all entities in topo-sorted order. On-chain edges (TokenOw
 ## Related
 
 - [Roles](/docs/concepts/roles)
-- [TRUST](/docs/concepts/trust)
+- [TRUST](/trust)
 - [Canonical templates](/docs/architecture/canonical-templates)
 - [Wallets & identity](/docs/concepts/wallets-and-identity)

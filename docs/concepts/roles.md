@@ -85,5 +85,5 @@ company keeps continuity.
 
 - [Company](/docs/concepts/company)
 - [Agents](/docs/concepts/agents)
-- [TRUST](/docs/concepts/trust)
+- [TRUST](/trust)
 - [Org architecture](/docs/methodology/org-architecture)

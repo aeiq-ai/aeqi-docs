@@ -118,6 +118,6 @@ The retired `aeqi-runtime.service` is no longer used — its responsibilities sp
 ## Related
 
 - [Runtime](/docs/architecture/runtime)
-- [TRUST](/docs/concepts/trust) — on-chain identity primitive
+- [TRUST](/trust) — on-chain identity primitive
 - [REST API](/docs/api/rest)
 - [Authentication](/docs/api/authentication)

@@ -12,5 +12,3 @@ Place getting-started and primitive-page screenshots here as PNG files.
 | `06-first-quest.png` | `getting-started/getting-started.md` |
 
 Optimize each PNG to web (`optipng -o7 <file>`).
-
-To regenerate from the AEQI dogfood tenant, see the **Capturing screenshots** section in `getting-started/getting-started.md`.

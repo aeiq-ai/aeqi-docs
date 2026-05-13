@@ -188,7 +188,7 @@ aeqi/presets/blueprints/
   ├── venture.json
   ├── foundation.json
   ├── index-fund.json
-  ├── aeqi-company.json          (the AEQI dogfood blueprint)
+  ├── aeqi-company.json          (the aeqi reference company blueprint)
   └── stacks/
       ├── founder-plus-spinout.json
       └── vc-fund-with-3-portfolios.json

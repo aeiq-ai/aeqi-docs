@@ -113,7 +113,7 @@ authority live in one operating context.
 The runtime creates the operating history that authority and ownership should
 act on.
 
-See [TRUST](/docs/concepts/trust).
+See [TRUST](/trust).
 
 ## Hosted and self-hosted runtime
 

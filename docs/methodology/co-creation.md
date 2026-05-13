@@ -30,7 +30,7 @@ When a blueprint is provisioned (single or stack), the workspace boots with:
 | Kickoff Quests | One or two open Quests per agent: "Draft your first 30 days," "Connect your shared mailbox," etc. |
 | TRUST | On-chain registration (when the user opts to register; can be deferred). |
 
-The AEQI dogfood tenant ships with 7 agents, 11 roles, 45 ideas, 28 events, 3 open kickoff Quests. That's the reference shape.
+The aeqi reference company ships with 7 agents, 11 roles, 45 ideas, 28 events, 3 open kickoff Quests. That's the reference shape.
 
 ## Agent-driven onboarding
 

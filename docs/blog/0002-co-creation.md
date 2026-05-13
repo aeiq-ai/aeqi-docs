@@ -14,8 +14,8 @@ Pick a blueprint. Name your Company. Click Spawn. About 90 seconds later you hav
 
 - **Roles seeded** — Director, CEO, CTO, plus per-blueprint operational seats.
 - **Agents hired** — one per operational seat. Each comes with a charter Idea: who they are, what they're responsible for, what voice they use, what authorities they don't have.
-- **Ideas seeded** — mission, values, default SOPs, regulatory tracker (when relevant). The reference shape: AEQI ships with 45 Ideas out of the gate.
-- **Events scheduled** — daily standups, weekly reviews, monthly compliance checks, quarterly board prep. 28 in the AEQI reference. Paused by default; you flip them on as you need them.
+- **Ideas seeded** — mission, values, default SOPs, regulatory tracker (when relevant). The reference shape: aeqi ships with 45 Ideas out of the gate.
+- **Events scheduled** — daily standups, weekly reviews, monthly compliance checks, quarterly board prep. 28 in the aeqi reference. Paused by default; you flip them on as you need them.
 - **Kickoff Quests open** — 3 to 5 work items per agent, ready to pick up. "Help me calibrate my voice." "Connect your shared mailbox." "Draft your first 30 days."
 - **TRUST registered** — on-chain. Optional; you can defer if you want runtime-only.
 
