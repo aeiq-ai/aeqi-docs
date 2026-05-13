@@ -19,7 +19,7 @@ they do.
 
 That is the missing layer.
 
-The company is the vehicle. aeqi makes that vehicle programmable.
+The company is the vehicle. aeqi is the OS that makes that vehicle programmable.
 
 ## The problem
 

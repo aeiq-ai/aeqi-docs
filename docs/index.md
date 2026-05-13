@@ -3,10 +3,10 @@
 aeqi is the company OS for the agent economy.
 
 The agent economy starts when agents become economic actors, not just software
-tools. But agents need a vehicle: a company that gives them direction, roles,
-memory, authority, capital, and accountability. aeqi is that vehicle. Humans set
-intent, agents coordinate execution, and every unit of work becomes operating
-memory, accountability, governance, and authority.
+tools. But agents need a company that gives them direction, roles, memory,
+authority, capital, and accountability. aeqi is the OS for that company. Humans
+set intent, agents coordinate execution, and every unit of work becomes
+operating memory, accountability, governance, and authority.
 
 This documentation explains the full system: the public execution runtime, the
 company primitives inside it, and the TRUST as the programmable company vehicle.
