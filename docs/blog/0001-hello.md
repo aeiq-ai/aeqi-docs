@@ -10,18 +10,19 @@ aeqi is the substrate.
 
 ## What we built
 
-A self-hostable Rust binary. SQLite state. Embedded dashboard. One process runs an entire TRUST — agents, events, quests, ideas, sessions, channels — under a single tenant, on a single port. No Postgres, no Redis, no message queue. Source-available to inspect and self-host; hosted access opens through the launch plans.
+A self-hostable Rust binary. SQLite state. Embedded dashboard. One process can run a TRUST - agents, roles, events, quests, ideas, sessions, and memory - under a single tenant. Source-available to inspect and self-host; hosted access opens through the launch plans.
 
-On top: a protocol layer. Every TRUST can carry treasury, governance, ownership, and role authority as programmable state. Cap tables stop being PDFs. They become state.
+On top: a protocol layer. Every TRUST can carry treasury, governance, ownership, and role authority as programmable state. Cap tables stop being disconnected PDFs. They become company state.
 
-We picked four primitives and we hold the line:
+We picked five primitives and we hold the line:
 
-- **Roles** answer **WHO**. Org-chart slots in an entity, occupied by humans or agents.
-- **Events** answer **WHEN**. Signals that wake agents and fire executions.
+- **Agents** answer **WHO EXECUTES**. Software workers that occupy roles and run scoped work.
+- **Roles** answer **UNDER WHAT AUTHORITY**. Org-chart slots occupied by humans or agents.
+- **Events** answer **WHEN**. Signals and records that wake agents and preserve what happened.
 - **Quests** answer **WHAT**. Structured units of work with goals, worktrees, outcomes.
-- **Ideas** answer **HOW**. The universal data noun — knowledge, files, structured records, anything that's stored.
+- **Ideas** answer **HOW**. The universal data noun: knowledge, files, structured records, anything the company stores.
 
-Plus Sessions — the universal conversation primitive — and TRUST — the on-chain identity. Five primitives, no more. Every other word someone tries to add (Customer, Contact, Vendor, Document, Project, Campaign) reduces to a saved view over Ideas.
+Plus Sessions - the universal conversation primitive - and TRUST - the programmable company vehicle. Every other word someone tries to add (Customer, Contact, Vendor, Document, Project, Campaign) reduces to a saved view over Ideas.
 
 ## How to think about it
 
@@ -47,12 +48,11 @@ The marginal cost of forming and operating a company moves toward zero. More ven
 
 ## What's shipping right now
 
-- **Click-to-TRUST.** Sign up, pick a blueprint, name it, deploy. End-to-end on-chain registration in about 90 seconds. Production trustsCount: 14+.
-- **Agent runtime.** Five primitives live. Agents greet you, open kickoff Quests, ask the right questions to fill in your Company's context.
-- **Per-agent OAuth.** Connect Gmail, Calendar, etc. — per agent, scoped, revocable.
-- **aeqi-inference.** OpenAI-compatible chat completions. Phase 1 live with DeepInfra.
-- **x402.** Pay $19 USDC, get a Company. One HTTP call.
-- **Workspace billing.** $49/mo gets you up to 10 Companies, $25 of pooled inference.
+- **Click-to-TRUST.** Sign up, pick a blueprint, name it, deploy. The launch path creates the company runtime and anchors the TRUST through the protocol path as the rollout stage allows.
+- **Agent runtime.** The core primitives are live. Agents greet you, open kickoff Quests, ask the right questions, and build the company's context.
+- **API and MCP.** The same company state is reachable from the web UI, REST API, and MCP clients.
+- **aeqi-inference.** OpenAI-compatible chat completions for agent execution.
+- **Payments and billing.** Hosted plans and usage-based inference are staged so companies can pay for the runtime and the work it performs.
 
 ## What we don't say
 
