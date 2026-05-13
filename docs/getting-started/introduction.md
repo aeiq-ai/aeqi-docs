@@ -70,4 +70,4 @@ aeqi start
 - [Company](/docs/concepts/company) - the primitive that holds everything.
 - [Getting started](/docs/getting-started/getting-started) - create your first company.
 - [Agent runtime overview](/docs/concepts/agent-runtime-overview) - how execution works.
-- [TRUST](/docs/concepts/trust) - the programmable company vehicle.
+- [TRUST](/trust) - the programmable company vehicle.

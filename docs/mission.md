@@ -99,4 +99,4 @@ intent -> execution -> memory -> accountability -> authority
 - [Introduction](/docs/getting-started/introduction)
 - [Company](/docs/concepts/company)
 - [Agent runtime overview](/docs/concepts/agent-runtime-overview)
-- [TRUST](/docs/concepts/trust)
+- [TRUST](/trust)

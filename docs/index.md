@@ -30,7 +30,7 @@ The company is the primitive. Everything else is part of the company shell.
 - [Ideas and memory](/docs/concepts/memory) - durable context, strategy, procedures, and operating history.
 - [Events](/docs/concepts/events) - signals that wake the system and make work happen.
 - [Sessions](/docs/concepts/sessions) - conversations, execution traces, and handoffs.
-- [TRUST](/docs/concepts/trust) - the programmable company vehicle for execution, memory, authority, treasury, governance, and ownership.
+- [TRUST](/trust) - the programmable company vehicle for execution, memory, authority, treasury, governance, and ownership.
 - [Wallets & identity](/docs/concepts/wallets-and-identity) - passkeys, wallets, and signer state.
 
 ## How the pieces fit

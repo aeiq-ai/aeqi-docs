@@ -169,7 +169,7 @@ const agreementCid = await pinToIPFS(operatingAgreementPDF);
 // 2. Create parent document with references (use string format)
 const parentData = {
   version: 1,
-  name: 'My DAO',
+  name: 'My TRUST',
   references: [
     {
       type: 'operating-agreement',
@@ -260,6 +260,6 @@ async function testCidRoundTrip() {
 
 ## See Also
 
-- **[Factory Flow Reference](factory-flow.md)** — how Factory uses ValueConfigs with CIDs for DAO configuration
-- **[Solana Program Anchor Documentation](https://www.anchor-lang.com/)** — for on-chain serialization patterns
-- **[IPFS Content Addressing](https://docs.ipfs.tech/concepts/content-addressing/)** — CID specification and format versions
+- **[Factory Flow Reference](factory-flow.md)** - how Factory uses ValueConfigs with CIDs for TRUST configuration
+- **[Solana Program Anchor Documentation](https://www.anchor-lang.com/)** - for on-chain serialization patterns
+- **[IPFS Content Addressing](https://docs.ipfs.tech/concepts/content-addressing/)** - CID specification and format versions

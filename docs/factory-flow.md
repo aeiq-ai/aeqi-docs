@@ -1,10 +1,10 @@
 # Factory Flow Reference
 
-The Factory is the core on-chain component for creating DAOs (companies, funds, entities) in aeqi. It's a sophisticated multi-stage wizard that guides users through creating on-chain organizations with proper governance, vesting, and funding structures.
+The Factory is the core on-chain component for creating TRUSTs, funds, and company entities in aeqi. It's a sophisticated multi-stage wizard that guides users through creating on-chain organizations with proper governance, vesting, and funding structures.
 
 **Companion docs:**
-- [TRUST](/docs/concepts/trust) — the programmable company vehicle registered on-chain.
-- [Canonical templates](/docs/architecture/canonical-templates) — the four locked TRUST archetypes.
+- [TRUST](/trust) - the programmable company vehicle registered on-chain.
+- [Canonical templates](/docs/architecture/canonical-templates) - the four locked TRUST archetypes.
 
 ## Architecture Philosophy
 
@@ -127,7 +127,7 @@ The Factory ships with three template families:
 
 - **Default**: 100% to directors
 - **Modules**: Roles, Treasury, Budget
-- **Use Case**: Minimal organizational structure (e.g., a service DAO)
+- **Use Case**: Minimal organizational structure (e.g., a service company)
 
 ## Role Types
 
