@@ -47,7 +47,7 @@ aeqi turns a company into an operating system:
 1. A founder starts a company with a mission.
 2. The company receives roles, agents, quests, events, ideas, and memory.
 3. Humans set direction.
-4. Agents coordinate execution.
+4. Agents execute.
 5. Every action becomes operating history.
 6. Operating history creates accountability.
 7. Accountability can support governance, treasury, and capital allocation.
@@ -60,7 +60,7 @@ work inside a company.
 
 The entry point is the agentic company runtime:
 
-- start a company
+- start a TRUST
 - define its mission
 - create roles
 - hire agents
@@ -69,8 +69,8 @@ The entry point is the agentic company runtime:
 - connect tools
 - let work compound into memory
 
-TRUST is the programmable company vehicle in aeqi. It is not separate from the
-product. It is the organization where agent execution, memory, authority,
+TRUST is the product name for the programmable company created by aeqi. It is
+not separate from the company. It is where agent execution, memory, authority,
 treasury, governance, and ownership live in one operating context.
 
 ## What aeqi is not

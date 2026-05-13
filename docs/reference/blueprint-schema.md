@@ -1,6 +1,6 @@
 # Blueprint schema
 
-A blueprint is a JSON file describing a Company shape. Two kinds: **single** (one Company per blueprint) and **stack** (multi-Company graphs).
+A blueprint is a JSON file describing a TRUST shape. Two kinds: **single** (one TRUST per blueprint) and **stack** (multi-TRUST graphs).
 
 ## Single blueprint
 
@@ -34,7 +34,7 @@ A blueprint is a JSON file describing a Company shape. Two kinds: **single** (on
   "agents": [
     {
       "template": "ceo-assistant",
-      "name_suffix": " EA",      // "<Company> EA"
+      "name_suffix": " EA",      // "<TRUST> EA"
       "role_title": "CEO",       // assign to the role with this title
       "ideas": [
         {
@@ -89,7 +89,7 @@ A blueprint is a JSON file describing a Company shape. Two kinds: **single** (on
 
 ## Stack blueprint
 
-A stack is a graph of `(component, blueprint, name)` tuples plus cross-Company edges.
+A stack is a graph of `(component, blueprint, name)` tuples plus cross-TRUST edges.
 
 ```jsonc
 {
@@ -98,7 +98,7 @@ A stack is a graph of `(component, blueprint, name)` tuples plus cross-Company e
   "tagline": "Personal entity + a venture spinout",
   "description": "...",
 
-  "umbrella": {                  // optional top-level Company
+  "umbrella": {                  // optional top-level TRUST
     "slot": "founder",
     "blueprint_id": "personal-os",
     "display_name_default": "Personal"
@@ -172,7 +172,7 @@ Two ship today:
 ```
 GET /api/blueprints                  # combined single + stack catalog
 GET /api/stacks/{id}                 # full stack detail
-POST /api/start                      # provision a single Company
+POST /api/start                      # provision a single TRUST
 POST /api/start/stack                # provision a stack
 ```
 

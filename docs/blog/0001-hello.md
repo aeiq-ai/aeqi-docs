@@ -10,9 +10,9 @@ aeqi is the substrate.
 
 ## What we built
 
-A self-hostable Rust binary. SQLite state. Embedded dashboard. One process runs an entire Company — agents, events, quests, ideas, sessions, channels — under a single tenant, on a single port. No Postgres, no Redis, no message queue. Free to start. Paid to scale.
+A self-hostable Rust binary. SQLite state. Embedded dashboard. One process runs an entire TRUST — agents, events, quests, ideas, sessions, channels — under a single tenant, on a single port. No Postgres, no Redis, no message queue. Source-available to inspect and self-host; hosted access opens through the launch plans.
 
-On top: a chain layer. Every Company is a TRUST — a role-graph smart account on Base. Treasury, governance, ownership, role authority — on-chain, deterministic, enforceable. Cap tables stop being PDFs. They become state.
+On top: a protocol layer. Every TRUST can carry treasury, governance, ownership, and role authority as programmable state. Cap tables stop being PDFs. They become state.
 
 We picked four primitives and we hold the line:
 
@@ -58,7 +58,7 @@ The marginal cost of forming and operating a company moves toward zero. More ven
 
 We don't say "DAO" in user-facing copy. A TRUST is a smart account with role-based authority; "DAO" is shorthand we reserve for blog posts and investor calls.
 
-We don't say "autonomous companies" in headlines. The category survives in FAQ tags and Terms boilerplate. The current canonical positioning is: "programmable companies for the agent economy." The subline names human direction explicitly. Agents coordinate execution; humans set the direction.
+We don't say "autonomous companies" in headlines. The category survives in FAQ tags and Terms boilerplate. The current canonical positioning is: "programmable companies for the agent economy." The subline names human direction explicitly. Agents execute; humans set the direction.
 
 We don't pretend we have features that aren't shipped. If a feature is in flight, it's tagged in the docs.
 

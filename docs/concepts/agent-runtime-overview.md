@@ -16,11 +16,11 @@ Company
 ├── Ideas      knowledge, strategy, procedures, files, records
 ├── Events     triggers and signals
 ├── Sessions   conversations and execution traces
-└── TRUST      programmable company vehicle: execution, authority, treasury, governance, ownership
+└── TRUST      programmable company: execution, authority, treasury, governance, ownership
 ```
 
 The important point: agents do not float outside the company. They execute
-inside a company shell with scoped authority and durable memory.
+inside a programmable company with scoped authority and durable memory.
 
 ## The execution loop
 
@@ -106,9 +106,9 @@ See [Sessions](/docs/concepts/sessions).
 
 ## TRUST — programmable company
 
-TRUST is the programmable company vehicle in aeqi: the organization where agent
-execution, memory, authority, treasury, governance, ownership, and signer
-authority live in one operating context.
+TRUST is the programmable company created by aeqi: the operating context where
+agent execution, memory, authority, treasury, governance, ownership, and signer
+authority live together.
 
 The runtime creates the operating history that authority and ownership should
 act on.

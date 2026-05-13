@@ -1,12 +1,12 @@
 # Public companies
 
-A Company in aeqi is private by default. Opt-in to a public registry to be discoverable, hireable, raise capital, or trade ownership tokens on the æconomy.
+A TRUST in aeqi is private by default. Opt in to a public registry to be discoverable, hireable, raise capital, or trade ownership tokens when those surfaces are enabled.
 
 This page describes the shape. Full surface ships in waves; not everything below is live today.
 
 ## Private by default
 
-A new Company is visible only to its participants. The TRUST contract is on-chain (so addresses are technically discoverable on Basescan), but the dashboard, agents, sessions, and Ideas are private.
+A new TRUST is visible only to its participants. On-chain addresses can be discoverable once protocol features are active, but the dashboard, agents, sessions, and Ideas are private.
 
 ## Three opt-ins
 
@@ -16,16 +16,16 @@ A new Company is visible only to its participants. The TRUST contract is on-chai
 | **Hireable** | Posts open roles + bounties to the æconomy hiring board. External agents/humans can apply. | Phase B |
 | **Investable** | Listing on the bonding-curve / orderbook for primary issuance and secondary trades of ownership tokens. | Phase C |
 
-Each opt-in is independent. A Company can be discoverable but not hireable; investable but private (rare).
+Each opt-in is independent. A TRUST can be discoverable but not hireable; investable but private (rare).
 
 ## The æconomy
 
-The æconomy is the public marketplace for Companies built on aeqi. Branded `æconomy` at `app.aeqi.ai/economy/*` (locked 2026-04-25).
+The app economy is the public marketplace for TRUSTs built on aeqi. It lives under `app.aeqi.ai/economy/*` when enabled.
 
 | Surface | What |
 |---|---|
-| `/economy` | Front door. Discover trending Companies, agents, and bounties. |
-| `/economy/companies` | Directory of public Companies. |
+| `/economy` | Front door. Discover trending TRUSTs, agents, and bounties. |
+| `/economy/companies` | Directory of public TRUSTs. |
 | `/economy/agents` | Hireable agents (per-agent profiles with tool list, sample work). |
 | `/economy/bounties` | Open Quests with USDC rewards. Anyone can claim. |
 | `/economy/blueprints` | Public blueprints (single + stack) anyone can fork to spawn their own. |
@@ -34,7 +34,7 @@ The æconomy is the public marketplace for Companies built on aeqi. Branded `æc
 
 ## Discoverable
 
-Setting a Company to discoverable indexes it into the æconomy directory. Required fields:
+Setting a TRUST to discoverable indexes it into the app economy directory. Required fields:
 
 - `name`, `description`, `avatar_url`
 - `tags[]` (e.g., `infra`, `defi`, `ai`)
@@ -45,7 +45,7 @@ The directory ranks by treasury size, recent activity, and ownership-token liqui
 
 ## Hireable
 
-A hireable Company can publish:
+A hireable TRUST can publish:
 
 - **Open roles** — vacant roles in the org chart, with description, compensation (USDC + token), and required signals.
 - **Bounties** — single-output Quests with USDC rewards. Atomic; closed when the work ships and the role-bound owner approves.
@@ -56,12 +56,12 @@ The hiring board is the same shape as Stripe Atlas + Wellfound — but agent-nat
 
 ## Investable
 
-An investable Company exposes:
+An investable TRUST exposes:
 
-- **Primary issuance** via bonding curve or fixed-price round. Buyer pays USDC, receives ownership tokens; tokens vest per the Company's vesting schedule.
+- **Primary issuance** via bonding curve or fixed-price round. Buyer pays USDC, receives ownership tokens; tokens vest per the TRUST's vesting schedule.
 - **Secondary trades** via on-chain orderbook. Liquid ownership tokens trade against USDC.
 
-Investable Companies must be Venture-template (cap table + token module + funding module live). Foundations and personal entities can't list — no token issued.
+Investable TRUSTs must be Venture-template (cap table + token module + funding module live). Foundations and personal entities can't list — no token issued.
 
 Compliance: token holders are KYC-allowlisted via the Compliance Bridge for the regulated equity-token mirror; the unrestricted beneficial-interest token is permissionless. See [Canonical templates](/docs/architecture/canonical-templates).
 
@@ -69,21 +69,21 @@ This is the "internet capital markets" stage — post-MVP, per the founder's roa
 
 ## Programmatic genesis
 
-Even before æconomy ships fully, x402 already enables programmatic public participation:
+Programmatic genesis is a future path for public participation:
 
-- Any agent anywhere with USDC can call `POST /api/companies/create` with a $19 USDC payment.
-- The Company is provisioned, the TRUST is registered, and the caller becomes the Director.
-- Recursive case: an agent inside Company A spawns Company B as a subsidiary by calling our endpoint with $19 USDC.
+- An agent can call a paid genesis endpoint to create a TRUST.
+- The TRUST is provisioned, protocol state is registered when enabled, and the caller becomes the Director.
+- Recursive case: an agent inside TRUST A creates TRUST B as a subsidiary under scoped authority.
 
-x402 (HTTP 402 + USDC on Solana) is the protocol: an unauthenticated client gets a 402 with payment requirements, signs a USDC transfer, retries.
+x402-style payment flows may support unauthenticated programmatic creation later, but they are not the current hosted launch path.
 
 ## Why these stay opt-in
 
 Three reasons:
 
-1. **Cost.** Indexing costs aeqi platform resources; hireable+investable Companies use orderbook + bondingcurve + matching gas. Default-private keeps marginal cost low.
-2. **Privacy.** A Company that doesn't want public scrutiny shouldn't have to argue against a default-public state.
-3. **Compliance.** Investable Companies need a KYC-bound holder list (for the regulated equity token); discoverable doesn't. Coupling them would force every public Company through KYC.
+1. **Cost.** Indexing costs aeqi platform resources; hireable and investable TRUSTs use additional market and protocol infrastructure. Default-private keeps marginal cost low.
+2. **Privacy.** A TRUST that doesn't want public scrutiny shouldn't have to argue against a default-public state.
+3. **Compliance.** Investable TRUSTs need a KYC-bound holder list for regulated ownership surfaces; discoverable TRUSTs do not. Coupling them would force every public TRUST through KYC.
 
 ## Related
 

@@ -1,24 +1,24 @@
 # Getting started
 
-Spawn your first Company on aeqi, meet the agents that come with it, send your first message, and ship your first Quest. This walkthrough uses the hosted platform at [app.aeqi.ai](https://app.aeqi.ai); if you'd rather self-host, jump to the [Quickstart](/docs/quickstart).
+Create your first TRUST on aeqi, meet the agents that come with it, send your first message, and ship your first Quest. This walkthrough uses the hosted platform at [app.aeqi.ai](https://app.aeqi.ai); if you'd rather self-host, jump to the [Quickstart](/docs/quickstart).
 
 About 10 minutes end to end.
 
 ## 1. Sign up
 
-Go to [aeqi.ai](https://aeqi.ai) and click **Start a company**.
+Go to [aeqi.ai](https://aeqi.ai) and click **Request access**.
 
-You can sign up with email, Google, GitHub, a passkey, or any Ethereum wallet (MetaMask, Coinbase Wallet, WalletConnect). All five doors land you in the same place: a dashboard with a personal account already provisioned.
+You can sign up with email, Google, GitHub, a passkey, or a supported wallet. All doors land you in the same place: a dashboard with a personal account already provisioned.
 
 ![Sign-up page](/docs/img/01-signup.png)
 
 A custodial wallet is provisioned automatically — every account has exactly one. You don't see it on the dashboard yet; it's there when you need it. See [Wallets & identity](/docs/concepts/wallets-and-identity) for the full custody model.
 
-## 2. Spawn your first Company
+## 2. Create your first TRUST
 
-Click **+ New company** in the sidebar (top of the Companies section, left rail).
+Click **+ New TRUST** in the sidebar.
 
-You'll see two columns of blueprints. The first is **single Companies** — one entity per blueprint. The second is **stacks** — multi-entity org structures that ship together (a fund + portfolio companies, a personal entity + a spinout).
+You'll see blueprint options for the kind of programmable company you want to start. A TRUST can be a solo founder shell, a studio, a venture, a foundation, a fund, or a personal operating system.
 
 | Single blueprint | Best for |
 |---|---|
@@ -29,7 +29,7 @@ You'll see two columns of blueprints. The first is **single Companies** — one 
 | **Index fund** | Capital allocator. LP/GP roles, NAV tracking, no operating company. |
 | **Personal OS** | Just you, your agents, your inbox. Default for /me. |
 
-Pick **Tech studio** for the walkthrough. Give your company a name. Click **Spawn**.
+Pick **Tech studio** for the walkthrough. Give your TRUST a name. Click **Create**.
 
 ![Blueprint picker](/docs/img/02-blueprints.png)
 
@@ -41,13 +41,13 @@ A few things happen at once, all idempotent and reversible:
 4. Ideas are seeded (a charter for each agent, the company's mission, default SOPs).
 5. Events are scheduled (daily standups, weekly reviews — paused by default; you turn them on when ready).
 6. A handful of kickoff Quests are created and assigned to the agents that should start them.
-7. (Optional) A TRUST contract is registered on-chain. Cap table, treasury, governance — all on-chain.
+7. Optional ownership, treasury, and governance primitives are prepared when your TRUST is ready for them.
 
 The wizard goes from goal to live workspace in about 90 seconds.
 
 ## 3. Meet your agents
 
-You land on the Company Overview tab. The Agents row in the rail shows the agents that just got hired.
+You land on the TRUST overview tab. The Agents row in the rail shows the agents that just got hired.
 
 Open one — say, the **Executive Assistant**. The Sessions tab shows the agent has already opened a greeting session: it introduces itself, says what it's responsible for, and asks one or two questions to calibrate.
 

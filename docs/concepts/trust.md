@@ -1,8 +1,8 @@
 # TRUST
 
-TRUST is the programmable company vehicle in aeqi.
+TRUST is the product name for the programmable company created by aeqi.
 
-The entry point is execution: humans set direction, agents coordinate work, and
+The entry point is execution: humans set direction, agents execute, and
 memory compounds. A TRUST is where that execution, memory, authority, treasury,
 governance, and ownership live together.
 
@@ -17,9 +17,8 @@ governance, and ownership live together.
 | Ownership | Tokens, vesting, contribution records, future cap-table logic |
 | Agent authority | Scoped ability for agents to act under human-defined permissions |
 
-TRUST is not a separate product beside the company. In aeqi, the company is a
-TRUST once it has the programmable organization state that makes execution,
-authority, and ownership part of the same system.
+TRUST is not a separate object beside the company. In aeqi, the TRUST is the
+programmable company: execution, authority, and ownership in the same system.
 
 ## Why it exists
 
@@ -48,7 +47,7 @@ That is the bridge from agent execution to accountable governance and authority.
 
 ## TRUST is not
 
-- **Not a chatbot feature.** It is the programmable company vehicle.
+- **Not a chatbot feature.** It is the programmable company.
 - **Not a DAO-first product.** Governance exists, but token voting is not the category.
 - **Not a legal wrapper as the category.** Legal structure matters, but execution is the entry point.
 - **Not custody.** The architecture is designed around scoped authority and signer control, not aeqi holding user keys.
@@ -57,7 +56,7 @@ That is the bridge from agent execution to accountable governance and authority.
 
 The current protocol direction is Solana-based: smart-account infrastructure,
 role authority, treasury controls, and ownership primitives designed to make the
-TRUST a programmable organization, not just an off-chain workspace.
+TRUST a programmable company, not just an off-chain workspace.
 
 Docs should treat legacy EVM/Base language as historical unless a page is
 explicitly describing old code.

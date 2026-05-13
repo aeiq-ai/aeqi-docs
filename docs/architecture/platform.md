@@ -9,9 +9,9 @@ aeqi-platform is the control plane for hosted aeqi. It owns auth, the public API
 | **Public auth** | `/api/auth/*` — sign-up, login, magic links, OAuth, SIWE, session JWT. |
 | **Proxy** | `/api/*` other than auth — routes to per-tenant runtime by `entity_id`. |
 | **OAuth callbacks** | `/api/integrations/<provider>/callback` — public routes for OAuth handshake completion. |
-| **x402** | `/api/companies/create` (programmatic genesis), `/v1/*` (inference), gated on USDC on Solana. |
-| **Provisioning** | `POST /api/start` (single Company) and `POST /api/start/stack` (multi-Company). Spawns tenant runtimes. |
-| **Billing** | Stripe webhooks. Subscription state. Workspace cap enforcement. |
+| **Paid API lanes** | Future programmatic genesis and inference payment surfaces. |
+| **Provisioning** | `POST /api/start` (single TRUST) and `POST /api/start/stack` (multi-TRUST). Spawns tenant runtimes. |
+| **Billing** | Stripe webhooks, subscription state, and plan capacity. |
 | **Indexer** | Watches on-chain TRUST events; updates `runtime_placements` rows. |
 
 aeqi-platform does NOT own dashboard rendering — the dashboard SPA is bundled into each tenant runtime and served by the runtime, not the platform. The platform only proxies API and serves the public landing/auth pages.
@@ -23,7 +23,8 @@ Two-key model:
 - **Session JWT** — for browser dashboards and authenticated API calls. Contains `user_id`, `entity_ids`, expiry. Issued by `/api/auth/login` and refreshed automatically.
 - **API key** — for programmatic clients. Issued in user settings. Carries the same `user_id` + entity claims.
 
-x402 endpoints are unauthenticated — payment IS the auth.
+Future paid API lanes may support unauthenticated payment as authorization. The
+hosted launch path uses normal account auth and subscription billing.
 
 ## Sign-up doors
 
@@ -37,11 +38,11 @@ Five paths, all canonical (see [Wallets & identity](/docs/concepts/wallets-and-i
 | Passkey (WebAuthn) | `passkey.credential_id` |
 | External wallet (SIWS) | `wallet.address` |
 
-Every sign-up auto-provisions one custodial wallet — the only auto-created primitive in the system. Everything else (Companies, agents, ideas) the user creates explicitly.
+Every sign-up auto-provisions one custodial wallet — the only auto-created primitive in the system. Everything else (TRUSTs, agents, ideas) the user creates explicitly.
 
 ## Proxy + tenancy
 
-Inbound API requests carry an `X-Entity` header (or query param) identifying the target Company. The platform looks up `runtime_placements`:
+Inbound API requests carry an `X-Entity` header (or query param) identifying the target TRUST. The platform looks up `runtime_placements`:
 
 ```
 runtime_placements {
@@ -54,9 +55,9 @@ The proxy resolves `X-Entity → placement` first by `entity_id`, then by `agent
 
 ## Provisioning flow
 
-`POST /api/start` (single Company):
+`POST /api/start` (single TRUST):
 
-1. Authenticate caller. Check workspace cap (`WORKSPACE_COMPANY_CAP=10`).
+1. Authenticate caller and check plan capacity.
 2. Mint a fresh `entity_id`.
 3. (Optional) Register TRUST on-chain via the factory; pin operating agreement to IPFS.
 4. Spawn `aeqi-host-<entity_id>.service` on a free port; runtime initializes its DBs.
@@ -79,14 +80,15 @@ Callback routes are public (no JWT) because Google can't carry one. State HMAC b
 
 See [Per-agent OAuth (Path B)](/docs/patterns/oauth-path-b).
 
-## x402
+## Paid API lanes
 
 ```
-POST /api/companies/create     ← x402-gated; pay $19 USDC for a Company
-GET/POST /v1/*                 ← x402-gated; pay-per-call USDC inference
+POST /api/companies/create     ← future paid genesis lane
+GET/POST /v1/*                 ← future pay-per-call inference lane
 ```
 
-x402 (HTTP 402 + USDC on Solana) provides agent-native payment. Unauthenticated callers get a 402 response with payment requirements; they sign a USDC transfer on Solana and retry. Settled via the platform's payment facilitator.
+These lanes are reserved for agent-native payment flows. The hosted launch path
+uses account auth and subscription billing.
 
 ## Indexer
 
@@ -108,7 +110,7 @@ This bites cleanly enough that it's worth its own memo. See `/home/claudedev/.cl
 
 | Service | Port | Owner |
 |---|---|---|
-| `aeqi-platform.service` | 8443 | Platform: auth, proxy, OAuth callbacks, x402, billing |
+| `aeqi-platform.service` | 8443 | Platform: auth, proxy, OAuth callbacks, paid API lanes, billing |
 | `aeqi-host-<entity_id>.service` | 8400+ | Per-tenant runtime |
 | `aeqi-ipfs.service` | 5001 | IPFS daemon (kubo) for content addressing |
 | `aeqi-indexer.service` | 8501 | Solana indexer (programSubscribe + signature backfill) |
@@ -118,6 +120,6 @@ The retired `aeqi-runtime.service` is no longer used — its responsibilities sp
 ## Related
 
 - [Runtime](/docs/architecture/runtime)
-- [TRUST](/trust) — on-chain identity primitive
+- [TRUST](/trust) — programmable company
 - [REST API](/docs/api/rest)
 - [Authentication](/docs/api/authentication)

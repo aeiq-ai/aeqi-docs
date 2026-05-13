@@ -1,16 +1,16 @@
 # Org architecture
 
-A Company in aeqi is a graph of slots and edges, not a table of titles. This page explains how the pieces fit: Companies, Roles, ownership tokens, governance.
+A TRUST in aeqi is a graph of slots and edges, not a table of titles. This page explains how the pieces fit: TRUSTs, Roles, ownership tokens, and governance.
 
-## Companies are entities
+## TRUSTs are entities
 
-A Company is an **entity** — a workspace with a fresh UUID, a SQLite database, and (typically) a TRUST contract. The same word covers a one-person personal account and a 50-person operating company; the difference is how the entity is rendered.
+A TRUST is the programmable company in aeqi: a workspace with a fresh UUID, a SQLite database, runtime state, and optional protocol state. The same model can cover a one-person personal account and a 50-person operating company; the difference is how the entity is rendered.
 
 | URL | Shape |
 |---|---|
 | `/me/*` | Personal entity. Rail: Inbox · Agents · Events · Quests · Ideas · Treasury · Settings. Hides Roles, Ownership, Governance — degenerate when you're the only occupant. |
-| `/c/<entity_id>/*` | Joint Company entity. Rail: Overview · Roles · Ownership · Treasury · Governance · Settings. Multiple humans, multiple agents, on-chain by default. |
-| `/trust/<address>/*` | Same Company by its on-chain address. Auto-redirected from `/c/<id>` once the TRUST is registered. |
+| `/c/<entity_id>/*` | Joint TRUST entity. Rail: Overview · Roles · Ownership · Treasury · Governance · Settings. Multiple humans, multiple agents, protocol state when enabled. |
+| `/trust/<address>/*` | Same TRUST by its protocol address. Auto-redirected from `/c/<id>` once the TRUST is registered. |
 
 Same underlying contract. Two UIs.
 
@@ -49,7 +49,7 @@ The bug pattern to watch (2026-05-06): creating CFO/CMO/CLO/CISO as `role_type='
 
 ## Ownership tokens — the cap table
 
-For Venture-template Companies, ownership is on-chain. The TRUST mints an ERC-20 ownership token on registration; cap table is the token's holder distribution.
+For Venture-template TRUSTs, ownership can become protocol state. The TRUST tracks ownership issuance, transfer restrictions, and cap-table state when enabled.
 
 | Mechanism | Purpose |
 |---|---|
@@ -60,7 +60,7 @@ For Venture-template Companies, ownership is on-chain. The TRUST mints an ERC-20
 
 Ownership tokens are independent from governance tokens. A Director-tier role doesn't automatically hold equity; equity holders don't automatically have a board seat. Two distinct authorities.
 
-For Foundation-template Companies, no ownership token is minted. Mission-locked, governance-only.
+For Foundation-template TRUSTs, no ownership token is minted. Mission-locked, governance-only.
 
 ## Governance — proposals and votes
 
@@ -97,7 +97,7 @@ Treasury is the canonical financial surface. It folds three lenses:
 
 | Lens | Content |
 |---|---|
-| **Balance state** | Current ETH, USDC, ERC-20 holdings on-chain. |
+| **Balance state** | Current treasury balances and protocol assets. |
 | **Budgets** | Allocated spend per role / per agent / per project. |
 | **Transactions** | Inbound and outbound history. |
 
@@ -109,13 +109,13 @@ There's no separate "Portfolio" page. Treasury *is* the portfolio.
 
 | Flow | Source | Destination | Settled |
 |---|---|---|---|
-| **Subscription** | Personal card / personal USDC | Stripe / aeqi platform | Per month |
-| **Inference top-up** | Treasury or personal | Inference provider via aeqi-inference | Per call (subscription lane) or per dollar (treasury / x402 lane) |
-| **Treasury** | Customers, investors, internal | Treasury balance | On-chain settlement |
+| **Subscription** | Personal card | aeqi platform | Per month |
+| **Inference top-up** | Plan change, top-up, or provider key | Inference provider via aeqi | Per usage policy |
+| **Treasury** | Customers, investors, internal | Treasury balance | Protocol or off-chain settlement |
 
-Subscription does NOT debit treasury — failure modes diverge (a Company with no treasury but an active product still needs to keep running). Inference top-ups CAN debit treasury (it's the Company's own usage). Treasury is the Company's own money.
+Subscription does NOT debit treasury — failure modes diverge. A TRUST with no treasury but an active product still needs to keep running. Treasury is the TRUST's own money.
 
-Three money flows kept distinct: subscription (workspace), inference (top-ups), treasury (the Company's own money).
+Three money flows stay distinct: subscription, inference capacity, and treasury.
 
 ## Templates — the locked-in shapes
 
@@ -128,9 +128,9 @@ Four canonical TRUST templates ship today:
 
 See [Canonical templates](/docs/architecture/canonical-templates) for the contract-level configuration.
 
-## Stack blueprints — multi-Company orgs
+## Stack blueprints — multi-TRUST graphs
 
-A stack blueprint is a graph of (single-blueprint, name) tuples + cross-Company edges. Use it to ship a multi-Company structure as a unit:
+A stack blueprint is a graph of (single-blueprint, name) tuples + cross-TRUST edges. Use it to ship a multi-TRUST structure as a unit:
 
 - **Founder + spinout** — personal entity holds 30% + Founder role in a venture spinout.
 - **VC fund + 3 portfolio companies** — fund holds 20% + Director role in each.
@@ -139,13 +139,13 @@ The wizard provisions all entities in topo-sorted order. On-chain edges (TokenOw
 
 ## Summary
 
-- An entity is a Company. Companies have IDs and (optionally) TRUST addresses.
+- A TRUST is the programmable company. It has an ID and optional protocol address.
 - Roles are the org-chart slots; agents and humans occupy them.
 - Authority is the transitive closure over `role_edges`.
 - Board (`director`) is on-chain governance; org chart (`operational`) is runtime only.
 - Treasury folds balance + budgets + transactions.
 - Templates are locked-in TRUST configurations; pick at creation.
-- Stacks are multi-Company graphs.
+- Stacks are multi-TRUST graphs.
 
 ## Related
 

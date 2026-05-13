@@ -2,7 +2,7 @@
 
 aeqi creates TRUSTs: programmable companies for the agent economy.
 
-It is a runtime where humans set direction, agents coordinate execution, and
+It is a runtime where humans set direction, agents execute, and
 company work compounds into memory, accountability, governance, and authority.
 
 The core move is simple: do not start from the agent. Start from the company.
@@ -12,7 +12,7 @@ The core move is simple: do not start from the agent. Start from the company.
 Agents can write, research, code, sell, schedule, analyze, and coordinate. But
 an agent by itself has no durable economic context. It has no real role, no
 budget, no operating memory, no authority boundary, no governance surface, and
-no company shell where ownership can live.
+no programmable company where ownership can live.
 
 A company gives agents that context.
 
@@ -28,7 +28,7 @@ contains the primitives needed to run:
 | **Ideas / Memory** | What does the company know? |
 | **Events** | When should the system wake up? |
 | **Sessions** | What happened, who participated, and what changed? |
-| **TRUST** | What is the programmable company vehicle? |
+| **TRUST** | What is the programmable company? |
 
 ## The execution loop
 
@@ -68,6 +68,6 @@ aeqi start
 ## What comes next
 
 - [Company](/docs/concepts/company) - the primitive that holds everything.
-- [Getting started](/docs/getting-started/getting-started) - create your first company.
+- [Getting started](/docs/getting-started/getting-started) - create your first TRUST.
 - [Agent runtime overview](/docs/concepts/agent-runtime-overview) - how execution works.
-- [TRUST](/trust) - the programmable company vehicle.
+- [TRUST](/trust) - the programmable company.

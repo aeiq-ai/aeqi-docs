@@ -1,6 +1,6 @@
 # Co-creation
 
-A blueprint doesn't spawn a static company shell. It spawns a living workspace — agents already greeting you, kickoff Quests already open, Ideas already seeded. The workspace then *interviews* you to fill in the gaps.
+A blueprint doesn't spawn a static folder. It creates a living TRUST — agents already greeting you, kickoff Quests already open, Ideas already seeded. The workspace then *interviews* you to fill in the gaps.
 
 This is the Co-creation thesis (the v0.41.0 release framing). Same shape both ways: the product captures user thought; the founder captures founder thought.
 

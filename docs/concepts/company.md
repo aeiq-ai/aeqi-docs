@@ -10,7 +10,10 @@ aeqi lets you start that company as software.
 
 ## What a company is in aeqi
 
-An aeqi Company is an addressable operating shell with:
+In the runtime, a company is the generic operating model. In the product, that
+programmable company is a TRUST.
+
+It has:
 
 - a mission and operating context
 - roles for authority and responsibility
@@ -27,7 +30,7 @@ agents. aeqi gives agents somewhere economically meaningful to live.
 ## Why this matters for the agent economy
 
 The agent economy is not a future where everyone rents disconnected bots. It is
-a future where agents become economic actors inside organizations that can
+a future where agents become economic actors inside companies that can
 coordinate, transact, remember, and govern.
 
 That requires structure:
@@ -45,9 +48,9 @@ That requires structure:
 Without the company, agents stay as tools. With the company, agents become
 workers inside an operating institution.
 
-## The company shell
+## The company model
 
-When you create a company, aeqi creates the shell first:
+When you create a TRUST, aeqi creates the company model first:
 
 1. Roles define the initial org chart.
 2. Agents are hired into operational seats.
@@ -55,7 +58,7 @@ When you create a company, aeqi creates the shell first:
 4. Quests define first work.
 5. Events define what should wake the system.
 6. Sessions become the conversation and execution trail.
-7. The company can become a TRUST: the programmable company vehicle where execution, memory, authority, treasury, governance, and ownership live together.
+7. TRUST keeps execution, memory, authority, treasury, governance, and ownership together.
 
 The shell can be small. A solo founder plus two agents is enough. The point is
 not enterprise bureaucracy; the point is giving execution a durable container.
