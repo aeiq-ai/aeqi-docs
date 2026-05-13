@@ -8,11 +8,11 @@ A TRUST is the programmable company in aeqi: a workspace with a fresh UUID, a SQ
 
 | URL | Shape |
 |---|---|
-| `/me/*` | Personal entity. Rail: Inbox · Agents · Events · Quests · Ideas · Treasury · Settings. Hides Roles, Ownership, Governance — degenerate when you're the only occupant. |
-| `/c/<entity_id>/*` | Joint TRUST entity. Rail: Overview · Roles · Ownership · Treasury · Governance · Settings. Multiple humans, multiple agents, protocol state when enabled. |
-| `/trust/<address>/*` | Same TRUST by its protocol address. Auto-redirected from `/c/<id>` once the TRUST is registered. |
+| `/trust/<address>/*` | Every entity — your personal entity or a joint TRUST — lives here once it's registered on chain. Rail: Overview · Roles · Ownership · Treasury · Governance. Single-occupant entities collapse Roles/Ownership/Governance gracefully. |
+| `/c/<entity_id>/*` | Transient fallback for entities pre-registration. 308 redirects to `/trust/<address>/*` once the on-chain registration completes. |
+| `/account` | User-scoped settings only (auth, billing, signers). Not an entity surface — your own entity is at `/trust/<your-address>/*`. |
 
-Same underlying contract. Two UIs.
+Same underlying contract. One canonical URL shape; everything is an entity.
 
 ## Roles are the org chart
 
@@ -101,7 +101,7 @@ Treasury is the canonical financial surface. It folds three lenses:
 | **Budgets** | Allocated spend per role / per agent / per project. |
 | **Transactions** | Inbound and outbound history. |
 
-A Treasury row is the same primitive at company scope (`/c/<id>/treasury`) and personal scope (`/me/treasury`). Same code path; same UI.
+A Treasury row is the same primitive at every entity scope — a joint TRUST's `/trust/<address>/treasury` and your personal entity's `/trust/<your-address>/treasury` render through the same code path and the same UI.
 
 There's no separate "Portfolio" page. Treasury *is* the portfolio.
 

@@ -10,10 +10,9 @@ Every conversational surface in aeqi is an inbox scoped to its participants.
 
 | Surface | Scope | URL |
 |---|---|---|
-| Personal inbox | Sessions where you are a participant | `/me/inbox` |
-| Agent inbox | Sessions where the agent is a participant | `/agents/<id>/sessions` |
+| Entity inbox | Sessions where you are a participant, scoped to one of your entities | `/trust/<address>/inbox` |
+| Agent inbox | Sessions where the agent is a participant | `/trust/<address>/agents/<id>/inbox` |
 | Trust channels | Sessions scoped to the TRUST | `/trust/<address>/channels` |
-| Company channels | Sessions scoped to the Company | `/c/<entity>/channels` |
 | Idea comments | The session attached to an Idea | `/ideas/<id>` |
 
 There is no "inbox" data type, no "channel" data type, no "comments" data type. Each surface is a query against [Sessions](/docs/concepts/sessions) with a different scope predicate. List the sessions where the participant set contains me — that's an inbox. List the sessions where the participant set contains an agent — that's the Agent's session list. List the sessions where the scope is a TRUST — those are the channels.
@@ -52,7 +51,7 @@ The data primitive is named `Session`. The user-facing surface is named `Inbox`.
 Two reasons:
 
 1. **"Inbox" is the word humans recognize.** Email taught a generation that an inbox is the place where the things waiting for me show up. Adopting that vocabulary collapses the explanation to zero. "Sessions" requires a sentence; "Inbox" requires nothing.
-2. **The same data primitive renders differently per scope.** A user looking at `/me/inbox` is looking at the sessions where they're awaited. The agent's view of the same set of sessions is its working queue. Calling both "Sessions" leaks an implementation detail; calling both "Inbox" centers what the surface is doing.
+2. **The same data primitive renders differently per scope.** A user looking at `/trust/<their-address>/inbox` is looking at the sessions where they're awaited. The agent's view of the same set of sessions is its working queue. Calling both "Sessions" leaks an implementation detail; calling both "Inbox" centers what the surface is doing.
 
 URL paths preserve `/sessions/` for stability — links do not break, runtime IPC verbs do not move. Labels in the chrome say Inbox. The substrate name and the surface name are allowed to diverge when the substrate name is more precise and the surface name is more readable.
 

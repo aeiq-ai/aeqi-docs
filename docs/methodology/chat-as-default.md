@@ -10,8 +10,8 @@ A surface whose primary verb is "talk" defaults to its transcript.
 
 | Surface | Default URL | Settings URL |
 |---|---|---|
-| Agent (drilled) | `/<scope>/agents/<id>/` | `/<scope>/agents/<id>/settings/` |
-| Personal inbox | `/me/inbox` | `/me/settings` |
+| Agent (drilled) | `/trust/<address>/agents/<id>/` | `/trust/<address>/agents/<id>/settings/` |
+| Entity inbox | `/trust/<address>/inbox` | (no separate settings — config lives on `/account` and per-agent rails) |
 | Idea detail | `/ideas/<id>` | (no separate settings — the body is the thread) |
 | Trust channels | `/trust/<address>/channels/<sid>` | `/trust/<address>/settings` |
 
@@ -29,12 +29,12 @@ This matches the [inbox-is-the-chat](/docs/methodology/inbox-is-the-chat) lock f
 
 A drilled-agent surface is the canonical reference.
 
-**Default** (`/c/<entity>/agents/<id>/` or `.../inbox/<session>`):
+**Default** (`/trust/<address>/agents/<id>/` or `.../inbox/<session>`):
 - Header: back · agent name · `+ New session` · Settings link
 - Body: full-width chat — `SessionsRail` on the left if the agent has multiple sessions, `SessionDetail` + `Composer` on the right
 - No nav rail
 
-**Settings** (`/c/<entity>/agents/<id>/settings/<tab>`):
+**Settings** (`/trust/<address>/agents/<id>/settings/<tab>`):
 - Header: back · agent name · breadcrumb (one level deeper)
 - Left rail: Overview · Personality · Quests · Events · Ideas · Channels · Treasury · Tools · Integrations
 - Body: the selected tab

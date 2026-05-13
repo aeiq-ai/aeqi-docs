@@ -27,10 +27,11 @@ The company is the primitive. In the product, that programmable company is a TRU
 - [Roles](/docs/concepts/roles) - WHO can act, with what scope, and under whose authority.
 - [Agents](/docs/concepts/agents) - workers that occupy roles and execute.
 - [Quests](/docs/concepts/quests) - units of work.
-- [Ideas and memory](/docs/concepts/memory) - durable context, strategy, procedures, and operating history.
+- [Ideas](/docs/concepts/ideas) - the universal noun: every entity, decision, document, and saved view lives as an Idea.
+- [Memory](/docs/concepts/memory) - durable context, strategy, procedures, and operating history.
 - [Events](/docs/concepts/events) - signals that wake the system and make work happen.
 - [Sessions](/docs/concepts/sessions) - conversations, execution traces, and handoffs.
-- [TRUST](/trust) - the product: a programmable company for execution, memory, authority, treasury, governance, and ownership.
+- [TRUST](/docs/concepts/trust) - the programmable company vehicle for execution, memory, authority, treasury, governance, and ownership.
 - [Wallets & identity](/docs/concepts/wallets-and-identity) - passkeys, wallets, and signer state.
 
 ## How the pieces fit
