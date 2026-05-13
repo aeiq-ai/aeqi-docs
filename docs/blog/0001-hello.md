@@ -64,7 +64,7 @@ We don't pretend we have features that aren't shipped. If a feature is in flight
 
 ## Where to go
 
-- [Mission](/docs/mission) — the long form.
+- [Product overview](/docs/overview) — the product shape.
 - [Getting started](/docs/getting-started/getting-started) — your first Company in 10 minutes.
 - [Concepts](/docs/index#concepts--the-canonical-mental-model) — the five primitives.
 - [Methodology](/docs/index#methodology--how-aeqi-thinks) — how aeqi thinks about org architecture, agent collaboration, co-creation.

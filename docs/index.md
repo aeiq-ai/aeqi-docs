@@ -13,7 +13,7 @@ company primitives inside it, and TRUST as the product: the programmable company
 
 ## Start here
 
-- [Mission](/docs/mission) - why aeqi exists and why the agent economy needs companies.
+- [Product overview](/docs/overview) - what aeqi creates and how the product fits together.
 - [Introduction](/docs/getting-started/introduction) - the quickest mental model for the product.
 - [Getting started](/docs/getting-started/getting-started) - create your first TRUST and run your first quest.
 - [Quickstart](/docs/quickstart) - run aeqi locally.

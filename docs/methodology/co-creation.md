@@ -80,4 +80,4 @@ Co-creation is the loop. Sign-off is the gate. Both stay distinct.
 
 - [Composition](/docs/methodology/composition) — the wrapper pattern that makes Quests interview tools.
 - [Executive Assistant](/docs/patterns/executive-assistant) — the reference shared-EA shape.
-- [Mission](/docs/mission) — the canonical thesis.
+- [Product overview](/docs/overview) — the product shape.
