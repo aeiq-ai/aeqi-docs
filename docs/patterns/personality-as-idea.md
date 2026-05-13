@@ -29,7 +29,7 @@ Three reasons.
 
 **Composition.** An agent can have multiple identity Ideas — a base persona, a project-specific charter, a temporary instruction set. All live as `injection_mode=always` Ideas tagged for the agent. The runtime concatenates them at session-open. Adding a new layer is just adding a new Idea.
 
-**No "prompts."** aeqi has four primitives, not prompts. Calling identity a "system prompt" stuck it in a vocabulary the rest of the product had moved past. As an Idea, it speaks the language of every other surface.
+**No "prompts."** aeqi has company primitives, not prompts. Calling identity a "system prompt" stuck it in a vocabulary the rest of the product had moved past. As an Idea, it speaks the language of every other surface.
 
 ## Activation
 
