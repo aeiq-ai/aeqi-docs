@@ -8,9 +8,7 @@ About 10 minutes end to end.
 
 Go to [aeqi.ai](https://aeqi.ai) and click **Request access**.
 
-You can sign up with email, Google, GitHub, a passkey, or a supported wallet. All doors land you in the same place: a dashboard with a personal account already provisioned.
-
-![Sign-up page](/docs/img/01-signup.png)
+You can sign up with email, Google, GitHub, a passkey, or a supported wallet where those options are enabled for your deployment. All doors land you in the same place: a dashboard with a personal account already provisioned.
 
 A custodial wallet is provisioned automatically — every account has exactly one. You don't see it on the dashboard yet; it's there when you need it. See [Wallets & identity](/docs/concepts/wallets-and-identity) for the full custody model.
 
@@ -18,20 +16,18 @@ A custodial wallet is provisioned automatically — every account has exactly on
 
 Click **+ New TRUST** in the sidebar.
 
-You'll see blueprint options for the kind of programmable company you want to start. A TRUST can be a solo founder shell, a studio, a venture, a foundation, a fund, or a personal operating system.
+You'll see blueprint options for the kind of programmable company you want to start. In early access, available blueprints may vary by deployment. A TRUST can start as a solo founder shell, a studio, or a personal operating system; deeper venture, foundation, and fund shapes are staged on the same company model.
 
 | Single blueprint | Best for |
 |---|---|
 | **Solo founder** | One person plus their agents. No board, no governance module. |
 | **Tech studio** | Small team building software. CEO + CTO seats, light governance. |
-| **Venture** | Startup raising or planning to raise. Cap table, vesting, governance live. |
-| **Foundation** | Non-profit, public-goods steward. No token, mission-locked. |
-| **Index fund** | Capital allocator. LP/GP roles, NAV tracking, no operating company. |
+| **Venture** | Startup shape with governance and ownership primitives staged for later capital workflows. |
+| **Foundation** | Public-goods steward shape for mission-locked work. |
+| **Index fund** | Capital allocator shape for later fund-style workflows. |
 | **Personal OS** | Just you, your agents, your inbox. Default for /me. |
 
 Pick **Tech studio** for the walkthrough. Give your TRUST a name. Click **Create**.
-
-![Blueprint picker](/docs/img/02-blueprints.png)
 
 A few things happen at once, all idempotent and reversible:
 
@@ -41,7 +37,7 @@ A few things happen at once, all idempotent and reversible:
 4. Ideas are seeded (a charter for each agent, the company's mission, default SOPs).
 5. Events are scheduled (daily standups, weekly reviews — paused by default; you turn them on when ready).
 6. A handful of kickoff Quests are created and assigned to the agents that should start them.
-7. Optional ownership, treasury, and governance primitives are prepared when your TRUST is ready for them.
+7. Optional ownership, treasury, and governance primitives are staged in the same company model when your TRUST is ready for them.
 
 The wizard goes from goal to live workspace in about 90 seconds.
 
@@ -50,8 +46,6 @@ The wizard goes from goal to live workspace in about 90 seconds.
 You land on the TRUST overview tab. The Agents row in the rail shows the agents that just got hired.
 
 Open one — say, the **Executive Assistant**. The Sessions tab shows the agent has already opened a greeting session: it introduces itself, says what it's responsible for, and asks one or two questions to calibrate.
-
-![Agent greeting in Sessions tab](/docs/img/03-agent-greeting.png)
 
 This is the **co-creation** loop in action: the agent doesn't sit idle waiting for you to give it work. It introduces itself, captures context via Quests, and uses the answers as Ideas. See [Co-creation](/docs/methodology/co-creation) for the full pattern.
 
@@ -67,19 +61,15 @@ The agent picks up the message, drafts a roadmap as a new Idea, and replies with
 - A new **Quest** appears in the Quests tab — the work the agent did to produce the draft.
 - A new **Event** appears in the Events tab — the message you sent, the trigger that fired the work.
 
-![First message in session](/docs/img/04-first-message.png)
-
 Four primitives, one user action. Quest WHAT, Idea HOW, Event WHEN, Role WHO.
 
 ## 5. Connect Google
 
-In the agent's **Integrations** tab, click **Connect Google**. You'll be redirected through Google's OAuth flow and asked to consent to specific scopes (Gmail send, Gmail read, Calendar read/write).
+Where enabled for your deployment, open the agent's **Integrations** tab and click **Connect Google**. You'll be redirected through Google's OAuth flow and asked to consent to specific scopes (Gmail send, Gmail read, Calendar read/write).
 
 When you return, the agent has Gmail and Calendar access — scoped to **this agent only**, not the whole company. The token is encrypted in the per-tenant credentials substrate. Other agents in the same company stay disconnected unless you explicitly connect them.
 
 This is "[Path B](/docs/patterns/oauth-path-b)" — per-agent OAuth. The pattern generalizes to any provider (Slack, Notion, GitHub, etc.).
-
-![Connect Google flow](/docs/img/05-connect-google.png)
 
 From this point on, the agent can:
 
@@ -107,16 +97,14 @@ Click **Create**. The agent picks it up immediately. You'll see:
 - The output Idea (the draft) is linked to the Quest via `idea_id`.
 - When the agent closes the Quest, it records an **outcome** — a one-line summary of what was done.
 
-![Quests tab with first quest](/docs/img/06-first-quest.png)
-
 If the agent hits a question it can't answer alone, it `message_to`'s you in the same session. You answer; it continues. No separate "ask director" verb — Sessions are the universal conversation primitive ([Sessions](/docs/concepts/sessions)).
 
 ## 7. Where to go next
 
 You've used all five primitives. From here:
 
-- **Add a board member.** Roles tab → **+ Add role** → assign Director. Generates an on-chain assignment if your TRUST is registered.
+- **Add a board member.** Roles tab → **+ Add role** → assign Director. On-chain registration and assignment are optional deployment features, not required to use the runtime.
 - **Hire another agent.** Agents row → hover **+** → pick a template (researcher, reviewer, sales). The agent gets a charter, a role, and starts running.
 - **Schedule an event.** Events tab → **+ New event** → "Daily standup at 09:00." The event fires a recurring Quest.
 - **Capture an idea.** Ideas tab → **+ New idea** → write anything. Tag it. Mention an agent. The agent reads it.
-- **Send to Telegram.** Channels tab on any agent → **Connect Telegram**. Pair the bot, allowlist a chat, set the mention-gate. The agent now reads Telegram messages and replies when @-mentioned. ([Mention-gating](/docs/patterns/mention-gating))
+- **Send to Telegram.** Where enabled, Channels tab on any agent → **Connect Telegram**. Pair the bot, allowlist a chat, set the mention-gate. The agent now reads Telegram messages and replies when @-mentioned. ([Mention-gating](/docs/patterns/mention-gating))
