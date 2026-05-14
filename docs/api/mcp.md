@@ -252,6 +252,40 @@ Codex may display those tools with the MCP server prefix. For example, raw
 | `events` | `create`, `list`, `enable`, `disable`, `delete`, `trigger`, `trace` | Schedules, session lifecycle context, and event automation. |
 | `code` | `search`, `context`, `impact`, `diff_impact`, `file`, `file_summary`, `stats`, `index`, `incremental`, `synthesize` | Code intelligence graph, call context, blast radius, and indexing. |
 
+### Ideas tool — response envelopes and error shapes
+
+The `ideas` tool returns a different envelope per action. Plan for it; there is no uniform `{ ok, data }` wrapper across the actions.
+
+| Action | Success envelope | Notes |
+|---|---|---|
+| `store` | `{ ok: true, idea: { id, name, content, tags, scope, agent_id, status, ... } }` | When dedup decides the candidate matches an existing idea, response carries `superseded_id` and the returned `idea` is the merged result. |
+| `search` | `{ ok: true, ideas: [ ... ] }` | `explain=true` adds per-hit `score_components { bm25, vector, hotness, graph, confidence, decay, final_score }`. |
+| `update` | `{ ok: true, idea: { ... } }` | Partial — pass only the fields you want to change. |
+| `delete` | `{ ok: true, id }` on success | See errors below for the in-use case. |
+| `link` | `{ ok: true, from, to, relation, strength }` | Accepts `from`/`to` (canonical) or `source_id`/`target_id` (alias). |
+| `feedback` | `{ ok: true }` | Side-effect only; no row returned. The runtime also reads `session_id` and `query_text` from the request when present. |
+| `walk` | `{ ok: true, from, count, steps: [{ idea_id, name, depth, strength, relation }] }` | `max_hops` capped at 10, `limit` capped at 100. |
+
+Error responses always carry `ok: false` plus a stable `error` string. Some carry structured context fields:
+
+| Action | Error code | When | Extra fields |
+|---|---|---|---|
+| any | `invalid scope` | `scope` not in `self / siblings / children / branch / global` | — |
+| `store` | `name_required`, `content_required` | Missing fields | — |
+| `update`, `delete` | `not_found` | No idea with that id visible to the caller | — |
+| `delete` | `in_use` | Quest still references this idea (cross-DB FK) | `quest_ids: [...]` |
+| `link` | `relation_not_writable` | `relation` is not in `mention / embed / link` (the substrate-writable set) | — |
+| `link`, `walk` | `not_visible` | `from` or `to` is outside the caller's scope | — |
+| `walk` | `bad_request` | `from` missing or `max_hops > 10` | — |
+
+The error vocabulary is stable; the human-readable `message` may change. Match on `error`, not `message`.
+
+### `IdeasTool` (in-runtime LLM tool) vs MCP `ideas` (external)
+
+The in-runtime LLM tool registered at `aeqi_orchestrator::tools::ideas::IdeasTool` advertises **only** `store / search / update / delete`. The MCP `ideas` surface adds three more verbs (`link`, `feedback`, `walk`) that the orchestrator's IPC layer handles directly, not through the LLM tool registry.
+
+This is **intentional**: graph-mutation and feedback verbs are operator/MCP-driven, not LLM-driven. An agent inside the runtime cannot fire `ideas.link` or `ideas.feedback` via its tool registry — only an external MCP caller (or an event-driven dispatch) can. If you need an agent to mutate the graph, route it through an event handler or expose a wrapping tool with the correct `CallerKind` ACL.
+
 ## Examples
 
 Search company memory before changing behavior:

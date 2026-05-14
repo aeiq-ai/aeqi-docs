@@ -433,6 +433,33 @@ A few proxied paths have platform-side specialisation registered explicitly so t
 - `GET /api/roles`, `GET /api/roles/{id}` — proxies and patches `occupant_name` for human occupants.
 - `ANY /api/inbox/__probe__/dismiss` — short-circuits to 204; reachability probe, never forwarded.
 
+### Runtime ideas surface
+
+The runtime registers the following routes under `/api/ideas/*`. Use them through the platform proxy with `X-Entity` set, not directly against the per-tenant runtime port.
+
+```
+GET    /api/ideas                       List visible ideas (query: agent_id?)
+POST   /api/ideas                       Create or supersede an idea
+GET    /api/ideas/search                Hybrid BM25 + vector search
+GET    /api/ideas/prefix                Prefix-match for autocomplete
+POST   /api/ideas/by-ids                Batch fetch by id list
+GET    /api/ideas/profile               Profile-scoped catalog read
+GET    /api/ideas/graph                 Adjacency view for the graph renderer
+POST   /api/ideas/seed                  Bulk insert seed ideas (blueprint apply)
+PUT    /api/ideas/{id}                  Update name / content / tags
+DELETE /api/ideas/{id}                  Delete (fails 409 if a quest still references it)
+GET    /api/ideas/{id}/edges            Edges incident to one idea
+POST   /api/ideas/{id}/edges            Add a typed edge
+DELETE /api/ideas/{id}/edges            Remove a typed edge
+GET    /api/ideas/{id}/activity         Activity feed (system events on this idea)
+GET    /api/ideas/{id}/comments         Comment thread (specialised at the platform)
+POST   /api/ideas/{id}/subscribe        Subscribe the caller to comment notifications
+GET    /api/ideas/{id}/children         List children (Tables Phase 2)
+PUT    /api/ideas/{id}/properties       Update typed properties bag
+```
+
+`link`, `feedback`, and `walk` are MCP-only verbs — there are no REST routes for them. The MCP dispatcher rewrites them into IPC commands (`link_idea`, `feedback_idea`, `walk_ideas`).
+
 ## Admin Endpoints
 
 Require the platform admin secret (header), not a user JWT.

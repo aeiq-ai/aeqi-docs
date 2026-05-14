@@ -1,14 +1,26 @@
 #!/usr/bin/env node
-// Drift guard: every aeqi-platform .route("…") must be mentioned in docs/api
-// or docs/reference. Catches the class of drift the MCP guard cannot see —
-// the 2026-05-13 audit found seven docs with stale or fictional routes that
+// Drift guard: every route registered in aeqi-platform/src/server.rs or in
+// selected aeqi-web/src/routes/*.rs files must be mentioned in docs/api or
+// docs/reference. Catches route/schema drift the MCP guard cannot see — the
+// 2026-05-13 audit found seven docs with stale or fictional routes that
 // passed the existing check.
 //
-// Run via `npm run check:rest-routes`. Looks for the platform source at
-// `../aeqi-platform/src/server.rs` (sibling repo on disk). If the sibling
-// is not present (e.g. CI without that repo cloned), exits 0 with a skip
-// notice — the check is a local-dev guard, not a blocker for content-only
-// pipelines.
+// Two sources are scanned today:
+//
+// 1. **Platform** — `../aeqi-platform/src/server.rs`. Every `.route("/api/…")`
+//    is checked as a literal path string. The platform surface is the
+//    user-facing control plane and is small enough to enumerate.
+//
+// 2. **Runtime web** — selected files under `../aeqi/crates/aeqi-web/src/routes/`.
+//    Routes registered there are mounted at `.nest("/api", ...)` in
+//    `aeqi-web/src/server.rs`, so the script prepends `/api` to each
+//    discovered path. Today only `ideas.rs` is scanned (Wave 1 of the Ideas
+//    primitive steward sweep, 2026-05-14). Other route files join as their
+//    respective primitives' waves land.
+//
+// Run via `npm run check:rest-routes`. If either sibling repo is absent
+// (e.g. CI without that repo cloned), the script skips cleanly — this is a
+// local-dev guard, not a blocker for content-only pipelines.
 
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
@@ -17,18 +29,26 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const root = resolve(__dirname, "..");
-const platformServerRs = resolve(root, "../aeqi-platform/src/server.rs");
 
-if (!existsSync(platformServerRs)) {
-  console.log(
-    `REST routes drift check skipped — ${relative(root, platformServerRs)} not present. ` +
-      "Clone aeqi-platform alongside aeqi-docs to enable this guard.",
-  );
-  process.exit(0);
-}
+// Sources to scan. Each entry: { label, path, prefix }
+// `prefix` is prepended to each extracted route — empty for sources that
+// already include `/api/...` in their path strings (platform server.rs);
+// `/api` for runtime web routes that get mounted at `.nest("/api", ...)`.
+const sources = [
+  {
+    label: "platform",
+    path: resolve(root, "../aeqi-platform/src/server.rs"),
+    prefix: "",
+  },
+  {
+    label: "runtime:ideas",
+    path: resolve(root, "../aeqi/crates/aeqi-web/src/routes/ideas.rs"),
+    prefix: "/api",
+  },
+];
 
-// Routes registered by aeqi-platform but intentionally not in user-facing docs.
-// Each entry must have a real reason — proxy plumbing, internal probes, etc.
+// Routes registered by one of the sources but intentionally not in
+// user-facing docs. Each entry must have a real reason.
 const allowlist = new Set([
   // Catch-all proxy — described as a mechanism in docs/api/rest.md but the
   // literal `/api/{*rest}` string is implementation detail.
@@ -38,13 +58,33 @@ const allowlist = new Set([
   "/api/inbox/__probe__/dismiss",
 ]);
 
-const serverSource = readFileSync(platformServerRs, "utf8");
+const sourcesPresent = sources.filter((s) => existsSync(s.path));
+const sourcesMissing = sources.filter((s) => !existsSync(s.path));
 
-// Match `.route("PATH", …)` — the only way routes are registered in server.rs.
+if (sourcesPresent.length === 0) {
+  console.log(
+    "REST routes drift check skipped — no source files present. " +
+      `Tried: ${sources.map((s) => relative(root, s.path)).join(", ")}. ` +
+      "Clone aeqi-platform and aeqi alongside aeqi-docs to enable this guard.",
+  );
+  process.exit(0);
+}
+
+// Match `.route("PATH", …)` — the only way routes are registered in axum
+// router builders.
 const routeRegex = /\.route\(\s*"([^"]+)"/g;
-const routes = new Set();
-for (const match of serverSource.matchAll(routeRegex)) {
-  routes.add(match[1]);
+
+// Collect routes from every present source, prepending the source prefix.
+const routesBySource = new Map();
+const allRoutes = new Set();
+for (const source of sourcesPresent) {
+  const text = readFileSync(source.path, "utf8");
+  const found = new Set();
+  for (const match of text.matchAll(routeRegex)) {
+    found.add(`${source.prefix}${match[1]}`);
+  }
+  routesBySource.set(source.label, found);
+  for (const route of found) allRoutes.add(route);
 }
 
 function listMarkdownFiles(dir) {
@@ -70,7 +110,7 @@ const docFiles = [
 const docsBody = docFiles.map((f) => readFileSync(f, "utf8")).join("\n");
 
 const missing = [];
-for (const route of routes) {
+for (const route of allRoutes) {
   if (allowlist.has(route)) continue;
   if (!docsBody.includes(route)) {
     missing.push(route);
@@ -81,7 +121,7 @@ for (const route of routes) {
 // allow-list honest as routes are renamed or removed.
 const stale = [];
 for (const entry of allowlist) {
-  if (!routes.has(entry)) {
+  if (!allRoutes.has(entry)) {
     stale.push(entry);
   }
 }
@@ -90,10 +130,15 @@ if (missing.length || stale.length) {
   console.error("REST routes drift check failed:");
   if (missing.length) {
     console.error(
-      `\n${missing.length} route(s) registered in aeqi-platform/src/server.rs are not mentioned in docs/api or docs/reference:`,
+      `\n${missing.length} route(s) registered in source but not mentioned in docs/api or docs/reference:`,
     );
     for (const route of missing.sort()) {
-      console.error(`  - ${route}`);
+      // Find which source registered it (for the error message).
+      const owners = [];
+      for (const [label, set] of routesBySource.entries()) {
+        if (set.has(route)) owners.push(label);
+      }
+      console.error(`  - ${route}  (${owners.join(", ")})`);
     }
     console.error(
       "\nEither document the route in the appropriate api/reference doc, or " +
@@ -102,7 +147,7 @@ if (missing.length || stale.length) {
   }
   if (stale.length) {
     console.error(
-      `\n${stale.length} allowlist entr${stale.length === 1 ? "y is" : "ies are"} no longer registered in server.rs:`,
+      `\n${stale.length} allowlist entr${stale.length === 1 ? "y is" : "ies are"} no longer registered in source:`,
     );
     for (const route of stale.sort()) {
       console.error(`  - ${route}`);
@@ -112,6 +157,13 @@ if (missing.length || stale.length) {
   process.exit(1);
 }
 
+const summary = sourcesPresent
+  .map((s) => `${s.label}=${routesBySource.get(s.label).size}`)
+  .join(", ");
+const skipped = sourcesMissing.length
+  ? ` (skipped ${sourcesMissing.map((s) => s.label).join(", ")})`
+  : "";
 console.log(
-  `REST routes drift check passed (${routes.size} routes registered, ${allowlist.size} allow-listed, ${docFiles.length} docs scanned).`,
+  `REST routes drift check passed (${allRoutes.size} total routes: ${summary}; ` +
+    `${allowlist.size} allow-listed, ${docFiles.length} docs scanned${skipped}).`,
 );

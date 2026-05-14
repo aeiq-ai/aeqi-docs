@@ -11,7 +11,7 @@ This page is the architectural view of Ideas. For the developer/MCP API surface 
 
 Five primitives. Everything else is a saved view over Ideas.
 
-A CRM contact is an Idea with `kind:customer`. A hiring candidate is an Idea with `kind:recruit`. A vendor is an Idea with `kind:vendor`. A doc, an SOP, a roadmap entry, an ad copy variant, a press contact — Ideas with different `kind` tags, different properties, different views over them.
+A CRM contact is an Idea tagged `kind:customer`. A hiring candidate is an Idea tagged `kind:recruit`. A vendor is an Idea tagged `kind:vendor`. A doc, an SOP, a roadmap entry, an ad copy variant, a press contact — Ideas with different tag conventions, different properties, different views over them.
 
 Notion's exact architecture, applied to a company:
 
@@ -23,44 +23,60 @@ When tempted to add a primitive (Contact, Customer, Vendor, Document, File, Proj
 
 ## Anatomy
 
+Logical shape — the API surface presents a narrower view than the full `aeqi.db` schema. Common fields:
+
 ```
 ideas(
-  id, entity_id, kind, name, content,
-  tags[], properties{}, embedding,
-  created_at, updated_at, author_id,
-  session_id?         -- the comments session for this idea
+  id, name, content,
+  agent_id, scope, session_id,
+  tags[], properties{},
+  authored_by, status,
+  parent_idea_id,
+  created_at, updated_at, expires_at,
+  embedding_pending,
+  ...
 )
 ```
 
 | Field | Purpose |
 |---|---|
-| `kind` | The discriminator. `note` (default), `customer`, `recruit`, `vendor`, `doc`, `sop`, `quest_outcome`, etc. |
-| `name` | Title. |
+| `name` | Stable label. `kind:<x>` is a tag convention, not a column — discriminate views by tag, not by a `kind` field. |
 | `content` | Markdown body. Block editor in the dashboard; raw markdown via API. |
-| `tags` | Free-form labels. |
-| `properties` | Typed fields (string, number, date, select, multi-select, relation, person/agent). When shipped, this is the database surface. |
-| `embedding` | Optional vector for semantic search. |
-| `session_id` | The comments session for this idea. |
+| `agent_id` | Anchor agent. Combined with `scope` this controls visibility. |
+| `scope` | See [Scope](#scope) below. |
+| `session_id` | The comments / activity session for this idea (see below). |
+| `tags` | Free-form labels. `kind:*` discriminators live here. |
+| `properties` | Typed JSON bag — strings, numbers, dates, selects, multi-selects, relations. The Tables surface reads + writes this. |
+| `authored_by` | Who created the idea (agent or user id). |
+| `status` | One of `active` (default), `archived`, `superseded`. |
+| `parent_idea_id` | Self-referential — Ideas form trees. Children appear under the parent's detail page. |
+| `embedding_pending` | Set to 1 between insert and the async embed-worker run; retrieval falls back to BM25-only until it clears. |
 
-## Activation modes
+The full sqlite schema also carries `expires_at`, `content_hash`, `access_count`, `last_accessed`, `confidence`, `verified_by`, `verified_at`, `last_feedback_at`, `feedback_boost`, `valid_from`, `valid_until`, `time_context`, `wrong_feedback_count`, `assignee`. Most clients don't touch them directly — they're written by the runtime's hotness / dedup / supersession paths.
 
-Ideas can be loaded into agent context.
+## Activation
 
-| Mode | Behavior |
-|---|---|
-| `always` | Loaded into every session for the agent that owns this idea. Agent identity, charter, persona, standing instructions live here. |
-| `on_demand` | Searchable; loaded when the agent asks for it. Most knowledge. |
-| `archived` | Hidden from default views; full-text searchable for retrieval. |
+There is no `injection_mode` column. Activation is event-driven:
 
-An agent's identity is a set of Ideas with `injection_mode=always`. The agent's "personality" lives in Ideas, not code.
+- An agent's identity, charter, persona, and standing instructions are Ideas tagged `identity` + `evergreen`.
+- A `session:start` event handler in the runtime calls `ideas.assemble({names:[…]})` (or `ideas.search`), and the matching ideas are appended to the system prompt.
+- "Always-loaded" is a convention layered through that event — not a flag on the row.
+
+`status: archived` hides an idea from default surfaces but keeps it in the FTS index for retrieval. `status: superseded` marks an idea that has been replaced by a newer version; the supersession path is automatic when dedup decides two ideas are the same.
 
 ## Scope
 
+`scope` controls who can see an idea. The canonical values match the MCP tool schema:
+
 | Scope | Visibility |
 |---|---|
-| `domain` (default) | Project-level — all agents in the entity. |
-| `system` | Cross-entity — all agents, every entity (rare; system context). |
-| `entity` | Agent-specific — only one agent. |
+| `self` (default) | The anchor agent only (`agent_id`). |
+| `siblings` | The anchor agent and its sibling agents under the same parent. |
+| `children` | The anchor agent and its descendants. |
+| `branch` | The anchor agent, its ancestors, and its descendants. |
+| `global` | Every agent in the entity. `agent_id` is cleared on store. |
+
+Passing any other value to `ideas.store` returns `400 invalid scope`. There is no `domain` / `system` / `entity` scope today — those names predate the role-graph rewrite.
 
 ## Comments and activity
 
@@ -70,13 +86,26 @@ Every Idea can carry a session. Open the Idea, and below the content is a thread
 - Agent replies (`from_kind=agent`).
 - System activity (`from_kind=system` + structured payload — "field changed", "linked to quest", etc.).
 
-This is just [Sessions](/docs/concepts/sessions) lensed over `idea.session_id`. No separate comments table.
+This is just [Sessions](/docs/concepts/sessions) lensed over `idea.session_id`. No separate comments table. The session is created lazily on first comment via `messages.message_to` with `target_kind=idea`.
 
-## Tags vs `kind`
+## Tags vs `kind:*`
 
-`kind` is the discriminator for what view this Idea fits into. Tags are free-form metadata. A `kind:customer` Idea might carry tags like `inbound`, `enterprise`, `q3-pipeline`.
+Tags are free-form metadata. A `kind:customer` Idea might carry tags like `inbound`, `enterprise`, `q3-pipeline`. The `kind:` prefix is a convention the dashboard uses to discriminate views — it lives in the `tags` array, not in a dedicated column.
 
-When a function gets its own rail tab (e.g., a Hiring tab with a stages-kanban), the implementation is "saved view over Ideas with `kind:recruit`, plus a stages property, plus a board view." The substrate doesn't change — the view does.
+When a function gets its own rail tab (e.g., a Hiring tab with a stages-kanban), the implementation is "saved view over Ideas tagged `kind:recruit`, plus a `stages` property, plus a board view." The substrate doesn't change — the view does.
+
+## Reserved tags
+
+A small set of tags are load-bearing at the runtime layer. Renaming them silently breaks persona assembly and event-driven context. Keep them stable:
+
+| Tag | What it does |
+|---|---|
+| `identity` | Marks an agent's persona / system-prompt content. Injected at `session:start`. |
+| `evergreen` | Marks an idea as long-lived (skips TTL sweeps). Identity ideas carry both. |
+| `personality:<agent_id>` | Stable handle for the Personality tab in the dashboard. Co-exists with `identity`. |
+| `procedure` | Written by event handlers that record "this happened" memory. |
+| `charter` | Agent / team charter content (used by the Executive Assistant pattern). |
+| `aeqi:backfill` | Marker for quest-idea backfills; safe to filter out of search results. |
 
 ## When does a function get its own tab?
 
@@ -86,15 +115,17 @@ Default: **don't promote**. Promote only when the UI shape is genuinely differen
 
 ## Typed properties and views
 
-Ideas carry typed properties on top of `name + content + tags`. Each Idea has a `properties` JSONB bag — strings, numbers, dates, selects, multi-selects — plus a self-referential `parent_idea_id` so Ideas form trees. The Ideas surface in the dashboard renders three view modes against the same substrate:
+Ideas carry typed properties on top of `name + content + tags`. Each Idea has a `properties` JSONB bag — strings, numbers, dates, selects, multi-selects — plus a self-referential `parent_idea_id` so Ideas form trees. The Ideas surface in the dashboard renders multiple view modes against the same substrate:
 
 | View | Shape |
 |---|---|
 | **List** (default) | Linear, ranked rows. The browse-and-search default. |
 | **Table** | Sortable columns over flattened properties. The structured-records view. |
 | **Kanban** | Lanes by `status` (or any select property). Drag a card across lanes to update the property. |
+| **Graph** | Force-directed view of `entity_edges` between Ideas (links, mentions, embeds). |
+| **Canvas** | Single-idea editor surface with property chips, children, links, and conversation. |
 
-The view mode is URL-persisted (`?view=list|table|kanban`), so a saved link is a saved view.
+The view mode is URL-persisted (`?view=list|table|kanban|graph`), so a saved link is a saved view.
 
 The property bag is typed at the view layer, not the schema layer. Adding a new property to one Idea does not migrate the others — it just appears as a column when a view is configured to read it. This is the same shape Notion uses to unify pages and databases.
 
@@ -120,13 +151,13 @@ Same shape, repeated at every level. See [Composition](/docs/methodology/composi
 
 ## What Ideas are not
 
-- Not files. A file is an Idea with `kind:file` and a `properties.cid` pointing to IPFS. The Idea is the wrapper; the file is the artifact.
-- Not a task system. Quests are tasks. Ideas hold the spec a Quest works on, but Ideas don't have status.
+- Not files. A file is an Idea tagged `kind:file` with a `properties.cid` pointing to IPFS. The Idea is the wrapper; the file is the artifact.
+- Not a task system. Quests are tasks. Ideas hold the spec a Quest works on, but Ideas don't have a workflow status of their own — only the `active` / `archived` / `superseded` lifecycle.
 - Not a chat system. Sessions are chat. Ideas can carry a session for comments, but the Idea itself is content, not conversation.
 
 ## Storage
 
-Ideas live in `aeqi.db` (FTS5 full-text search + optional vector embeddings) on a per-tenant runtime. Per-tenant means: Ideas don't cross Companies unless you explicitly export/import.
+Ideas live in `aeqi.db` (FTS5 full-text search + optional vector embeddings) on a per-tenant runtime. Per-tenant means: Ideas don't cross Companies unless you explicitly export/import. The graph of typed edges between Ideas (`mention` / `embed` / `link` / `co_retrieved` / `contradiction`) lives in `entity_edges` in the same database.
 
 ## Related
 
