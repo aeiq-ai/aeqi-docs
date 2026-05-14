@@ -47,15 +47,12 @@ Once connected, Claude Code can call:
 
 | Tool | Actions |
 |------|---------|
-| `ideas` | `store`, `search`, `update`, `delete` |
+| `me` | `profile`, `permissions` |
+| `ideas` | `store`, `search`, `update`, `delete`, `link`, `feedback`, `walk` |
 | `quests` | `create`, `list`, `show`, `update`, `close`, `cancel` |
-| `agents` | `hire`, `retire`, `list`, `delegate` |
-| `events` | `create`, `list`, `enable`, `disable`, `delete` |
-| `notes` | `claim`, `release`, `post`, `read`, `query`, `delete` |
-| `code` | `search`, `context`, `impact`, `index` |
-| `aeqi_status` | budget, active workers, costs |
-| `aeqi_primer` | project context and architecture |
-| `aeqi_prompts` | skills and workflows |
+| `agents` | `get`, `hire`, `retire`, `list`, `projects` |
+| `events` | `create`, `list`, `enable`, `disable`, `delete`, `trigger`, `trace` |
+| `code` | `search`, `context`, `impact`, `diff_impact`, `file`, `file_summary`, `stats`, `index`, `incremental`, `synthesize` |
 
 Full catalog: [MCP Integration](/docs/api/mcp).
 

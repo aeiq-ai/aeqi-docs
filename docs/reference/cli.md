@@ -118,10 +118,11 @@ aeqi treasury transfer --to 0x... --amount 100 --asset USDC
 
 ### `aeqi mcp`
 
-Run the MCP server (Model Context Protocol). Used by Claude Code and other MCP-compatible clients.
+Run the MCP server (Model Context Protocol). Used by Codex, Claude Code, and
+other MCP-compatible clients.
 
 ```bash
-aeqi mcp serve [--port 3000]
+aeqi mcp
 ```
 
 See [MCP](/docs/api/mcp).
@@ -143,13 +144,14 @@ All commands proxy through the platform API. Authentication uses the API key fro
 
 ## MCP integration
 
-The CLI ships an MCP server mode (`aeqi mcp serve`) that exposes the full verb catalog as MCP tools. Use this with Claude Code or any MCP client to:
+The CLI ships an MCP server mode (`aeqi mcp`) that exposes the full verb catalog
+as MCP tools. Use this with Codex, Claude Code, or any MCP client to:
 
 - Search and store ideas in your runtime from the IDE.
 - Create quests for the runtime to execute.
 - Spawn agents directly from a chat session.
 
-See [Claude Code + aeqi](/docs/guides/claude-code).
+See [MCP](/docs/api/mcp).
 
 ## Configuration
 
