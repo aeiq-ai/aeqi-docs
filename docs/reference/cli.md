@@ -175,6 +175,16 @@ it unset.
 
 ## Local self-host commands
 
+### `aeqi init`
+
+Initialize aeqi in the current directory. Lightweight — writes a stub config
+and leaves the rest to `aeqi setup`. Use this when you want to author a runtime
+config by hand instead of taking the wizard's choices.
+
+```bash
+aeqi init
+```
+
 ### `aeqi setup`
 
 Bootstrap a local runtime. The wizard detects context:
@@ -189,7 +199,8 @@ aeqi setup --service
 ```
 
 Creates SQLite databases (`aeqi.db`, `sessions.db`), starter agents, and a
-default config.
+default config. `--service` installs a per-user daemon service after
+bootstrap; `--force` overwrites existing starter files.
 
 ### `aeqi start`
 
@@ -303,6 +314,105 @@ aeqi graph index --root assistant
 aeqi graph index --root assistant --full
 aeqi graph stats --root assistant
 ```
+
+### `aeqi doctor`
+
+Run diagnostics across the local install — config presence, database
+reachability, missing secrets, broken sockets.
+
+```bash
+aeqi doctor
+aeqi doctor --fix       # auto-fix what can be auto-fixed
+aeqi doctor --strict    # non-zero exit if any issues remain
+```
+
+### `aeqi status`
+
+One-shot snapshot of the local runtime state. Prints daemon health, active
+agents, recent quests, and config locations.
+
+```bash
+aeqi status
+```
+
+### `aeqi monitor`
+
+Consolidated operator monitor view. Either one-shot or streaming.
+
+```bash
+aeqi monitor
+aeqi monitor --root assistant       # focus a single root agent
+aeqi monitor --watch                # refresh continuously
+aeqi monitor --watch --interval 5
+aeqi monitor --json                 # emit as JSON for piping
+```
+
+### `aeqi team`
+
+Show system team and per-root teams. Useful for inspecting who works for
+whom inside a Company runtime.
+
+```bash
+aeqi team
+aeqi team --root assistant
+```
+
+### `aeqi trust`
+
+Trust-kernel utilities — read or update the on-chain TRUST account for a
+local entity. Subcommands cover account inspection, role management, and
+chain-side actions.
+
+```bash
+aeqi trust --help
+```
+
+### `aeqi audit`
+
+Query the decision audit trail. Filter by root agent, quest, or recency.
+
+```bash
+aeqi audit
+aeqi audit --root assistant
+aeqi audit --quest 67-123
+aeqi audit --last 20
+```
+
+### `aeqi config`
+
+Reload the local configuration after editing `aeqi.toml`. Subcommands cover
+showing, validating, and refreshing the daemon's view of config.
+
+```bash
+aeqi config --help
+```
+
+### `aeqi primer`
+
+Emit the session-primer context the daemon would inject at session start.
+Used by Claude Code's session-start hook; not normally invoked by hand.
+
+```bash
+aeqi primer
+```
+
+### Less-used commands
+
+These exist but most operators won't reach for them:
+
+- `aeqi run` — one-shot agent invocation with a prompt; useful for scripts.
+- `aeqi pipeline` — explicit pipeline workflow operations.
+- `aeqi operation` — track work across root agents.
+- `aeqi prompt` — legacy prompt-template ops (the four primitives are
+  agents/ideas/quests/events; `prompt` predates the renaming).
+- `aeqi hooks` / `aeqi hook` — Claude Code hook helpers and worker pin.
+- `aeqi done` — alternate quest-close path used by hook scripts.
+- `aeqi deps` — suggest or auto-apply quest dependencies.
+- `aeqi web` — start the web API server standalone (`aeqi start` is the
+  usual entry point).
+- `aeqi seed` — seed local databases for fresh installs.
+
+Run `aeqi <cmd> --help` for the current flags.
 
 ## Environment variables
 
