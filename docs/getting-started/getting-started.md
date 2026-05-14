@@ -16,28 +16,22 @@ A custodial wallet is provisioned automatically — every account has exactly on
 
 Click **+ New TRUST** in the sidebar.
 
-You'll see blueprint options for the kind of programmable company you want to start. In early access, available blueprints may vary by deployment. A TRUST can start as a solo founder shell, a studio, or a personal operating system; deeper venture, foundation, and fund shapes are staged on the same company model.
+In the current hosted release, the public catalog is intentionally conservative: one default aeqi Blueprint. It starts a minimal TRUST with one primary agent, one Steward, shared memory, a bootstrap Quest, and a weekly review cadence. Specialized archetypes are kept as draft inventory until their product behavior and protocol assumptions are audited again.
 
 | Single blueprint | Best for |
 |---|---|
-| **Solo founder** | One person plus their agents. No board, no governance module. |
-| **Tech studio** | Small team building software. CEO + CTO seats, light governance. |
-| **Venture** | Startup shape with governance and ownership primitives staged for later capital workflows. |
-| **Foundation** | Public-goods steward shape for mission-locked work. |
-| **Index fund** | Capital allocator shape for later fund-style workflows. |
-| **Personal OS** | Just you, your agents, your inbox. Default for /me. |
+| **aeqi** | A general TRUST shell. The mission defines the operating structure. |
 
-Pick **Tech studio** for the walkthrough. Give your TRUST a name. Click **Create**.
+Pick **aeqi**. Give your TRUST a name. Click **Create**.
 
 A few things happen at once, all idempotent and reversible:
 
 1. A workspace is provisioned (a fresh tenant on its own port).
-2. Roles are seeded (Director, CEO, CTO, plus per-blueprint operational seats).
-3. Agents are hired into operational seats (a CEO Assistant, a CTO Assistant, etc.).
-4. Ideas are seeded (a charter for each agent, the company's mission, default SOPs).
-5. Events are scheduled (daily standups, weekly reviews — paused by default; you turn them on when ready).
-6. A handful of kickoff Quests are created and assigned to the agents that should start them.
-7. Optional ownership, treasury, and governance primitives are staged in the same company model when your TRUST is ready for them.
+2. Two roles are seeded: the primary aeqi role and the Steward.
+3. The primary agent and Steward are hired into those roles.
+4. Ideas are seeded for the TRUST mission, operating principles, capture pattern, daily rhythm, and Steward beat.
+5. Events are scheduled for session bootstrap and weekly review.
+6. One kickoff Quest asks you to define the TRUST mission before adding specialist agents or more structure.
 
 The wizard goes from goal to live workspace in about 90 seconds.
 
@@ -45,7 +39,7 @@ The wizard goes from goal to live workspace in about 90 seconds.
 
 You land on the TRUST overview tab. The Agents row in the rail shows the agents that just got hired.
 
-Open one — say, the **Executive Assistant**. The Sessions tab shows the agent has already opened a greeting session: it introduces itself, says what it's responsible for, and asks one or two questions to calibrate.
+Open **aeqi**. The Sessions tab shows the agent has already opened a greeting session: it asks what the TRUST should make true, then turns the answer into operating context and the first two or three Quests.
 
 This is the **co-creation** loop in action: the agent doesn't sit idle waiting for you to give it work. It introduces itself, captures context via Quests, and uses the answers as Ideas. See [Co-creation](/docs/methodology/co-creation) for the full pattern.
 
@@ -67,7 +61,7 @@ Four primitives, one user action. Quest WHAT, Idea HOW, Event WHEN, Role WHO.
 
 Where enabled for your deployment, open the agent's **Integrations** tab and click **Connect Google**. You'll be redirected through Google's OAuth flow and asked to consent to specific scopes (Gmail send, Gmail read, Calendar read/write).
 
-When you return, the agent has Gmail and Calendar access — scoped to **this agent only**, not the whole company. The token is encrypted in the per-tenant credentials substrate. Other agents in the same company stay disconnected unless you explicitly connect them.
+When you return, the agent has Gmail and Calendar access — scoped to **this agent only**, not the whole TRUST. The token is encrypted in the per-tenant credentials substrate. Other agents in the same TRUST stay disconnected unless you explicitly connect them.
 
 This is "[Path B](/docs/patterns/oauth-path-b)" — per-agent OAuth. The pattern generalizes to any provider (Slack, Notion, GitHub, etc.).
 

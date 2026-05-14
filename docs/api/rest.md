@@ -163,9 +163,10 @@ Registered in the public router so they shadow `/api/blueprints/{slug}`; the cat
 ```
 GET /api/economy/list
 GET /api/public/entities/{slug}
+GET /api/public/trust/{address}
 ```
 
-`/api/economy/list` returns every Company whose placement has `public=true`, with on-chain TRUST address — drives `/economy`. `/api/public/entities/{slug}` returns the public profile JSON for a Company that has `public=true`; returns 404 for private workspaces (indistinguishable from non-existent).
+`/api/economy/list` returns every TRUST whose placement has `public=true`, with on-chain TRUST address — drives `/economy`. `/api/public/entities/{slug}` returns the public profile JSON for a TRUST that has `public=true`; returns 404 for private workspaces (indistinguishable from non-existent). `/api/public/trust/{address}` returns the public composite viewer payload for an on-chain TRUST address when the linked workspace is public.
 
 ### Role invitations
 

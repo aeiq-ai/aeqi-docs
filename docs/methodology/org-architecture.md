@@ -83,11 +83,10 @@ Vote weight is configured per template:
 
 | Template | Voting basis |
 |---|---|
-| Solo founder | None — single signer. |
-| Tech studio | Director-tier 1-of-N. |
+| Entity | None or Director-tier 1-of-N, depending on the TRUST's configured roles. |
 | Venture | Token-weighted + Director veto. |
 | Foundation | Director-tier multi-sig + Protector role veto. |
-| Index fund | LP/GP weighted. |
+| Fund | LP/GP weighted. |
 
 The Treasury tab and Governance tab read directly from the on-chain indexer. Proposals, votes, and execution status all live on-chain.
 

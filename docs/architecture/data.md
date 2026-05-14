@@ -17,9 +17,9 @@ Quests live in `sessions.db` (NOT `aeqi.db` — common mistake). Ideas live in `
 
 ```sql
 entities(
-  id          TEXT PRIMARY KEY,    -- UUID; the workspace/Company id
+  id          TEXT PRIMARY KEY,    -- UUID; the workspace/TRUST id
   display_name TEXT,
-  blueprint   TEXT,                 -- e.g. "tech-studio"
+  blueprint   TEXT,                 -- e.g. "aeqi"
   trust_address TEXT?,              -- on-chain TRUST contract; NULL pre-registration
   created_at  INTEGER
 )

@@ -1,16 +1,16 @@
 # Blueprint schema
 
-A blueprint is a JSON manifest describing a Company starter kit: one root agent plus seed agents, events, ideas, quests, and roles. The runtime spawns a fresh Company from this manifest in one IPC call.
+A blueprint is a JSON manifest describing a TRUST starter kit: one root agent plus seed agents, events, ideas, quests, and roles. The runtime spawns a fresh TRUST from this manifest in one IPC call.
 
-The canonical Rust type is `aeqi_orchestrator::ipc::blueprints::Blueprint`. The on-disk JSON in `aeqi/presets/blueprints/*.json` is the source of truth for editing; the platform binary embeds the catalog at compile time via `include_str!`.
+The canonical Rust type is `aeqi_orchestrator::ipc::blueprints::Blueprint`. The on-disk JSON in `aeqi/presets/blueprints/*.json` is the source of truth for editing. The current public catalog embeds only `aeqi.json`; the other manifests are draft inventory until they pass a fresh product and protocol audit.
 
 ## Shape
 
 ```jsonc
 {
-  "slug": "tech-studio",
-  "name": "Tech studio",
-  "tagline": "Small team building software",
+  "slug": "aeqi",
+  "name": "aeqi",
+  "tagline": "Start a TRUST with one primary agent and one operating steward.",
   "description": "...",
 
   // User-facing category. Free-form string, defaults to "".
@@ -20,9 +20,9 @@ The canonical Rust type is `aeqi_orchestrator::ipc::blueprints::Blueprint`. The 
   // The Factory expects templateId = keccak256(template).
   "template": "venture",
 
-  // Required. The single root agent that owns the Company.
+  // Required. The single root agent that owns the TRUST.
   "root": {
-    "name": "Founder",
+    "name": "aeqi",
     "model": "anthropic/claude-sonnet-4.6",
     "color": "#0a0a0b",
     "avatar": "rocket",
@@ -34,7 +34,7 @@ The canonical Rust type is `aeqi_orchestrator::ipc::blueprints::Blueprint`. The 
   "seed_agents": [
     {
       "owner": "root",
-      "name": "CTO",
+      "name": "Steward",
       "model": "anthropic/claude-sonnet-4.6",
       "color": "#5a4fcf",
       "system_prompt": "...",
@@ -72,8 +72,8 @@ The canonical Rust type is `aeqi_orchestrator::ipc::blueprints::Blueprint`. The 
   "seed_quests": [
     {
       "owner": "root",
-      "subject": "Calibrate your CTO's voice",
-      "description": "Let the CTO know your preferences in their first session.",
+      "subject": "Define the TRUST mission",
+      "description": "Write the one-sentence mission into the TRUST mission idea.",
       "labels": ["onboarding"]
     }
   ],
@@ -126,7 +126,7 @@ The canonical Rust type is `aeqi_orchestrator::ipc::blueprints::Blueprint`. The 
 
 ### Root agent
 
-`root` is a single `RootAgentSpec`, not an array. Every Company has exactly one root agent.
+`root` is a single `RootAgentSpec`, not an array. Every TRUST has exactly one root agent.
 
 | Field | Type | Notes |
 |-------|------|-------|
@@ -199,10 +199,10 @@ Catalog entries carry `kind: "single"` so the frontend can branch consistently i
 
 ## Provisioning
 
-Spawn a Company from a blueprint with one of:
+Spawn a TRUST from a blueprint with one of:
 
 ```
-POST /api/start/launch              # Personal Company via the /start experience
+POST /api/start/launch              # TRUST via the /start experience
 POST /api/architect/deploy          # Architect-generated inline JSON instead of a catalog slug
 POST /api/blueprints/spawn          # Tenant-scoped IPC spawn (proxied to the runtime)
 ```
@@ -211,25 +211,19 @@ POST /api/blueprints/spawn          # Tenant-scoped IPC spawn (proxied to the ru
 
 ## Built-in catalog
 
-The platform binary embeds these manifests (`aeqi-platform/blueprints/*.json`, mirrored from `aeqi/presets/blueprints/*.json`):
+The platform binary embeds this public manifest (`aeqi-platform/blueprints/aeqi.json`, mirrored from `aeqi/presets/blueprints/aeqi.json`):
 
 | Slug | Template |
 |------|----------|
 | `aeqi` | venture |
-| `aeqi-company` | entity |
-| `index-fund` | fund |
-| `personal-os` | entity |
-| `solo-founder` | entity |
-| `studio` | entity |
-| `tech-studio` | venture |
 
-Each blueprint declares its on-chain template via `template`; the Factory expects `keccak256(template)`, **not** `keccak256(slug)`. The mapping is many-to-one — different blueprints can target the same on-chain template.
+Draft manifests can still live under `aeqi/presets/blueprints/`, but they are not part of the public catalog until they are explicitly added to the embedded list in both runtime and platform. Each blueprint declares its on-chain template via `template`; the Factory expects `keccak256(template)`, **not** `keccak256(slug)`.
 
 ## Editing
 
 ```bash
 # Edit the source
-$EDITOR aeqi/presets/blueprints/tech-studio.json
+$EDITOR aeqi/presets/blueprints/aeqi.json
 
 # Rebuild — blueprints are embedded via include_str!
 cd aeqi && ./scripts/deploy.sh

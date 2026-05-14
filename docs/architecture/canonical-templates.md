@@ -1,12 +1,12 @@
 # Four Canonical Templates
 
-aeqi uses four locked on-chain templates. Each is a pre-configured module set for a specific company archetype. Many off-chain blueprints can map to one template (N-to-1 mapping).
+aeqi uses four locked on-chain templates. Each is a pre-configured module set for a specific TRUST archetype. Many off-chain blueprints can map to one template (N-to-1 mapping).
 
 ## The two-layer architecture
 
 **On-chain:** 4 canonical templates in Factory.sol. Exactly these archetypes. ~200 module addresses + value-config bytes per template. What the chain sees.
 
-**Off-chain:** Many blueprints in JSON. Each declares a `templateSlug` selecting one of the 4. Blueprints layer agent role trees, ideas, events, sessions, default persona on top of the on-chain shape. Runtime concerns the chain doesn't model.
+**Off-chain:** Blueprints in JSON. Each declares a `templateSlug` selecting one of the 4. Blueprints layer agent role trees, ideas, events, sessions, and default persona on top of the on-chain shape. Runtime concerns the chain doesn't model. The public catalog currently ships only the conservative `aeqi` default; specialized manifests remain draft inventory until their product and protocol assumptions are audited.
 
 ## The four templates
 
@@ -14,21 +14,21 @@ aeqi uses four locked on-chain templates. Each is a pre-configured module set fo
 
 - **Module set:** role + budget + token + vesting + foundation
 - **Use case:** Philanthropic / non-equity orgs. Governance is opinionated; economics are budget-and-vesting-only (no funding rounds, no AMM).
-- **Default for:** personal-os blueprint
+- **Default for:** draft personal and foundation-style blueprints
 - **Bytecode:** ~45k (5 modules)
 
 ### Entity
 
 - **Module set:** role + budget + token + vesting + funding
 - **Use case:** Lightweight joint companies. Startups with cap table and employees but no heavy Uniswap/Unifutures economics.
-- **Default for:** solo-founder, studio (most blueprints)
+- **Default for:** draft solo-founder and studio-style blueprints
 - **Bytecode:** ~48k (5 modules)
 
 ### Venture
 
 - **Module set:** role + budget + token + vesting + funding + uniswap + unifutures
 - **Use case:** Full economic stack. Companies that issue equity, run AMM positions, do token-curated funding.
-- **Default for:** tech-studio, aeqi (the platform itself)
+- **Default for:** aeqi and future venture-style blueprints
 - **Bytecode:** ~62k (7 modules)
 
 ### Fund
@@ -42,7 +42,7 @@ aeqi uses four locked on-chain templates. Each is a pre-configured module set fo
 
 ### Complexity ladder
 
-Foundation → Entity → Venture form a staircase: each adds modules horizontally without breaking prior configs. A company coded for Foundation can't suddenly demand Uniswap. A company coded for Entity can't run futures. The ladder is intentional.
+Foundation → Entity → Venture form a staircase: each adds modules horizontally without breaking prior configs. A TRUST coded for Foundation can't suddenly demand Uniswap. A TRUST coded for Entity can't run futures. The ladder is intentional.
 
 We reject à-la-carte module selection — the audit surface would explode.
 
@@ -63,10 +63,10 @@ Fewer templates = faster iteration on blueprints (they're just JSON changes, no 
 
 ### Fewer templates doesn't mean less differentiation
 
-A Studio blueprint and a Tech Studio blueprint can live on Entity without losing meaning. The difference isn't on-chain; it's in:
+A studio draft and a software-studio draft can live on Entity without losing meaning. The difference isn't on-chain; it's in:
 - Role trees
 - Seed events
-- Prompt style
+- Operating instructions
 - Default treasury allocations
 
 All of that lives in JSON and the runtime. The chain stays simple.
@@ -75,15 +75,22 @@ All of that lives in JSON and the runtime. The chain stays simple.
 
 The original aeqi-app already used this 4-archetype taxonomy (Foundation/Entity/Venture/Fund routes in `/app/(app)/`). We're codifying that proven shape into on-chain primitives.
 
-## Blueprint → template mapping (current)
+## Public blueprint → template mapping
 
 | Blueprint | Template | Why |
 |---|---|---|
-| personal-os | Foundation | Personal entity is degenerate — owner-only, no equity, simplest archetype |
-| solo-founder | Entity | Lightweight company, founder + maybe token, no governance complexity |
-| studio | Entity | Multi-founder with vesting, no heavy economics |
-| tech-studio | Venture | Adds governance + funding rounds + AMM positions |
-| aeqi | Venture | The platform itself is a Venture-shape company |
+| aeqi | Venture | The default TRUST shell uses the venture template already wired for hosted genesis. Its JSON stays minimal: one primary agent, one Steward, shared memory, a bootstrap Quest, and weekly review. |
+
+## Draft blueprint inventory
+
+These manifests exist in the repo for future work but are not embedded in the public catalog:
+
+| Draft | Intended template | Status |
+|---|---|---|
+| personal-os | Entity | Draft; not public. |
+| solo-founder | Entity | Draft; not public. |
+| studio | Entity | Draft; not public. |
+| tech-studio | Venture | Draft; not public. |
 | (future) | Fund | Reserved for investment-fund blueprints |
 
 ## How provisioning uses templates
@@ -114,13 +121,13 @@ When Solana port lands, the same 4 archetypes map to Solana primitives (Squads-s
 
 ### Brand clarity
 
-Marketing shows blueprints (many); platform/contract layer shows templates (4). Two layers, two audiences. Users see "Solo Founder" and "Tech Studio." Engineers see "entity" and "venture."
+Users see Blueprints only when the product can stand behind the operating behavior. Engineers still see templates as the underlying contract archetypes.
 
 ## Decision authority
 
 **The 4-template structure is locked.** No further templates without explicit founder decision and audit budget allocation.
 
-**Blueprints can be added freely.** Any `templateSlug` pointing at an existing (Foundation/Entity/Venture/Fund) template can ship as a JSON PR without contract review.
+**Blueprint drafts can be added freely.** A draft that points at an existing template does not require a new contract review by itself. Making that draft public is a product decision: it needs a fresh audit of the operating copy, seed roles, seed Quests, and protocol assumptions.
 
 **Modifying an existing template's module set is a breaking contract change.** Don't. If Module Y needs a config change, bump its version on-chain and redeploy. Old Entities instantiated against the old template; new ones can opt into the new template via a new templateSlug if the change is significant enough.
 
