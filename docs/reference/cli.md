@@ -1,6 +1,16 @@
 # CLI
 
-`aeqi` is the command-line interface for the runtime. Self-host runs the binary directly; on the hosted platform, the CLI talks to the platform API.
+`aeqi` is the command-line control surface for aeqi.
+
+For a hosted company, the CLI is a client: it authenticates to the platform and
+talks to the company's managed runtime. It does not run that hosted runtime on
+your laptop. For self-hosting, `aeqi start` runs a local single-company runtime
+with the API, dashboard, scheduler, MCP socket, and agent execution in one
+process.
+
+In product language, an "organization" is a Company/TRUST. A hosted account can
+have one or more companies, and each company has its own runtime, agents,
+quests, ideas, events, sessions, and memory.
 
 ## Installation
 
@@ -17,162 +27,298 @@ cargo build --release
 # binary at target/release/aeqi
 ```
 
-## Commands
+## Mental model
+
+The CLI has three jobs:
+
+| Job | Command path | What it means |
+|---|---|---|
+| Talk to a hosted company | `aeqi chat` | Opens a terminal chat with an existing runtime agent, using your account key. |
+| Expose aeqi to an AI coding client | `aeqi mcp` | Starts an MCP server process so Codex, Claude Code, or another MCP client can use aeqi tools. |
+| Run a local runtime | `aeqi setup`, `aeqi start` | Creates and runs a self-hosted single-company runtime on your machine. |
+
+The most common hosted path is:
+
+1. Create or join a company in the dashboard.
+2. Create keys in the dashboard.
+3. Use `aeqi chat` when you want a terminal conversation with an existing agent.
+4. Use `aeqi mcp` when you want Codex or Claude Code to work with company memory,
+   quests, agents, and code graph tools.
+
+## Hosted company setup
+
+Create two keys:
+
+- Account key (`ak_...`) from Account -> API.
+- Company secret key (`sk_...`) from Company -> API Keys.
+
+For terminal chat:
+
+```bash
+export AEQI_API_KEY=ak_...
+export AEQI_API_URL=https://app.aeqi.ai
+aeqi chat
+```
+
+If your account has multiple companies or roles, the CLI asks which one to use.
+You can also pin the context:
+
+```bash
+aeqi chat \
+  --api-url https://app.aeqi.ai \
+  --api-key ak_... \
+  --entity <company_entity_id> \
+  --agent "Executive Assistant"
+```
+
+`aeqi chat` lists your companies, filters to your human roles when possible,
+lists active agents in the selected company, then opens a streaming session with
+the selected agent. Messages are sent to the hosted runtime over the platform
+API and WebSocket stream.
+
+For MCP clients:
+
+```bash
+export AEQI_SECRET_KEY=sk_...
+export AEQI_API_KEY=ak_...
+export AEQI_PLATFORM_URL=https://app.aeqi.ai
+aeqi mcp
+```
+
+Most users do not run `aeqi mcp` by hand. They configure Codex, Claude Code, or
+another MCP client to spawn it. See [MCP](/docs/api/mcp).
+
+## Hosted user stories
+
+### Use the CLI like a terminal agent client
+
+You already have a company and an Executive Assistant agent. Run:
+
+```bash
+AEQI_API_KEY=ak_... AEQI_API_URL=https://app.aeqi.ai aeqi chat
+```
+
+Pick the company, role, and agent. The CLI becomes a terminal chat surface for
+that runtime agent. The agent still runs inside aeqi, with its role, memory,
+tools, sessions, and event history. The CLI is only the transport.
+
+### Use Codex or Claude Code with the company
+
+Configure your MCP client to run `aeqi mcp` with `AEQI_SECRET_KEY`,
+`AEQI_API_KEY`, and `AEQI_PLATFORM_URL`.
+
+The MCP client can then:
+
+- call `me` to confirm which user and company it is operating as;
+- search and store Ideas for durable memory;
+- create, update, and close Quests;
+- inspect and hire Agents;
+- trigger or inspect Events;
+- use the code graph before changing source.
+
+This is the aeqi version of an AI coding workspace: the chat client supplies the
+interface, while aeqi supplies company context, memory, work ledger, agents, and
+execution history.
+
+### Interact with existing agents
+
+In a terminal, use `aeqi chat --agent <name-or-id>` to talk to one existing
+agent.
+
+From MCP, use:
+
+```text
+agents(action='list')
+agents(action='get', agent='Executive Assistant')
+quests(action='create', subject='Draft the launch checklist', agent='Executive Assistant')
+```
+
+Creating a Quest with an `agent` or `agent_id` delegates work to that runtime
+agent. Omitting the agent creates user/company-scoped work that is not
+automatically owned by one agent.
+
+### Create a new agent
+
+From MCP, hire a runtime agent:
+
+```text
+agents(action='hire', template='analyst')
+```
+
+Then delegate work:
+
+```text
+quests(
+  action='create',
+  subject='Map the onboarding funnel',
+  description='Review the current docs and produce a prioritized improvement plan.',
+  agent='analyst'
+)
+```
+
+The MCP client did not become the new agent. It asked the aeqi runtime to create
+one, then created work for that agent to execute.
+
+### Act as yourself, not as an agent
+
+The normal hosted MCP connection acts as your account inside the selected
+company. `AEQI_SECRET_KEY` selects the company runtime, and `AEQI_API_KEY` binds
+the request to your user account.
+
+`AEQI_AGENT` is only a client hint for logs and context. It does not make the
+connection own Quests or impersonate a runtime agent. Pass `agent` or `agent_id`
+explicitly when you want to delegate to, inspect, or filter for an agent.
+
+`AEQI_AGENT_ID` is reserved for cases where a client intentionally needs to bind
+to a specific runtime agent. Most human-operated CLI and MCP setups should leave
+it unset.
+
+## Local self-host commands
 
 ### `aeqi setup`
 
-Configure the runtime. Wizard detects context:
+Bootstrap a local runtime. The wizard detects context:
 
-- Inside a git repo → configures the current workspace.
-- Outside a repo → writes to `~/.aeqi/`.
+- Inside a git repo: configures the current workspace.
+- Outside a repo: writes to `~/.aeqi/`.
 
-Creates SQLite databases (`aeqi.db`, `sessions.db`) and a default config (`config.toml`).
+```bash
+aeqi setup
+aeqi setup --runtime anthropic_agent
+aeqi setup --service
+```
+
+Creates SQLite databases (`aeqi.db`, `sessions.db`), starter agents, and a
+default config.
 
 ### `aeqi start`
 
-Run the daemon, REST API, scheduler, and dashboard in one process. Default port `8400`.
+Run the local daemon, REST API, scheduler, dashboard, and runtime in one
+process. Default bind comes from config.
 
+```bash
+aeqi start
+aeqi start --bind 127.0.0.1:8400
 ```
-aeqi start [--port 8400] [--data-dir ~/.aeqi]
+
+Hosted users usually do not run this. The hosted platform already runs the
+tenant runtime.
+
+### `aeqi daemon`
+
+Manage a local daemon service.
+
+```bash
+aeqi daemon start
+aeqi daemon status
+aeqi daemon stop
+aeqi daemon query status
+aeqi daemon install --start
+aeqi daemon uninstall --stop
 ```
-
-### `aeqi stop`
-
-Stop a running daemon (matches by data dir).
 
 ### `aeqi secrets`
 
-Manage provider keys + secrets.
+Manage local provider keys and secrets.
 
 ```bash
 aeqi secrets set OPENROUTER_API_KEY sk-or-...
 aeqi secrets set ANTHROPIC_API_KEY sk-ant-...
-aeqi secrets get OPENROUTER_API_KEY    # prints obscured
+aeqi secrets get OPENROUTER_API_KEY
 aeqi secrets list
-aeqi secrets unset OPENROUTER_API_KEY
+aeqi secrets delete OPENROUTER_API_KEY
 ```
 
-### `aeqi agents`
+### `aeqi agent`
 
-Manage agents.
+Manage local persistent agents.
 
 ```bash
-aeqi agents list [--status active]
-aeqi agents spawn --template researcher --name "Research Bot"
-aeqi agents update <agent_id> --model anthropic/claude-3.5-sonnet
-aeqi agents retire <agent_id>
+aeqi agent list
+aeqi agent spawn "Research Bot" --model anthropic/claude-sonnet-4.6
+aeqi agent show "Research Bot"
+aeqi agent registry
+aeqi agent retire "Research Bot"
+aeqi agent activate "Research Bot"
 ```
 
-### `aeqi quests`
+For hosted agent management from AI clients, prefer MCP `agents(...)`.
 
-Manage quests.
+### `aeqi chat`
 
-```bash
-aeqi quests list [--status pending] [--agent <name>]
-aeqi quests create --subject "..." --agent <name> --priority high
-aeqi quests show <quest_id>
-aeqi quests close <quest_id> --outcome "shipped X"
-```
-
-### `aeqi ideas`
-
-Manage ideas (knowledge / memory).
+Open the interactive terminal chat. With `AEQI_API_KEY` set, it uses hosted
+account-key mode. Without it, it uses the local runtime config.
 
 ```bash
-aeqi ideas store --name "JWT refresh" --kind procedure \
-  --content "Use rotating refresh tokens with 7-day expiry"
-aeqi ideas search --query "auth patterns"
-aeqi ideas list --kind procedure
-```
-
-### `aeqi events`
-
-Manage events.
-
-```bash
-aeqi events list [--scope <entity_id>]
-aeqi events fire --kind custom.deploy --payload '{"target":"prod"}'
-aeqi events subscribe --pattern "kind=quest.completed" --tool message_to --args '{...}'
-```
-
-### `aeqi roles`
-
-Manage roles.
-
-```bash
-aeqi roles list
-aeqi roles create --title "CFO" --role-type operational
-aeqi roles assign <role_id> --human <user_id>
-aeqi roles assign <role_id> --agent <agent_id>
-aeqi roles unassign <role_id>
-```
-
-### `aeqi treasury`
-
-Treasury operations (gated by role / session-key policy).
-
-```bash
-aeqi treasury balance
-aeqi treasury transfer --to 0x... --amount 100 --asset USDC
+aeqi chat
+aeqi chat --agent assistant
+aeqi chat --entity <company_entity_id> --role <role_id> --agent <agent_id>
 ```
 
 ### `aeqi mcp`
 
-Run the MCP server (Model Context Protocol). Used by Codex, Claude Code, and
-other MCP-compatible clients.
+Run the MCP server over stdio. MCP clients spawn this process and call tools
+through it.
 
 ```bash
 aeqi mcp
 ```
 
-See [MCP](/docs/api/mcp).
+Hosted mode requires `AEQI_SECRET_KEY`; self-hosted mode uses the local runtime
+socket from the config.
 
-### `aeqi version`
+### `aeqi ideas`
 
-Print version + build info.
-
-## Hosted platform
-
-When running against the hosted platform (instead of self-host), set:
+Manage local Ideas.
 
 ```bash
-export AEQI_API=https://app.aeqi.ai
-export AEQI_TOKEN=<your-api-key-from-settings>
+aeqi ideas search "auth patterns"
+aeqi ideas store "JWT refresh" "Use rotating refresh tokens with 7-day expiry"
+aeqi ideas export --vault ~/notes/aeqi
+aeqi ideas import --vault ~/notes/aeqi
 ```
 
-All commands proxy through the platform API. Authentication uses the API key from your account settings.
+### `aeqi quests`
 
-## MCP integration
+List and close local Quests. `assign` creates a Quest for a root agent.
 
-The CLI ships an MCP server mode (`aeqi mcp`) that exposes the full verb catalog
-as MCP tools. Use this with Codex, Claude Code, or any MCP client to:
-
-- Search and store ideas in your runtime from the IDE.
-- Create quests for the runtime to execute.
-- Spawn agents directly from a chat session.
-
-See [MCP](/docs/api/mcp).
-
-## Configuration
-
-`~/.aeqi/config.toml`:
-
-```toml
-[runtime]
-data_dir = "~/.aeqi"
-port = 8400
-log_level = "info"
-
-[providers]
-default_model = "anthropic/claude-3.5-sonnet"
-
-[telemetry]
-otlp_endpoint = "http://localhost:4317"  # optional
+```bash
+aeqi assign "Write the onboarding checklist" --root assistant --priority high
+aeqi ready
+aeqi quests
+aeqi quests --all
+aeqi close <quest_id> --reason "shipped"
 ```
+
+For hosted Quest operations from Codex or Claude Code, prefer MCP
+`quests(...)`.
+
+### `aeqi graph`
+
+Operate the local code intelligence graph.
+
+```bash
+aeqi graph index --root assistant
+aeqi graph index --root assistant --full
+aeqi graph stats --root assistant
+```
+
+## Environment variables
+
+| Variable | Used by | Description |
+|---|---|---|
+| `AEQI_API_KEY` | `aeqi chat`, `aeqi mcp` | Account key (`ak_...`). In chat, this is the bearer token. In MCP, it binds the call to your user account. |
+| `AEQI_API_URL` | `aeqi chat` | Hosted platform URL for chat, for example `https://app.aeqi.ai`. |
+| `AEQI_SECRET_KEY` | `aeqi mcp` | Company secret key (`sk_...`) that selects and authenticates the company runtime. |
+| `AEQI_PLATFORM_URL` | `aeqi mcp` | Hosted platform URL for MCP validation, for example `https://app.aeqi.ai`. |
+| `AEQI_CONFIG` | self-hosted MCP clients | Path to a local runtime config when not using hosted keys. |
+| `AEQI_AGENT` | MCP clients | Optional client hint. It is not account identity and does not own Quests. |
+| `AEQI_AGENT_ID` | MCP clients | Explicit runtime agent binding for special cases. Leave unset unless you know you need it. |
 
 ## Related
 
-- [Quickstart](/docs/quickstart)
-- [REST API](/docs/api/rest)
 - [MCP](/docs/api/mcp)
+- [Authentication](/docs/api/authentication)
+- [REST API](/docs/api/rest)
 - [IPC verbs](/docs/reference/ipc)
+- [Quickstart](/docs/quickstart)

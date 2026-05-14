@@ -10,6 +10,33 @@ working surface for the company. Codex can search memory before editing, file
 Quests for non-trivial work, inspect the code graph before changing APIs, and
 store durable lessons back into the TRUST when the work is done.
 
+## What Runs Where
+
+For hosted aeqi, `aeqi mcp` is a client process. Your MCP client starts it over
+stdio, and the process authenticates to the platform, validates the selected
+company, then routes tool calls into that company's managed runtime.
+
+It does not start the hosted runtime. The runtime already exists in aeqi. The
+CLI is the bridge between your local AI client and the company runtime.
+
+For self-hosted aeqi, you run the runtime yourself with `aeqi start`, then run
+`aeqi mcp` against that local config and socket.
+
+## Identity Model
+
+Hosted MCP normally acts as the authenticated user inside the selected company:
+
+- `AEQI_SECRET_KEY` (`sk_...`) selects and authenticates the company runtime.
+- `AEQI_API_KEY` (`ak_...`) binds the call to your user account.
+- `AEQI_AGENT` is only a client hint for logs and context. It is not your
+  account identity and does not make Quests agent-owned.
+- `AEQI_AGENT_ID` is only for explicit agent-bound cases. Most Codex and Claude
+  Code setups leave it unset.
+
+You do not need to become an aeqi agent to use Ideas, Quests, Events, or the code
+graph. Use explicit `agent` or `agent_id` arguments only when you want to inspect
+an agent, hire an agent, retire an agent, or delegate work to one.
+
 ## Requirements
 
 - A hosted aeqi account at [app.aeqi.ai](https://app.aeqi.ai).
@@ -105,6 +132,73 @@ ledger:
 This makes the next Codex session start with the operating history instead of a
 blank chat.
 
+## Common User Stories
+
+### Work as yourself with company memory
+
+Use this when Codex or Claude Code is doing work in a repository and should
+remember decisions across sessions:
+
+```text
+me(action='profile')
+ideas(action='search', query='deployment rules for this project', limit=5)
+quests(action='create', subject='Fix staging deploy health check')
+```
+
+The client is acting as your authenticated account in the company. The Quest is
+company/user-scoped unless you pass an agent.
+
+### Delegate to an existing agent
+
+Use this when a runtime agent should own the work:
+
+```text
+agents(action='list')
+agents(action='get', agent='Executive Assistant')
+quests(
+  action='create',
+  subject='Prepare the weekly operating review',
+  description='Summarize open quests, blockers, and recent decisions.',
+  agent='Executive Assistant'
+)
+```
+
+The MCP client creates the Quest; the selected aeqi agent runs inside the
+runtime with its role, memory, tools, and event handlers.
+
+### Hire a new agent, then give it work
+
+Use this when the company needs a new persistent worker:
+
+```text
+agents(action='hire', template='analyst')
+quests(
+  action='create',
+  subject='Map pricing-page objections',
+  description='Review customer notes and draft the top objections with proposed copy changes.',
+  agent='analyst'
+)
+```
+
+The CLI did not become that agent. It asked the runtime to hire an agent, then
+created work for the runtime to dispatch.
+
+### Use aeqi like the memory and work ledger for an AI IDE
+
+Use this loop when an AI coding client is editing source:
+
+```text
+ideas(action='search', query='auth redirect invariant', limit=5)
+code(action='search', project='my-project', query='login callback handler', limit=5)
+quests(action='create', subject='Fix auth redirect regression')
+code(action='impact', project='my-project', node_id='...')
+ideas(action='store', name='auth/redirect-invariant', tags=['auth', 'procedure'], content='...')
+quests(action='close', quest_id='67-123', result='Fixed redirect regression and verified tests.')
+```
+
+The client remains Codex or Claude Code. aeqi supplies the durable company
+context, execution ledger, agents, and code graph.
+
 ## Tool Catalog
 
 Most tools use one action-based call shape:
@@ -175,9 +269,9 @@ quests(
 
 | Variable | Required | Default | Description |
 |---|---:|---|---|
-| `AEQI_SECRET_KEY` | Yes | - | Company secret key (`sk_...`) for the TRUST runtime. |
+| `AEQI_SECRET_KEY` | Hosted | - | Company secret key (`sk_...`) for the TRUST runtime. |
 | `AEQI_API_KEY` | Hosted | - | Account key (`ak_...`) that binds calls to your user account. |
-| `AEQI_PLATFORM_URL` | No | `https://app.aeqi.ai` | Hosted platform URL. |
+| `AEQI_PLATFORM_URL` | Hosted | - | Hosted platform URL, for example `https://app.aeqi.ai`. Set this explicitly for hosted use. |
 | `AEQI_CONFIG` | Self-hosted | - | Path to a local `aeqi.toml` when not using hosted keys. |
 | `AEQI_AGENT` | No | Client name | Optional client hint for logs and runtime context. It is not your account identity. |
 | `AEQI_AGENT_ID` | No | - | Explicit runtime agent ID when intentionally acting as a specific agent. |
@@ -206,6 +300,14 @@ AEQI_CONFIG = "/path/to/aeqi.toml"
 
 No hosted keys are required when the MCP server connects to your own local
 runtime.
+
+You can also pass the config explicitly:
+
+```toml
+[mcp_servers.aeqi]
+command = "aeqi"
+args = ["--config", "/path/to/aeqi.toml", "mcp"]
+```
 
 ## Troubleshooting
 
