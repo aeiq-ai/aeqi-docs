@@ -1,12 +1,12 @@
 # MCP Integration
 
 aeqi exposes your TRUST as a Model Context Protocol server. Once a TRUST exists,
-Codex, Claude Code, and other MCP clients can use the same company context the
+Codex, Claude Code, and other MCP clients can use the same TRUST context the
 dashboard uses: Ideas, Quests, Agents, Events, code intelligence, and runtime
 state.
 
 The important distinction: aeqi is not just another tool server. The MCP is the
-working surface for the company. Codex can search memory before editing, file
+working surface for the TRUST. Codex can search memory before editing, file
 Quests for non-trivial work, inspect the code graph before changing APIs, and
 store durable lessons back into the TRUST when the work is done.
 
@@ -14,19 +14,19 @@ store durable lessons back into the TRUST when the work is done.
 
 For hosted aeqi, `aeqi mcp` is a client process. Your MCP client starts it over
 stdio, and the process authenticates to the platform, validates the selected
-company, then routes tool calls into that company's managed runtime.
+TRUST, then routes tool calls into that TRUST's managed runtime.
 
 It does not start the hosted runtime. The runtime already exists in aeqi. The
-CLI is the bridge between your local AI client and the company runtime.
+CLI is the bridge between your local AI client and the TRUST runtime.
 
 For self-hosted aeqi, you run the runtime yourself with `aeqi start`, then run
 `aeqi mcp` against that local config and socket.
 
 ## Identity Model
 
-Hosted MCP normally acts as the authenticated user inside the selected company:
+Hosted MCP normally acts as the authenticated user inside the selected TRUST:
 
-- `AEQI_SECRET_KEY` (`sk_...`) selects and authenticates the company runtime.
+- `AEQI_SECRET_KEY` (`sk_...`) selects and authenticates the TRUST runtime.
 - `AEQI_API_KEY` (`ak_...`) binds the call to your user account.
 - `AEQI_AGENT` is only a client hint for logs and context. It is not your
   account identity and does not make Quests agent-owned.
@@ -37,21 +37,21 @@ You do not need to become an aeqi agent to use Ideas, Quests, Events, or the cod
 graph. Use explicit `agent` or `agent_id` arguments only when you want to inspect
 an agent, hire an agent, retire an agent, or delegate work to one.
 
-`quests(action='list')` is entity-scoped by default and silently drops
-cross-entity `scope: "global"` quests, even when `project` is passed. If you
-have a specific quest ID, resolve it with `quests(action='show', quest_id='…')`
-rather than trusting an empty list result.
+`quests(action='list')` is scoped to the selected TRUST runtime by default and
+silently drops cross-runtime `scope: "global"` quests, even when `project` is
+passed. If you have a specific quest ID, resolve it with
+`quests(action='show', quest_id='…')` rather than trusting an empty list result.
 
 ## Requirements
 
 - A hosted aeqi account at [app.aeqi.ai](https://app.aeqi.ai).
 - At least one TRUST already created.
 - An account key (`ak_...`) from [Account -> API](https://app.aeqi.ai/account?tab=api).
-- A secret key (`sk_...`) from [Company -> API Keys](https://app.aeqi.ai/company?tab=api-keys).
+- A secret key (`sk_...`) from the TRUST API keys page.
 - The `aeqi` CLI on your `PATH`, or an absolute path to the `aeqi` binary.
 - Codex or another MCP-compatible client.
 
-The `sk_...` key selects and authenticates the company runtime. The `ak_...` key
+The `sk_...` key selects and authenticates the TRUST runtime. The `ak_...` key
 binds the call to your user account and should be supplied for hosted use. See
 [Authentication](/docs/api/authentication) for creation and rotation.
 
@@ -134,7 +134,7 @@ Expected result:
 
 - `ok: true`
 - a `mode` such as `platform`
-- an `entity_id` for the TRUST runtime
+- an `entity_id` for the TRUST runtime, where the API still exposes that wire name
 - runtime connection details
 
 Then ask Codex to search memory:
@@ -167,7 +167,7 @@ blank chat.
 
 ## Common User Stories
 
-### Work as yourself with company memory
+### Work as yourself with TRUST memory
 
 Use this when Codex or Claude Code is doing work in a repository and should
 remember decisions across sessions:
@@ -178,8 +178,8 @@ ideas(action='search', query='deployment rules for this project', limit=5)
 quests(action='create', subject='Fix staging deploy health check')
 ```
 
-The client is acting as your authenticated account in the company. The Quest is
-company/user-scoped unless you pass an agent.
+The client is acting as your authenticated account in the TRUST. The Quest is
+TRUST/user-scoped unless you pass an agent.
 
 ### Delegate to an existing agent
 
@@ -201,7 +201,7 @@ runtime with its role, memory, tools, and event handlers.
 
 ### Hire a new agent, then give it work
 
-Use this when the company needs a new persistent worker:
+Use this when the TRUST needs a new persistent worker:
 
 ```text
 agents(action='hire', template='analyst')
@@ -229,7 +229,7 @@ ideas(action='store', name='auth/redirect-invariant', tags=['auth', 'procedure']
 quests(action='close', quest_id='67-123', result='Fixed redirect regression and verified tests.')
 ```
 
-The client remains Codex or Claude Code. aeqi supplies the durable company
+The client remains Codex or Claude Code. aeqi supplies the durable TRUST
 context, execution ledger, agents, and code graph.
 
 ## Tool Catalog
@@ -288,7 +288,7 @@ This is **intentional**: graph-mutation and feedback verbs are operator/MCP-driv
 
 ## Examples
 
-Search company memory before changing behavior:
+Search TRUST memory before changing behavior:
 
 ```text
 ideas(action='search', query='authentication patterns token rotation', limit=5)
@@ -336,7 +336,7 @@ quests(
 
 | Variable | Required | Default | Description |
 |---|---:|---|---|
-| `AEQI_SECRET_KEY` | Hosted | - | Company secret key (`sk_...`) for the TRUST runtime. |
+| `AEQI_SECRET_KEY` | Hosted | - | TRUST secret key (`sk_...`) for the TRUST runtime. |
 | `AEQI_API_KEY` | Hosted | - | Account key (`ak_...`) that binds calls to your user account. |
 | `AEQI_PLATFORM_URL` | Hosted | - | Hosted platform URL, for example `https://app.aeqi.ai`. Set this explicitly for hosted use. |
 | `AEQI_CONFIG` | Self-hosted | - | Path to a local `aeqi.toml` when not using hosted keys. |

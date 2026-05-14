@@ -2,15 +2,16 @@
 
 `aeqi` is the command-line control surface for aeqi.
 
-For a hosted company, the CLI is a client: it authenticates to the platform and
-talks to the company's managed runtime. It does not run that hosted runtime on
-your laptop. For self-hosting, `aeqi start` runs a local single-company runtime
+For a hosted TRUST, the CLI is a client: it authenticates to the platform and
+talks to the TRUST's managed runtime. It does not run that hosted runtime on
+your laptop. For self-hosting, `aeqi start` runs a local single-TRUST runtime
 with the API, dashboard, scheduler, MCP socket, and agent execution in one
 process.
 
-In product language, an "organization" is a Company/TRUST. A hosted account can
-have one or more companies, and each company has its own runtime, agents,
-quests, ideas, events, sessions, and memory.
+In aeqi, the product edge is the TRUST. Company, organization, and entity are
+only explanatory or API-adjacent words. A hosted account can have one or more
+TRUSTs, and each TRUST has its own runtime, agents, quests, ideas, events,
+sessions, and memory.
 
 ## Installation
 
@@ -33,24 +34,24 @@ The CLI has three jobs:
 
 | Job | Command path | What it means |
 |---|---|---|
-| Talk to a hosted company | `aeqi chat` | Opens a terminal chat with an existing runtime agent, using your account key. |
+| Talk to a hosted TRUST | `aeqi chat` | Opens a terminal chat with an existing runtime agent, using your account key. |
 | Expose aeqi to an AI coding client | `aeqi mcp` | Starts an MCP server process so Codex, Claude Code, or another MCP client can use aeqi tools. |
-| Run a local runtime | `aeqi setup`, `aeqi start` | Creates and runs a self-hosted single-company runtime on your machine. |
+| Run a local runtime | `aeqi setup`, `aeqi start` | Creates and runs a self-hosted single-TRUST runtime on your machine. |
 
 The most common hosted path is:
 
-1. Create or join a company in the dashboard.
+1. Create or join a TRUST in the dashboard.
 2. Create keys in the dashboard.
 3. Use `aeqi chat` when you want a terminal conversation with an existing agent.
-4. Use `aeqi mcp` when you want Codex or Claude Code to work with company memory,
+4. Use `aeqi mcp` when you want Codex or Claude Code to work with TRUST memory,
    quests, agents, and code graph tools.
 
-## Hosted company setup
+## Hosted TRUST setup
 
 Create two keys:
 
 - Account key (`ak_...`) from Account -> API.
-- Company secret key (`sk_...`) from Company -> API Keys.
+- TRUST secret key (`sk_...`) from the TRUST API keys page.
 
 For terminal chat:
 
@@ -60,19 +61,19 @@ export AEQI_API_URL=https://app.aeqi.ai
 aeqi chat
 ```
 
-If your account has multiple companies or roles, the CLI asks which one to use.
+If your account has multiple TRUSTs or roles, the CLI asks which one to use.
 You can also pin the context:
 
 ```bash
 aeqi chat \
   --api-url https://app.aeqi.ai \
   --api-key ak_... \
-  --entity <company_entity_id> \
+  --entity <trust_runtime_id> \
   --agent "Executive Assistant"
 ```
 
-`aeqi chat` lists your companies, filters to your human roles when possible,
-lists active agents in the selected company, then opens a streaming session with
+`aeqi chat` lists your TRUSTs, filters to your human roles when possible,
+lists active agents in the selected TRUST, then opens a streaming session with
 the selected agent. Messages are sent to the hosted runtime over the platform
 API and WebSocket stream.
 
@@ -92,24 +93,24 @@ another MCP client to spawn it. See [MCP](/reference/mcp).
 
 ### Use the CLI like a terminal agent client
 
-You already have a company and an Executive Assistant agent. Run:
+You already have a TRUST and an Executive Assistant agent. Run:
 
 ```bash
 AEQI_API_KEY=ak_... AEQI_API_URL=https://app.aeqi.ai aeqi chat
 ```
 
-Pick the company, role, and agent. The CLI becomes a terminal chat surface for
+Pick the TRUST, role, and agent. The CLI becomes a terminal chat surface for
 that runtime agent. The agent still runs inside aeqi, with its role, memory,
 tools, sessions, and event history. The CLI is only the transport.
 
-### Use Codex or Claude Code with the company
+### Use Codex or Claude Code with the TRUST
 
 Configure your MCP client to run `aeqi mcp` with `AEQI_SECRET_KEY`,
 `AEQI_API_KEY`, and `AEQI_PLATFORM_URL`.
 
 The MCP client can then:
 
-- call `me` to confirm which user and company it is operating as;
+- call `me` to confirm which user and TRUST it is operating as;
 - search and store Ideas for durable memory;
 - create, update, and close Quests;
 - inspect and hire Agents;
@@ -117,7 +118,7 @@ The MCP client can then:
 - use the code graph before changing source.
 
 This is the aeqi version of an AI coding workspace: the chat client supplies the
-interface, while aeqi supplies company context, memory, work ledger, agents, and
+interface, while aeqi supplies TRUST context, memory, work ledger, agents, and
 execution history.
 
 ### Interact with existing agents
@@ -134,7 +135,7 @@ quests(action='create', subject='Draft the launch checklist', agent='Executive A
 ```
 
 Creating a Quest with an `agent` or `agent_id` delegates work to that runtime
-agent. Omitting the agent creates user/company-scoped work that is not
+agent. Omitting the agent creates user/TRUST-scoped work that is not
 automatically owned by one agent.
 
 ### Create a new agent
@@ -162,7 +163,7 @@ one, then created work for that agent to execute.
 ### Act as yourself, not as an agent
 
 The normal hosted MCP connection acts as your account inside the selected
-company. `AEQI_SECRET_KEY` selects the company runtime, and `AEQI_API_KEY` binds
+TRUST. `AEQI_SECRET_KEY` selects the TRUST runtime, and `AEQI_API_KEY` binds
 the request to your user account.
 
 `AEQI_AGENT` is only a client hint for logs and context. It does not make the
@@ -263,7 +264,7 @@ account-key mode. Without it, it uses the local runtime config.
 ```bash
 aeqi chat
 aeqi chat --agent assistant
-aeqi chat --entity <company_entity_id> --role <role_id> --agent <agent_id>
+aeqi chat --entity <trust_runtime_id> --role <role_id> --agent <agent_id>
 ```
 
 ### `aeqi mcp`
@@ -350,7 +351,7 @@ aeqi monitor --json                 # emit as JSON for piping
 ### `aeqi team`
 
 Show system team and per-root teams. Useful for inspecting who works for
-whom inside a Company runtime.
+whom inside a TRUST runtime.
 
 ```bash
 aeqi team
@@ -360,7 +361,7 @@ aeqi team --root assistant
 ### `aeqi trust`
 
 Trust-kernel utilities — read or update the on-chain TRUST account for a
-local entity. Subcommands cover account inspection, role management, and
+local runtime entity id. Subcommands cover account inspection, role management, and
 chain-side actions.
 
 ```bash
@@ -420,7 +421,7 @@ Run `aeqi <cmd> --help` for the current flags.
 |---|---|---|
 | `AEQI_API_KEY` | `aeqi chat`, `aeqi mcp` | Account key (`ak_...`). In chat, this is the bearer token. In MCP, it binds the call to your user account. |
 | `AEQI_API_URL` | `aeqi chat` | Hosted platform URL for chat, for example `https://app.aeqi.ai`. |
-| `AEQI_SECRET_KEY` | `aeqi mcp` | Company secret key (`sk_...`) that selects and authenticates the company runtime. |
+| `AEQI_SECRET_KEY` | `aeqi mcp` | TRUST secret key (`sk_...`) that selects and authenticates the TRUST runtime. |
 | `AEQI_PLATFORM_URL` | `aeqi mcp` | Hosted platform URL for MCP validation, for example `https://app.aeqi.ai`. |
 | `AEQI_CONFIG` | self-hosted MCP clients | Path to a local runtime config when not using hosted keys. |
 | `AEQI_AGENT` | MCP clients | Optional client hint. It is not account identity and does not own Quests. |
