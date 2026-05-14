@@ -1,54 +1,53 @@
 # Inference API
 
-aeqi-inference is an OpenAI-compatible API for running inference on multiple LLM providers. It exposes chat completions, embeddings, and model discovery endpoints.
+aeqi-inference is an OpenAI-compatible API for running inference on multiple LLM providers. It exposes chat completions, embeddings (stub), and model discovery endpoints.
 
 ## Base URL
 
-| Environment | URL |
-|-------------|-----|
-| Hosted | `https://app.aeqi.ai/v1` |
-| Self-hosted | `http://127.0.0.1:8400/v1` |
+| Environment | URL                          |
+|-------------|------------------------------|
+| Hosted      | `https://app.aeqi.ai/v1`     |
+| Self-hosted | `http://127.0.0.1:8443/v1`   |
+
+`/v1/*` is served by the platform binary alongside `/api/*`, not by a separate inference daemon.
 
 ## Authentication
 
-Endpoints require SIWE authentication via JWT token. See [Authentication](/docs/api/authentication) for JWT and token refresh details.
+`POST /v1/chat/completions` and `POST /v1/embeddings` are gated by a `SubscriptionLayer` that checks for:
 
-In Phase 1, inference is available through the **subscription lane** — included as part of a company's monthly plan ($25 USD monthly credit).
+- `Authorization: Bearer <token>` — bearer token (JWT or `sk_…` API key).
+- `X-Entity: <entity_id>` — selects which Company's balance is debited.
 
-Treasury and x402 payment lanes (direct USDC debit and HTTP 402 "Pay-Per-Request") are in development.
+Missing the bearer returns `401 Unauthorized`. The subscription middleware is currently a skeleton — it does **not** verify JWT signatures yet; that is on the Phase 1 hardening list. A non-empty bearer is sufficient to pass the auth check today.
 
-## Rate Limits
+`GET /v1/models` is **public** — no auth required.
 
-Requests are rate-limited by entity (company or agent).
+## Lanes
 
-**Response Headers:**
-```
-RateLimit-Limit: <requests-per-minute>
-RateLimit-Remaining: <requests-remaining>
-RateLimit-Reset: <unix-timestamp>
-```
+Three planned payment lanes for inference:
 
-Exceeding the limit returns `429 Too Many Requests`.
+| Lane | Status | How it bills |
+|------|--------|--------------|
+| Subscription | Phase 1 live | Pooled per-Company credit, debited on each call. |
+| Treasury | Scaffolded | Direct USDC debit from the Company's on-chain treasury. |
+| x402 | Planned | HTTP 402 + EIP-3009 USDC per request. |
+
+Only the subscription lane is currently wired. Treasury and x402 endpoints land in Phase 2.
 
 ## Endpoints
 
 ### POST /v1/chat/completions
 
-Chat completion endpoint supporting both streaming and non-streaming responses.
+Chat completion endpoint with optional streaming.
 
 **Request:**
-```typescript
+
+```json
 {
   "model": "meta-llama/Meta-Llama-3.1-70B-Instruct",
   "messages": [
-    {
-      "role": "system",
-      "content": "You are a helpful assistant."
-    },
-    {
-      "role": "user",
-      "content": "What is the capital of France?"
-    }
+    { "role": "system", "content": "You are a helpful assistant." },
+    { "role": "user", "content": "What is the capital of France?" }
   ],
   "stream": false,
   "temperature": 0.7,
@@ -56,176 +55,154 @@ Chat completion endpoint supporting both streaming and non-streaming responses.
 }
 ```
 
-**Request Fields:**
-- `model` (required) — Model identifier from the [Available Models](#available-models) list.
-- `messages` (required) — Array of message objects with `role` and `content`. Roles: `"system"`, `"user"`, `"assistant"`, `"tool"`.
-- `stream` (optional, default `false`) — Set to `true` for Server-Sent Events (SSE) streaming response.
-- `temperature` (optional, default `1.0`) — Sampling temperature (0.0–2.0). Lower values = more deterministic.
-- `max_tokens` (optional) — Maximum tokens to generate. If omitted, the model uses its default.
+**Request fields:**
 
-**Non-Streaming Response (200 OK):**
+- `model` (required) — one of [Available Models](#available-models).
+- `messages` (required) — array of `{ role, content }`. Roles: `"system"`, `"user"`, `"assistant"`, `"tool"`.
+- `stream` (optional, default `false`) — `true` for Server-Sent Events.
+- `temperature` (optional, default `1.0`) — `0.0`–`2.0`.
+- `max_tokens` (optional) — defaults to the model's default.
+
+**Non-streaming response (200):**
+
 ```json
 {
-  "id": "cmpl-8hPn...",
-  "object": "text_completion",
+  "id": "cmpl-...",
+  "object": "chat.completion",
   "created": 1714861200,
   "model": "meta-llama/Meta-Llama-3.1-70B-Instruct",
   "choices": [
     {
       "index": 0,
-      "message": {
-        "role": "assistant",
-        "content": "Paris is the capital of France."
-      },
+      "message": { "role": "assistant", "content": "Paris is the capital of France." },
       "finish_reason": "stop"
     }
   ],
-  "usage": {
-    "prompt_tokens": 45,
-    "completion_tokens": 12,
-    "total_tokens": 57
-  }
+  "usage": { "prompt_tokens": 45, "completion_tokens": 12, "total_tokens": 57 }
 }
 ```
 
-**Streaming Response (200 OK):**
+**Streaming response (200):**
 
-When `stream: true`, the response is Server-Sent Events (SSE) with `Content-Type: text/event-stream`. Each chunk is a `ChatCompletionChunk`:
+`Content-Type: text/event-stream`. Each chunk uses `object: "chat.completion.chunk"`:
 
 ```
-data: {"id":"cmpl-8hPn...","object":"text_completion","created":1714861200,"model":"meta-llama/Meta-Llama-3.1-70B-Instruct","choices":[{"index":0,"delta":{"role":"assistant","content":"Paris"},"finish_reason":null}]}
+data: {"id":"cmpl-...","object":"chat.completion.chunk","created":1714861200,"model":"meta-llama/Meta-Llama-3.1-70B-Instruct","choices":[{"index":0,"delta":{"role":"assistant","content":"Paris"},"finish_reason":null}]}
 
-data: {"id":"cmpl-8hPn...","object":"text_completion","created":1714861200,"model":"meta-llama/Meta-Llama-3.1-70B-Instruct","choices":[{"index":0,"delta":{"content":" is"},"finish_reason":null}]}
+data: {"id":"cmpl-...","object":"chat.completion.chunk","created":1714861200,"model":"meta-llama/Meta-Llama-3.1-70B-Instruct","choices":[{"index":0,"delta":{"content":" is"},"finish_reason":null}]}
 
 data: [DONE]
 ```
 
-The stream ends with `data: [DONE]`.
+**Errors:**
 
-**Error Responses:**
-
-| Status | Error | Reason |
-|--------|-------|--------|
-| 401 | `auth_error` | Missing or invalid JWT token. |
-| 402 | `billing_error` | Insufficient balance for inference quota. |
-| 400 | `invalid_request_error` | Model not whitelisted, missing required fields, or invalid parameters. |
-| 502 | `upstream_error` | Upstream provider error (model not available, rate limit, etc.). |
-| 503 | `upstream_error` | Upstream provider temporarily unavailable. |
-| 500 | `internal_error` | Internal aeqi server error. |
+| Status | Code | Reason |
+|--------|------|--------|
+| 401 | `auth_error` | Missing bearer header. |
+| 402 | `billing_error` | Subscription balance exhausted (`balance ≤ 0`). |
+| 400 | `invalid_request_error` | Model not in `ALLOWED_MODELS`, missing field, or malformed body. |
+| 502 | `upstream_error` | DeepInfra returned an error or unexpected payload. |
+| 503 | `upstream_error` | DeepInfra unreachable. |
+| 500 | `internal_error` | Internal aeqi-inference error. |
 
 ### GET /v1/models
 
-List available models and their metadata.
+Public. List of currently-available models.
 
-**Response (200 OK):**
+**Response (200):**
+
 ```json
 {
   "object": "list",
   "data": [
-    {
-      "id": "meta-llama/Meta-Llama-3.1-70B-Instruct",
-      "object": "model",
-      "created": 1746403200,
-      "owned_by": "deepinfra"
-    },
-    {
-      "id": "meta-llama/Meta-Llama-3.1-8B-Instruct",
-      "object": "model",
-      "created": 1746403200,
-      "owned_by": "deepinfra"
-    }
+    { "id": "meta-llama/Meta-Llama-3.1-70B-Instruct", "object": "model", "created": 1746403200, "owned_by": "deepinfra" },
+    { "id": "meta-llama/Meta-Llama-3.1-8B-Instruct", "object": "model", "created": 1746403200, "owned_by": "deepinfra" }
   ]
 }
 ```
 
+The endpoint also lists planned-but-unrouted models (e.g. `gpt-5`, `claude-sonnet-4-6`) with their advertised providers; calling chat-completions against them returns `400` until the corresponding upstream adapter ships.
+
 ### POST /v1/embeddings
 
-Embedding endpoint. **Not yet implemented (Phase 2).**
-
-Returns `501 Not Implemented`.
+Embedding endpoint. **Not yet implemented.** Returns `501 Not Implemented`. Reserved for Phase 2.
 
 ## Available Models
 
-Phase 1 supports the following DeepInfra models:
+The `ALLOWED_MODELS` whitelist in `aeqi-inference/src/upstream/deepinfra.rs`:
 
 | Model | Provider | Input $/M | Output $/M |
-|-------|----------|-----------|-----------|
+|-------|----------|-----------|------------|
 | `meta-llama/Meta-Llama-3.1-70B-Instruct` | DeepInfra | $0.59 | $0.79 |
-| `meta-llama/Meta-Llama-3.1-8B-Instruct` | DeepInfra | $0.055 | $0.055 |
+| `meta-llama/Meta-Llama-3.1-8B-Instruct`  | DeepInfra | $0.055 | $0.055 |
 | `meta-llama/Meta-Llama-3.3-70B-Instruct` | DeepInfra | $0.59 | $0.79 |
-| `mistralai/Mistral-7B-Instruct-v0.3` | DeepInfra | $0.055 | $0.055 |
-| `Qwen/Qwen2.5-72B-Instruct` | DeepInfra | $0.35 | $0.40 |
-| `deepinfra/airoboros-70b` | DeepInfra | $0.70 | $0.70 |
+| `mistralai/Mistral-7B-Instruct-v0.3`     | DeepInfra | $0.055 | $0.055 |
+| `Qwen/Qwen2.5-72B-Instruct`              | DeepInfra | $0.35 | $0.40 |
+| `deepinfra/airoboros-70b`                | DeepInfra | $0.70 | $0.70 |
 
-Additional providers (OpenAI, Anthropic, DeepSeek) are in development.
+Prices are pulled from DeepInfra's public pricing page and snapshotted in `pricing_for()`. They are not refreshed automatically — when DeepInfra publishes a change, update both `pricing_for()` and this table together.
+
+OpenAI, Anthropic, and DeepSeek provider adapters are stubs at this time.
 
 ## Billing & Cost Accounting
 
-Every workspace subscription includes pooled inference credit. Usage is debited from this balance in real time.
+Each Company has an in-memory inference balance, debited on each non-streaming completion. Phase 1 stores this in a stub `BalanceStore`; Phase 1 hardening will persist the balance in platform SQLite and back it with an LRU cache.
 
-**Pricing Model:**
+**Pricing model:**
+
 - Billed per million tokens (input and output separately).
-- Prices vary by model and provider.
-- Cost is debited immediately on completion for non-streaming requests.
-- For streaming requests in Phase 1, cost is estimated pre-call; Phase 2 will reconcile with actual token counts.
+- `compute_cost_microdollars(model, prompt_tokens, completion_tokens)` produces the debit amount; it returns `0` for any model not in `pricing_for()`.
+- Cost is debited on completion of the response. For streaming requests the final usage row is debited after the stream closes; mid-stream debits are not yet implemented.
 
-**Example Cost Calculation:**
-- Model: `meta-llama/Meta-Llama-3.1-70B-Instruct`
-- Input: 1000 tokens at $0.59/M = $0.00059
-- Output: 500 tokens at $0.79/M = $0.000395
-- Total: ~$0.0009 (0.09 cents)
+**Example:**
 
-**Exceeding Quota:**
-When the balance reaches zero, further inference requests return `402 Payment Required` with the message `"insufficient balance"`.
+- Model `meta-llama/Meta-Llama-3.1-70B-Instruct`.
+- Input 1000 tokens at $0.59/M = $0.00059.
+- Output 500 tokens at $0.79/M = $0.000395.
+- Total ~$0.0009 (0.09¢).
 
-To add more balance, top up your account's Treasury through the dashboard (future integration with programmatic USDC payment pending).
+**Exhausted balance:** when the cached balance is `≤ 0`, the middleware short-circuits the request with `402 Payment Required`.
+
+To top up, use the dashboard. Programmatic USDC top-up (treasury lane) lands in Phase 2.
 
 ## Examples
 
-### Non-Streaming Chat Completion
+### Non-streaming
 
 ```typescript
 const response = await fetch("https://app.aeqi.ai/v1/chat/completions", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": `Bearer ${token}` // SIWE JWT
+    "Authorization": `Bearer ${token}`,
+    "X-Entity": entityId,
   },
   body: JSON.stringify({
     model: "meta-llama/Meta-Llama-3.1-70B-Instruct",
-    messages: [
-      {
-        role: "user",
-        content: "Explain quantum computing in two sentences."
-      }
-    ],
-    stream: false
-  })
+    messages: [{ role: "user", content: "Explain quantum computing in two sentences." }],
+    stream: false,
+  }),
 });
 
 const data = await response.json();
 console.log(data.choices[0].message.content);
 ```
 
-### Streaming Chat Completion
+### Streaming
 
 ```typescript
 const response = await fetch("https://app.aeqi.ai/v1/chat/completions", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": `Bearer ${token}`
+    "Authorization": `Bearer ${token}`,
+    "X-Entity": entityId,
   },
   body: JSON.stringify({
     model: "meta-llama/Meta-Llama-3.1-70B-Instruct",
-    messages: [
-      {
-        role: "user",
-        content: "Write a haiku about code."
-      }
-    ],
-    stream: true
-  })
+    messages: [{ role: "user", content: "Write a haiku about code." }],
+    stream: true,
+  }),
 });
 
 const reader = response.body.getReader();
@@ -234,87 +211,67 @@ const decoder = new TextDecoder();
 while (true) {
   const { done, value } = await reader.read();
   if (done) break;
-
   const text = decoder.decode(value);
-  const lines = text.split("\n");
-
-  for (const line of lines) {
-    if (line.startsWith("data: ")) {
-      const data = line.slice(6);
-      if (data === "[DONE]") {
-        console.log("Stream complete.");
-        break;
-      }
-      const chunk = JSON.parse(data);
-      const content = chunk.choices[0]?.delta?.content || "";
-      process.stdout.write(content);
-    }
+  for (const line of text.split("\n")) {
+    if (!line.startsWith("data: ")) continue;
+    const data = line.slice(6);
+    if (data === "[DONE]") return;
+    const chunk = JSON.parse(data);
+    process.stdout.write(chunk.choices[0]?.delta?.content || "");
   }
 }
 ```
 
-### List Available Models
+### List models
 
 ```typescript
-const response = await fetch("https://app.aeqi.ai/v1/models", {
-  headers: {
-    "Authorization": `Bearer ${token}`
-  }
-});
-
+const response = await fetch("https://app.aeqi.ai/v1/models");
 const models = await response.json();
-models.data.forEach(model => {
-  console.log(`${model.id} (by ${model.owned_by})`);
-});
+models.data.forEach((m) => console.log(`${m.id} (by ${m.owned_by})`));
 ```
 
 ## OpenAI Compatibility
 
-The aeqi-inference API is fully compatible with OpenAI's `/v1/chat/completions` API. You can use existing OpenAI client libraries by changing the base URL:
+`POST /v1/chat/completions` is wire-compatible with OpenAI's chat-completions API. Change the base URL and pass a bearer token:
 
-**Python (openai package):**
 ```python
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="<your-jwt-token>",
-    base_url="https://app.aeqi.ai/v1"
+    api_key="<bearer-token>",
+    base_url="https://app.aeqi.ai/v1",
+    default_headers={"X-Entity": "<entity_id>"},
 )
 
 response = client.chat.completions.create(
     model="meta-llama/Meta-Llama-3.1-70B-Instruct",
-    messages=[
-        {"role": "user", "content": "Hello!"}
-    ]
+    messages=[{"role": "user", "content": "Hello!"}],
 )
-
 print(response.choices[0].message.content)
 ```
 
-**JavaScript (openai package):**
 ```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI({
-  apiKey: "<your-jwt-token>",
-  baseURL: "https://app.aeqi.ai/v1"
+  apiKey: "<bearer-token>",
+  baseURL: "https://app.aeqi.ai/v1",
+  defaultHeaders: { "X-Entity": "<entity_id>" },
 });
 
 const response = await client.chat.completions.create({
   model: "meta-llama/Meta-Llama-3.1-70B-Instruct",
-  messages: [
-    { role: "user", content: "Hello!" }
-  ]
+  messages: [{ role: "user", content: "Hello!" }],
 });
-
 console.log(response.choices[0].message.content);
 ```
 
 ## Phase 2 Roadmap
 
-- **Embeddings:** Full text-embedding model support via `POST /v1/embeddings`.
-- **Treasury Lane:** Direct USDC debit from company treasury via smart contract signatures.
-- **x402 Lane:** HTTP 402 + USDC on Solana for pay-per-request inference.
-- **Additional Providers:** OpenAI, Anthropic, DeepSeek model routing.
-- **Persistent Billing:** SQLite-backed balance tracking and invoice generation.
-- **Advanced Parameters:** Vision models, function calling, JSON mode, tool use.
+- **Real JWT verification** — replace the bearer-presence stub with full signature verification against the platform's `auth_secret`.
+- **Persistent balances** — SQLite-backed `inference_balance_cents`, LRU-cached.
+- **Treasury lane** — USDC debit from a Company's on-chain treasury.
+- **x402 lane** — HTTP 402 + EIP-3009 for pay-per-request inference.
+- **Additional providers** — OpenAI, Anthropic, DeepSeek (the model list already advertises them; only routing remains).
+- **Embeddings** — `POST /v1/embeddings`.
+- **Mid-stream token accounting** — true debit at stream-close based on actual tokens.
