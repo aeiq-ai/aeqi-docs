@@ -264,8 +264,9 @@ through it.
 aeqi mcp
 ```
 
-Hosted mode requires `AEQI_SECRET_KEY`; self-hosted mode uses the local runtime
-socket from the config.
+Hosted mode requires `AEQI_SECRET_KEY`, `AEQI_API_KEY`, and
+`AEQI_PLATFORM_URL`. Self-hosted mode uses the local runtime socket from the
+config.
 
 ### `aeqi ideas`
 

@@ -26,6 +26,7 @@ key (plus an `X-Company` header); the account key is optional but recommended.
 ```bash
 export AEQI_API_KEY=ak_...
 export AEQI_SECRET_KEY=sk_...
+export AEQI_PLATFORM_URL=https://app.aeqi.ai
 ```
 
 The MCP server validates against the platform on startup, then connects directly

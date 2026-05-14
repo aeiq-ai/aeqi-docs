@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "check:mcp-docs": "node scripts/check-mcp-docs.mjs"
+  },
   "dependencies": {
     "marked": "^18.0.0"
   }

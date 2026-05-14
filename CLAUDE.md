@@ -63,9 +63,13 @@ Always use `git -C <path>` for git ops in the worktree.
 
 ```bash
 git -C /home/claudedev/aeqi-docs-$BR diff --check    # no whitespace errors
+git -C /home/claudedev/aeqi-docs-$BR npm run check:mcp-docs   # MCP/Codex docs drift guard
 ```
 
-That's the whole verify. Content-only — no build to fail.
+That's the whole verify. Content-only — no build to fail. The MCP docs check is
+intentionally narrow: it catches stale tool catalogs, wrong `aeqi mcp` command
+forms, and hosted Codex/Claude config snippets that drift away from the current
+MCP setup.
 
 ### Ship
 

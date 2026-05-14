@@ -30,7 +30,8 @@ Add the aeqi CLI to `~/.claude/settings.json`:
       "args": ["mcp"],
       "env": {
         "AEQI_SECRET_KEY": "sk_...",
-        "AEQI_API_KEY": "ak_..."
+        "AEQI_API_KEY": "ak_...",
+        "AEQI_PLATFORM_URL": "https://app.aeqi.ai"
       }
     }
   }
@@ -146,7 +147,8 @@ Knowledge accumulates across sessions. Next time you (or another agent) starts, 
       "args": ["mcp"],
       "env": {
         "AEQI_SECRET_KEY": "sk_...",
-        "AEQI_API_KEY": "ak_..."
+        "AEQI_API_KEY": "ak_...",
+        "AEQI_PLATFORM_URL": "https://app.aeqi.ai"
       }
     }
   },
