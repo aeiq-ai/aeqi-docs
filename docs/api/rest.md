@@ -1,21 +1,39 @@
 # REST API
 
-The aeqi platform exposes a REST API for entity management, authentication, and integration.
+The aeqi platform exposes a REST API for entity management, authentication, billing, integrations, and the catch-all proxy that forwards `/api/*` into a Company's runtime.
 
 ## Base URL
 
-| Environment | URL |
-|-------------|-----|
-| Hosted | `https://app.aeqi.ai/api` |
-| Self-hosted | `http://127.0.0.1:8400/api` |
+| Environment    | URL                              | Notes                                                  |
+|----------------|----------------------------------|--------------------------------------------------------|
+| Hosted         | `https://app.aeqi.ai/api`        | Platform control plane.                                |
+| Self-hosted    | `http://127.0.0.1:8443/api`      | Default platform port.                                 |
+| Tenant runtime | `http://127.0.0.1:8400+/api`     | Per-Company runtime; reached through the platform proxy, not directly. |
+
+`/api/*` routes are served by the platform binary (`aeqi-platform.service`). Anything not registered explicitly is forwarded through `routes::proxy::catch_all_proxy_handler` to the tenant runtime selected by the `X-Entity` header.
 
 ## Authentication
 
-Most endpoints require SIWE (Sign-In-With-Ethereum) authentication via JWT token. See [Authentication](/docs/api/authentication) for details.
+Most endpoints require a JWT bearer token. The token is obtained from one of several login flows (email + code, password, wallet/SIWE, passkey). The header is:
 
-Some endpoints are authenticated by payment (`/api/companies/create`) or by API key (`/api/mcp/validate`).
+```
+Authorization: Bearer <jwt>
+```
+
+The `X-Entity` header selects which Company's runtime a proxied call routes to. It defaults to the user's primary entity, derived from JWT claims, but can be set explicitly to operate against any entity the caller has access to.
+
+A small number of endpoints use other auth modes:
+
+- **API-key auth** — `/api/mcp` and `/api/mcp/validate` accept an `Authorization: Bearer ak_…` API key instead of a JWT.
+- **No auth** — `/api/companies/create` is currently programmatic genesis with no auth gate (see notes).
+- **Signed OAuth state** — `/api/integrations/{provider}/callback` is reached by the user's browser after an OAuth provider redirect; the signed `state` token authenticates the call.
+- **Admin secret** — `/api/admin/*` requires the platform admin token, not a user JWT.
+
+Full request/response details for the login flows live in [Authentication](/docs/api/authentication).
 
 ## Public Endpoints
+
+No auth required.
 
 ### Health
 
@@ -23,14 +41,9 @@ Some endpoints are authenticated by payment (`/api/companies/create`) or by API 
 GET /api/health
 ```
 
-Server liveness check.
+Liveness check. Returns `{ "status": "ok" }`.
 
-**Response:**
-```json
-{ "status": "ok" }
-```
-
-### Authentication
+### Authentication entry points
 
 ```
 GET  /api/auth/mode
@@ -41,22 +54,16 @@ POST /api/auth/verify
 POST /api/auth/resend-code
 ```
 
-OAuth entry points:
-```
-GET /api/auth/google
-GET /api/auth/google/callback
-GET /api/auth/github
-GET /api/auth/github/callback
-```
+Wallet auth (SIWE):
 
-Wallet authentication:
 ```
 POST /api/auth/wallet/nonce
 POST /api/auth/wallet/login
 POST /api/auth/wallet/signup
 ```
 
-Passkey authentication:
+Passkey auth:
+
 ```
 POST /api/auth/passkey/register-begin
 POST /api/auth/passkey/register-finish
@@ -64,32 +71,68 @@ POST /api/auth/passkey/login-begin
 POST /api/auth/passkey/login-finish
 ```
 
-Passwordless email sign-in:
+Passwordless email sign-in (single login-codes row, three consume paths):
+
 ```
 POST /api/auth/login/code/request
 POST /api/auth/login/code/consume
 POST /api/auth/login/magic/consume
 ```
 
+TOTP login step:
+
+```
+POST /api/auth/totp/login
+```
+
 Password recovery:
+
 ```
 POST /api/auth/forgot-password
 POST /api/auth/reset-password
 ```
 
-Other auth endpoints:
+Invites and waitlist:
+
 ```
-POST /api/auth/totp/login
 POST /api/auth/invite/check
 POST /api/auth/waitlist
 GET  /api/auth/waitlist/confirm
 ```
 
-See [Authentication](/docs/api/authentication) for request/response details and JWT token handling.
+### Solana welcome flow
+
+Mounted only when `AEQI_SOLANA_RPC` is configured. Used by the `/welcome` onboarding shell, which provisions a Solana custodial signer alongside the platform identity.
+
+```
+POST /api/auth/welcome/email-start
+GET  /api/auth/welcome/email-verify
+POST /api/auth/welcome/email-verify-code
+POST /api/auth/welcome/wallet-start
+POST /api/auth/welcome/wallet-verify
+POST /api/auth/welcome/passkey-register-start
+POST /api/auth/welcome/passkey-register-finish
+POST /api/auth/welcome/passkey-assert-start
+POST /api/auth/welcome/passkey-assert-finish
+GET  /api/auth/welcome/google/start
+GET  /api/auth/welcome/google/callback
+GET  /api/auth/welcome/github/start
+GET  /api/auth/welcome/github/callback
+```
+
+### OAuth provider callbacks
+
+```
+GET /api/integrations/google/callback
+GET /api/integrations/github/callback
+```
+
+Reached by the user's browser after the OAuth provider redirects back. The signed `state` token resolves the owning agent + entity. The matching authenticated start/status endpoints are under [Authenticated Endpoints → Integrations](#integrations).
 
 ### Webhooks
 
 Inbound webhook handlers for external services:
+
 ```
 POST /api/webhooks/stripe
 POST /api/webhooks/deploy
@@ -97,107 +140,116 @@ POST /api/webhooks/telegram/{token}
 POST /api/webhooks/whatsapp
 ```
 
-### Blueprint Catalog
+### Blueprint catalog
 
 ```
 GET /api/blueprints
 GET /api/blueprints/{slug}
 ```
 
-Lists available agent blueprints (public, no auth required).
+Public, no `X-Entity` required. The catalog is platform-shared static content.
 
-### Indexer (On-Chain Data)
-
-```
-POST /indexer/graphql
-```
-
-GraphQL endpoint for querying on-chain state: registered trusts, role configurations, treasury data. The endpoint is a reverse-proxy to the active chain's indexer.
-
-**Note:** Indexing is active only when `AEQI_CHAIN_ACTIVE` is set (anvil, base-sepolia, or base-mainnet).
-
-Example query:
-```graphql
-query {
-  trustsCount
-}
-```
-
-### Company Genesis (x402)
+### Spawn (proxied)
 
 ```
-POST /api/companies/create
+POST /api/blueprints/spawn
+POST /api/blueprints/spawn-into
 ```
 
-Create a new Company via HTTP 402 payment in USDC on Solana.
+Registered in the public router so they shadow `/api/blueprints/{slug}`; the catch-all proxy forwards them to the per-Company orchestrator selected by `X-Entity`.
 
-**Auth:** HTTP 402 payment header + signature verification. No user JWT required.
+### Economy + public profiles
 
-**Request:**
-```json
-{
-  "blueprint": "default",
-  "name": "My Company",
-  "owner_address": "0x...",
-  "roles": [
-    {
-      "name": "CEO",
-      "owner": "0x...",
-      "vesting_months": 36
-    }
-  ]
-}
+```
+GET /api/economy/list
+GET /api/public/entities/{slug}
 ```
 
-**Response (200):**
-```json
-{
-  "entity_id": "...",
-  "trust_address": "0x... | pending",
-  "runtime_url": "https://... | pending",
-  "owner": "0x..."
-}
-```
+`/api/economy/list` returns every Company whose placement has `public=true`, with on-chain TRUST address — drives `/economy`. `/api/public/entities/{slug}` returns the public profile JSON for a Company that has `public=true`; returns 404 for private workspaces (indistinguishable from non-existent).
 
-**Errors:**
-- `402 Payment Required` — missing or invalid x402 payment
-- `400 Bad Request` — invalid blueprint, missing name, or malformed owner address
-- `500 Internal Server Error` — bridge not configured
+### Role invitations
 
-### Role Invitations
-
-Public token resolver (no auth required):
 ```
 GET /api/invitations/{token}
 ```
 
-Get invitation details by token.
+Resolves a role-invitation token to its details. Public so an unauth recipient can see what they're being invited to before accepting.
+
+### MCP
+
+```
+POST /api/mcp
+GET  /api/mcp
+DELETE /api/mcp
+POST /api/mcp/validate
+```
+
+The first three accept an MCP JSON-RPC request and return its response. `/api/mcp/validate` echoes back which actor + entity an API key resolves to. Auth is an `Authorization: Bearer ak_…` API key; no user JWT.
+
+See [MCP](/docs/api/mcp) for the tool surface.
+
+### Company genesis
+
+```
+POST /api/companies/create
+POST /api/solana/companies/create
+```
+
+Provisions a TRUST on Solana for a given `company_id`. Idempotent on the deterministic trust PDA — repeating the call against an existing `company_id` returns the same trust without re-spawning. Currently has **no auth gate**: the planned x402-USDC payment header is not yet enforced on this path.
+
+**Request:**
+
+```json
+{
+  "company_id": "stable-id-string",
+  "trust_id_hex": "0x...optional 32-byte hex; omit for SHA-256 of company_id"
+}
+```
+
+**Response (200):**
+
+```json
+{
+  "company_id": "...",
+  "trust_id_hex": "0x...",
+  "trust_pubkey_b58": "...",
+  "authority_pubkey_b58": "...",
+  "already_existed": false,
+  "create_signature_b58": "...",
+  "role_init_signature_b58": "...",
+  "token_init_signature_b58": "...",
+  "governance_init_signature_b58": "...",
+  "role_module_pda_b58": "...",
+  "token_module_pda_b58": "...",
+  "governance_module_pda_b58": "...",
+  "role_module_state_pda_b58": "...",
+  "token_module_state_pda_b58": "...",
+  "governance_module_state_pda_b58": "..."
+}
+```
+
+**Errors:**
+
+- `400 Bad Request` — invalid `trust_id_hex`.
+- `502 Bad Gateway` — the custodial signer for `company_id` could not be provisioned or funded.
+- `500 Internal Server Error` — the Solana wallet service is misconfigured or unreachable.
+
+The endpoint is mounted only when the platform has been started with a working Solana wallet service (`AEQI_SOLANA_RPC` set). Without it, both routes return 404.
+
+### LLM proxy
+
+```
+ANY /api/llm/v1/{*path}
+```
+
+Forwards OpenAI-compatible chat traffic to the upstream LLM provider configured for the active Company. Use [Inference](/docs/api/inference) (`/v1/*`) for end-user inference; this proxy is for internal runtime traffic.
 
 ## Authenticated Endpoints
 
-Require a valid JWT token (from SIWE login). See [Authentication](/docs/api/authentication).
+Require a valid JWT bearer. Specific endpoints additionally require a Company context via `X-Entity`.
 
-### Entity Management
+### Account
 
-```
-GET  /api/entities
-POST /api/entities
-DELETE /api/entities/{name}
-```
-
-List, create, and delete Companies (root entities).
-
-```
-POST /api/roots
-GET  /api/roots
-DELETE /api/roots/{name}
-```
-
-Legacy alias for entity endpoints.
-
-### Entity Settings
-
-Account and profile:
 ```
 GET  /api/auth/me
 POST /api/auth/phishing-code
@@ -210,26 +262,36 @@ POST /api/auth/sessions/revoke
 POST /api/auth/sessions/revoke-others
 GET  /api/auth/invite-codes
 POST /api/auth/invite-codes
+GET  /api/admin/overview
 ```
 
-Wallet management:
-```
-POST /api/me/wallets/link
-PUT  /api/me/wallets/{id}/primary
-DELETE /api/me/wallets/{id}
-```
+`/api/admin/overview` is the *user-facing* admin view (returns 200 only if the caller is a platform admin); it is not part of the admin secret-guarded surface below.
 
-Email management:
+### Email change
+
 ```
 POST /api/me/email/change/begin
 POST /api/me/email/change/finish
 ```
 
-Passkeys:
+### Wallets
+
+```
+POST   /api/me/wallets/link
+PUT    /api/me/wallets/{id}/primary
+DELETE /api/me/wallets/{id}
+```
+
+### Passkeys
+
 ```
 POST /api/me/passkeys/add/begin
 POST /api/me/passkeys/add/finish
+POST /api/account/enroll-passkey
+POST /api/wallet/upgrade-to-passkey
 ```
+
+The last two return `501 Not Implemented` until WS-4e ships.
 
 ### Billing
 
@@ -241,60 +303,100 @@ GET  /api/billing/overview
 POST /api/billing/switch-to-usdc
 ```
 
-Subscription and payment management via Stripe (dollar-denominated or USDC).
+Subscription and payment management via Stripe (USD or USDC).
 
-### API Keys
+### Companies (entities)
+
+```
+GET    /api/entities
+POST   /api/entities
+DELETE /api/entities/{name}
+PUT    /api/entities/{name}
+```
+
+```
+GET    /api/roots
+POST   /api/roots
+DELETE /api/roots/{name}
+```
+
+`/api/roots/*` is a legacy alias for `/api/entities/*` — both call the same handlers. New code should use `/api/entities`.
+
+### /start launch
+
+```
+POST /api/start/launch
+POST /api/start/check-name
+```
+
+`launch` provisions a personal Company via the `/start` experience. Gated by subscription status (`subscription_required` HTTP 402 if missing) and a workspace cap of 10 companies per user (`workspace_cap_exceeded` HTTP 402; admins exempt).
+
+**Request:**
+
+```json
+{
+  "template": "default",
+  "display_name": "My Company",
+  "mission": "optional one-line mission statement",
+  "plan": "growth"
+}
+```
+
+`name` is accepted as a fallback alias for `display_name`. If `template` is omitted, the configured default blueprint is used.
+
+**Response (200):**
+
+```json
+{
+  "ok": true,
+  "entity_id": "uuid",
+  "display_name": "My Company"
+}
+```
+
+Placement provisioning (sandbox / host / VPS) proceeds async; poll the placement until its `status` flips from `pending` to `ready`. `check-name` returns whether a display name is available for the caller.
+
+### Architect deploy
+
+```
+POST /api/architect/deploy
+```
+
+Same provisioning path as `/start/launch`, but the Blueprint is the architect-generated inline JSON rather than a static catalog slug. Earlier verbs (`architect.draft`, `architect.refine`) live on the runtime and are reached via the proxy.
+
+### Integrations
+
+Per-agent OAuth (`{provider}` ∈ `google`, `github`):
+
+```
+GET /api/agents/{agent_id}/integrations/{provider}/start
+GET /api/agents/{agent_id}/integrations/{provider}/status
+```
+
+`start` returns a signed redirect to the provider. The matching callback is the unauthenticated `/api/integrations/{provider}/callback` listed above — Google/GitHub redirect there without our auth header.
+
+### API keys
 
 ```
 POST /api/keys
 GET  /api/keys
 DELETE /api/keys/{id}
-```
-
-Create and manage API keys for programmatic access.
-
-```
 POST /api/account/api-key
 ```
 
-Generate a personal API key.
-
-### Start Launch
-
-```
-POST /api/start/launch
-```
-
-Provision a personal Company via the /start experience. Gated by subscription status.
-
-**Request:**
-```json
-{
-  "template": "default",
-  "display_name": "My Company"
-}
-```
-
-**Response:**
-```json
-{
-  "ok": true,
-  "entity_id": "...",
-  "display_name": "..."
-}
-```
+`/api/account/api-key` mints a single personal API key (older surface). `/api/keys` is the labelled, multi-key collection.
 
 ### Hosting
 
 ```
-GET  /api/hosting/domains
-POST /api/hosting/domains
+GET    /api/hosting/domains
+POST   /api/hosting/domains
 DELETE /api/hosting/domains/{domain}
 ```
 
-Manage custom domains for Company instances.
+Manage custom domains for Company runtimes.
 
-### Role Invitations
+### Role invitations
 
 ```
 POST /api/entities/{entity_id}/roles/{role_id}/invitations
@@ -304,44 +406,81 @@ POST /api/invitations/{token}/decline
 GET  /api/me/directed-entities
 ```
 
-Invite users to roles within an entity; accept or decline invitations.
+Invite users to roles within an entity; accept or decline. `/api/me/directed-entities` lists every entity the caller has been granted directed access to.
 
-### Proxied Runtime Endpoints
+## Proxied Runtime Endpoints
 
-All other `/api/*` endpoints (agents, quests, ideas, sessions, chat) are proxied to the entity's runtime. The runtime handles:
+Everything under `/api/*` that is not explicitly listed above is forwarded by `catch_all_proxy_handler` to the runtime selected by `X-Entity`. Examples handled this way:
 
 ```
-GET    /api/agents                    List agents
-POST   /api/agents/spawn              Create agent
-GET    /api/quests                    List quests
-POST   /api/quests                    Create quest
-GET    /api/ideas                     List ideas
-POST   /api/ideas                     Create idea
-GET    /api/sessions                  List sessions
-POST   /api/chat                      Send message
-WebSocket /api/chat/stream            Stream chat tokens
+GET    /api/agents
+POST   /api/agents/spawn
+GET    /api/quests
+POST   /api/quests
+GET    /api/ideas
+POST   /api/ideas
+GET    /api/sessions
+POST   /api/chat
 ```
 
-Routing is determined by the `X-Entity` header, which is inferred from your JWT claims or explicitly provided.
+A few proxied paths have platform-side specialisation registered explicitly so the response can be patched before being returned:
+
+- `GET /api/ws` — WebSocket proxy.
+- `GET /api/chat/stream` — server-sent events / WebSocket stream proxy.
+- `GET /api/ideas/{id}/comments` — proxies the runtime reply but injects user display names from the platform user table.
+- `GET /api/roles`, `GET /api/roles/{id}` — proxies and patches `occupant_name` for human occupants.
+- `ANY /api/inbox/__probe__/dismiss` — short-circuits to 204; reachability probe, never forwarded.
+
+## Admin Endpoints
+
+Require the platform admin secret (header), not a user JWT.
+
+```
+GET  /api/admin/containers
+POST /api/admin/containers/{id}/restart
+GET  /api/admin/roots
+POST /api/admin/roots/{name}/promote-host
+POST /api/admin/roots/{name}/seed
+POST /api/admin/update
+GET  /api/admin/stats
+GET  /api/admin/template-packs
+POST /api/admin/template-packs
+GET  /api/admin/template-packs/{slug}
+POST /api/admin/template-packs/{slug}/templates
+POST /api/admin/vps/spawn-test
+```
 
 ## Response Format
 
-Success responses carry HTTP 200:
+Responses are not wrapped in a uniform envelope — different handlers return different shapes. Common patterns:
+
 ```json
-{ "ok": true, "data": { ... } }
+{ "ok": true, "entity_id": "..." }
 ```
 
-Error responses carry 4xx or 5xx status:
+```json
+{ "items": [ ... ], "next_cursor": null }
+```
+
+Errors return a 4xx or 5xx status with a body of one of:
+
 ```json
 { "ok": false, "error": "code", "message": "human-readable description" }
 ```
 
+```json
+{ "error": "code", "message": "..." }
+```
+
+Inference and MCP have their own error shapes — see those references.
+
 ## Rate Limiting
 
-No formal rate limits are published; however, tower-governor is installed on the runtime platform. Aggressive abuse may trigger 429 responses.
+Platform-side: no per-endpoint quotas are published. The tenant runtime applies `tower_governor` with `SmartIpKeyExtractor` — abuse can trigger 429 responses. The runtime-bound proxy always injects `X-Forwarded-For: 127.0.0.1` from inside the platform binary so internal calls survive the key extractor.
 
 ## Next Steps
 
-- [Authentication](/docs/api/authentication) — signing messages, token management
-- [MCP Integration](/docs/api/mcp) — operate the same endpoints via MCP
-- [Concepts](/docs/concepts/agents) — mental model and primitives
+- [Authentication](/docs/api/authentication) — JWT lifecycle, signup, login flows.
+- [Inference](/docs/api/inference) — `/v1/*` OpenAI-compatible chat.
+- [MCP](/docs/api/mcp) — operate the same surface programmatically.
+- [Concepts](/docs/concepts/agents) — the four primitives.
