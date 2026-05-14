@@ -159,6 +159,59 @@ Same shape, repeated at every level. See [Composition](/docs/methodology/composi
 
 Ideas live in `aeqi.db` (FTS5 full-text search + optional vector embeddings) on a per-tenant runtime. Per-tenant means: Ideas don't cross Companies unless you explicitly export/import. The graph of typed edges between Ideas (`mention` / `embed` / `link` / `co_retrieved` / `contradiction`) lives in `entity_edges` in the same database.
 
+## REST ↔ MCP surface
+
+Ideas are reachable via two surfaces, and the split is deliberate:
+
+- **MCP** exposes the agent-facing verbs an agent runs *during* execution: writing the lesson, finding the precedent, opening a graph walk. The unified `ideas` tool routes everything by an `action` field.
+- **REST** under `/ideas/*` exposes the UI-facing reads and the surfaces that back live UI streams (activity, comments, subscribe, children, typed properties). These are read-shaped, multi-call, and don't fit a single agent verb.
+
+Both speak to the same store; neither shadows the other.
+
+### MCP — `ideas` tool actions
+
+| `action` | Purpose |
+|---|---|
+| `store` | Persist an Idea (`name`, `content`, `tags`). Goes through dedup + tag policy. |
+| `search` | Tag-routed BM25 + vector retrieval with MMR diversification. |
+| `update` | Patch an Idea by id (`name` / `content` / `tags`). |
+| `delete` | Remove an Idea by id. |
+| `link` | Write a typed edge between two Ideas (`mention` / `embed` / `link`). |
+| `feedback` | Record `used` / `useful` / `ignored` / `corrected` / `wrong` / `pinned` to shape future retrieval. |
+| `walk` | BFS the idea graph from a starting Idea, filtered by relation set and `strength_threshold`. |
+
+The action enum is pinned by `ideas_mcp_action_enum_drift_guard` in `aeqi-cli/src/cmd/mcp.rs`. Any add/remove/rename fires that test and points back to this table.
+
+### REST — `/ideas/*` endpoints
+
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/ideas` | List Ideas (entity-scoped or agent-filtered). |
+| `POST` | `/ideas` | Store a new Idea (same dedup pipeline as MCP `store`). |
+| `GET` | `/ideas/search` | Search endpoint (UI-side counterpart to MCP `search`). |
+| `GET` | `/ideas/prefix` | Prefix lookup for picker UIs. |
+| `POST` | `/ideas/by-ids` | Batch hydrate Ideas by id list. |
+| `GET` | `/ideas/profile` | Idea profile view (tag groups, edges, neighbours). |
+| `GET` | `/ideas/graph` | Graph view payload. |
+| `POST` | `/ideas/seed` | Bulk-seed Ideas from a preset. |
+| `PUT` | `/ideas/{id}` | Update an Idea (MCP `update`). |
+| `DELETE` | `/ideas/{id}` | Delete an Idea (MCP `delete`). |
+| `GET` `POST` `DELETE` | `/ideas/{id}/edges` | Read / add / remove typed edges. |
+| `GET` | `/ideas/{id}/activity` | Activity feed (system-emitted rows). |
+| `GET` | `/ideas/{id}/comments` | Comments (user/agent session messages). |
+| `POST` | `/ideas/{id}/subscribe` | Subscribe to the Idea's session for live updates. |
+| `GET` | `/ideas/{id}/children` | Tables-in-Ideas: nested Ideas under a parent. |
+| `PUT` | `/ideas/{id}/properties` | Tables-in-Ideas: schema-less property bag. |
+
+The REST surface is pinned by `npm run check:rest-routes` in this repo, which walks `aeqi-platform/src/server.rs` and asserts every registered route is mentioned here or in `docs/api`.
+
+### Why the asymmetry
+
+- `feedback` and `walk` are agent-internal — they shape retrieval quality and graph traversal in ways the UI doesn't need to expose directly.
+- `activity` / `comments` / `subscribe` / `children` / `properties` back live UI streams and span multiple round-trips per view; collapsing them under a single MCP `action` would force the agent to re-implement the UI's data-loading shape.
+
+When you add a verb, decide which surface it belongs on. If it's both, wire both — don't make one a thin wrapper around the other.
+
 ## Related
 
 - [Memory (Ideas)](/docs/concepts/memory) — developer/MCP surface for search, store, ranking.
