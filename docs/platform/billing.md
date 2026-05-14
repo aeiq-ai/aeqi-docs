@@ -45,4 +45,4 @@ logs, custom integrations, and higher capacity.
 
 - [TRUST](/trust) - the programmable company
 - [Inference API](/docs/api/inference) - inference endpoints and limits
-- [MCP](/docs/api/mcp) - exposing aeqi as tools to agent clients
+- [MCP](/reference/mcp) - exposing aeqi as tools to agent clients

@@ -257,5 +257,5 @@ See [Billing](/docs/platform/billing) for current pricing.
 ## Next Steps
 
 - [REST API](/docs/api/rest) — endpoint reference
-- [MCP](/docs/api/mcp) — tool catalog and JSON-RPC shape
+- [MCP](/reference/mcp) — tool catalog and JSON-RPC shape
 - [Claude Code + aeqi](/docs/guides/claude-code) — IDE setup walkthrough

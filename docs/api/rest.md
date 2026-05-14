@@ -186,7 +186,7 @@ POST /api/mcp/validate
 
 The first three accept an MCP JSON-RPC request and return its response. `/api/mcp/validate` echoes back which actor + entity an API key resolves to. Auth is an `Authorization: Bearer ak_…` API key; no user JWT.
 
-See [MCP](/docs/api/mcp) for the tool surface.
+See [MCP](/reference/mcp) for the tool surface.
 
 ### Company genesis
 
@@ -482,5 +482,5 @@ Platform-side: no per-endpoint quotas are published. The tenant runtime applies 
 
 - [Authentication](/docs/api/authentication) — JWT lifecycle, signup, login flows.
 - [Inference](/docs/api/inference) — `/v1/*` OpenAI-compatible chat.
-- [MCP](/docs/api/mcp) — operate the same surface programmatically.
+- [MCP](/reference/mcp) — operate the same surface programmatically.
 - [Concepts](/docs/concepts/agents) — the four primitives.

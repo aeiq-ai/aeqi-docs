@@ -55,7 +55,7 @@ Once connected, Claude Code can call:
 | `events` | `create`, `list`, `enable`, `disable`, `delete`, `trigger`, `trace` |
 | `code` | `search`, `context`, `impact`, `diff_impact`, `file`, `file_summary`, `stats`, `index`, `incremental`, `synthesize` |
 
-Full catalog: [MCP Integration](/docs/api/mcp).
+Full catalog: [MCP Integration](/reference/mcp).
 
 ## 4. Hooks
 
@@ -187,6 +187,6 @@ Knowledge accumulates across sessions. Next time you (or another agent) starts, 
 
 ## Next Steps
 
-- [MCP Integration](/docs/api/mcp) — full tool catalog and env vars
+- [MCP Integration](/reference/mcp) — full tool catalog and env vars
 - [Authentication](/docs/api/authentication) — key rotation
 - [Concepts: Agents](/docs/concepts/agents) — what your MCP tools are driving

@@ -123,5 +123,5 @@ Events fired during verb execution emit from the verb's actual side-effect point
 ## Related
 
 - [REST API](/docs/api/rest) — HTTP surface for the platform.
-- [MCP](/docs/api/mcp) — Model Context Protocol catalog (the stable external surface).
+- [MCP](/reference/mcp) — Model Context Protocol catalog (the stable external surface).
 - [Authentication](/docs/api/authentication) — JWT and API key models.

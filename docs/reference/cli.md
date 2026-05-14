@@ -86,7 +86,7 @@ aeqi mcp
 ```
 
 Most users do not run `aeqi mcp` by hand. They configure Codex, Claude Code, or
-another MCP client to spawn it. See [MCP](/docs/api/mcp).
+another MCP client to spawn it. See [MCP](/reference/mcp).
 
 ## Hosted user stories
 
@@ -428,7 +428,7 @@ Run `aeqi <cmd> --help` for the current flags.
 
 ## Related
 
-- [MCP](/docs/api/mcp)
+- [MCP](/reference/mcp)
 - [Authentication](/docs/api/authentication)
 - [REST API](/docs/api/rest)
 - [IPC verbs](/docs/reference/ipc)

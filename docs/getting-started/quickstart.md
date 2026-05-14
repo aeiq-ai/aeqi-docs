@@ -1,7 +1,7 @@
 # Quickstart
 
 Self-hosted aeqi, running locally in under 5 minutes. For the hosted platform,
-see [MCP Integration](/docs/api/mcp) for Codex, Claude Code, and other MCP
+see [MCP Integration](/reference/mcp) for Codex, Claude Code, and other MCP
 clients.
 
 ## 1. Install
@@ -59,5 +59,5 @@ Sign in and hire your first agent.
 
 - [Concepts: Agents](/docs/concepts/agents) — the agent tree and identity model
 - [Concepts: Quests](/docs/concepts/quests) — how work gets dispatched
-- [MCP Integration](/docs/api/mcp) — drive your hosted TRUST from Codex, Claude Code, or another MCP client
+- [MCP Integration](/reference/mcp) — drive your hosted TRUST from Codex, Claude Code, or another MCP client
 - [Claude Code + aeqi](/docs/guides/claude-code) — Claude-specific setup and hooks

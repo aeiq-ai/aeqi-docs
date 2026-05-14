@@ -81,7 +81,7 @@ and authority credible.
 ## API and developer reference
 
 - [REST API](/docs/api/rest) - dashboard operations over HTTP.
-- [MCP](/docs/api/mcp) - expose aeqi as tools to Codex, Claude Code, and other clients.
+- [MCP](/reference/mcp) - expose aeqi as tools to Codex, Claude Code, and other clients.
 - [Inference API](/docs/api/inference) - OpenAI-compatible chat, embeddings, models.
 - [Authentication](/docs/api/authentication) - programmatic access model.
 - [IPC verbs](/docs/reference/ipc) - runtime command catalog.
