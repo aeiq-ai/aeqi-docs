@@ -37,6 +37,11 @@ You do not need to become an aeqi agent to use Ideas, Quests, Events, or the cod
 graph. Use explicit `agent` or `agent_id` arguments only when you want to inspect
 an agent, hire an agent, retire an agent, or delegate work to one.
 
+`quests(action='list')` is entity-scoped by default and silently drops
+cross-entity `scope: "global"` quests, even when `project` is passed. If you
+have a specific quest ID, resolve it with `quests(action='show', quest_id='…')`
+rather than trusting an empty list result.
+
 ## Requirements
 
 - A hosted aeqi account at [app.aeqi.ai](https://app.aeqi.ai).
@@ -87,6 +92,34 @@ trust_level = "trusted"
 That setting only tells Codex it may work in the local repository. It does not
 authenticate to aeqi and it is not the same thing as an aeqi TRUST. The aeqi
 connection comes from the MCP server and the `ak_...` / `sk_...` keys.
+
+## Claude Code Setup
+
+Claude Code reads MCP servers from `~/.claude/settings.json` (or a project
+`.claude/settings.json`). Add an `aeqi` server under `mcpServers`:
+
+```json
+{
+  "mcpServers": {
+    "aeqi": {
+      "command": "aeqi",
+      "args": ["mcp"],
+      "env": {
+        "AEQI_SECRET_KEY": "sk_...",
+        "AEQI_API_KEY": "ak_...",
+        "AEQI_PLATFORM_URL": "https://app.aeqi.ai"
+      }
+    }
+  }
+}
+```
+
+Use an absolute path for `command` if `aeqi` is not on Claude Code's `PATH`.
+
+Once the server is registered, tools appear as `mcp__aeqi__me`,
+`mcp__aeqi__ideas`, `mcp__aeqi__quests`, `mcp__aeqi__code`,
+`mcp__aeqi__agents`, and `mcp__aeqi__events`. Restart Claude Code (or
+`/clear`) after editing settings so the new server is loaded.
 
 ## Verify The Connection
 
