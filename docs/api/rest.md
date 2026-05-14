@@ -366,14 +366,16 @@ Same provisioning path as `/start/launch`, but the Blueprint is the architect-ge
 
 ### Integrations
 
-Per-agent OAuth (`{provider}` ∈ `google`, `github`):
+Per-agent OAuth, one start/status pair per provider:
 
 ```
-GET /api/agents/{agent_id}/integrations/{provider}/start
-GET /api/agents/{agent_id}/integrations/{provider}/status
+GET /api/agents/{agent_id}/integrations/google/start
+GET /api/agents/{agent_id}/integrations/google/status
+GET /api/agents/{agent_id}/integrations/github/start
+GET /api/agents/{agent_id}/integrations/github/status
 ```
 
-`start` returns a signed redirect to the provider. The matching callback is the unauthenticated `/api/integrations/{provider}/callback` listed above — Google/GitHub redirect there without our auth header.
+`start` returns a signed redirect to the provider. The matching callbacks `/api/integrations/google/callback` and `/api/integrations/github/callback` are listed above as public routes — Google/GitHub redirect there without our auth header.
 
 ### API keys
 

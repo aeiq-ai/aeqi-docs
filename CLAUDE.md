@@ -62,14 +62,24 @@ Always use `git -C <path>` for git ops in the worktree.
 ### Verify (before /ship)
 
 ```bash
-git -C /home/claudedev/aeqi-docs-$BR diff --check    # no whitespace errors
-git -C /home/claudedev/aeqi-docs-$BR npm run check:mcp-docs   # MCP/Codex docs drift guard
+git -C /home/claudedev/aeqi-docs-$BR diff --check       # no whitespace errors
+cd /home/claudedev/aeqi-docs-$BR && npm run check       # MCP catalog + REST routes
 ```
 
-That's the whole verify. Content-only — no build to fail. The MCP docs check is
-intentionally narrow: it catches stale tool catalogs, wrong `aeqi mcp` command
-forms, and hosted Codex/Claude config snippets that drift away from the current
-MCP setup.
+`npm run check` runs both drift guards:
+
+- `check:mcp-docs` — stale MCP tool catalogs, wrong `aeqi mcp` command forms,
+  and hosted Codex/Claude config snippets drifting away from the current MCP
+  setup.
+- `check:rest-routes` — every `.route("…")` registered in
+  `../aeqi-platform/src/server.rs` must be mentioned in `docs/api` or
+  `docs/reference`, or be on the allow-list at the top of
+  `scripts/check-rest-routes.mjs`. The REST guard auto-skips if the sibling
+  `aeqi-platform` repo is absent (CI without the peer repo cloned).
+
+Content-only repo — no build to fail. Run individual checks (`npm run
+check:mcp-docs` or `npm run check:rest-routes`) when narrowing the surface
+under review.
 
 ### Ship
 

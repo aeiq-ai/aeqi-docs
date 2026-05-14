@@ -119,7 +119,7 @@ for (const snippet of claudeHostedSnippets) {
 
 requireSnippet(
   "docs/getting-started/quickstart.md",
-  "[MCP Integration](/docs/api/mcp)",
+  "[MCP Integration](/reference/mcp)",
   "Quickstart hosted IDE path should link to the client-neutral MCP guide",
 );
 

@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "check:mcp-docs": "node scripts/check-mcp-docs.mjs"
+    "check:mcp-docs": "node scripts/check-mcp-docs.mjs",
+    "check:rest-routes": "node scripts/check-rest-routes.mjs",
+    "check": "npm run check:mcp-docs && npm run check:rest-routes"
   },
   "dependencies": {
     "marked": "^18.0.0"
