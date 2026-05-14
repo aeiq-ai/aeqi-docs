@@ -1,134 +1,127 @@
 # IPC verbs
 
-Internal verbs callable from the platform's IPC bus or by other runtime subsystems. Each verb is also exposed over HTTP at `/api/<verb>` for use by the dashboard, CLI, MCP, and external clients.
+The aeqi runtime exposes two related surfaces:
 
-## Catalog
+| Surface | Where | Shape |
+|---------|-------|-------|
+| **MCP tool catalog** | `/api/mcp`, Codex/Claude Code | Action-based: `tool(action='…', …)` |
+| **Internal IPC handlers** | Unix socket, platform proxy | Many `handle_<verb>` functions in `aeqi-orchestrator::ipc` |
 
-### Agents
+The MCP catalog is the stable, externally-callable surface — it's what dashboards, CLIs, and MCP clients use. The internal handlers are implementation details the runtime uses to talk to itself, the platform, and the dashboard; they shift more often.
 
-| Verb | What |
-|---|---|
-| `agents.spawn` | Hire a new agent. Args: `template`, `entity_id`, `role_id?`, `name?`. |
-| `agents.list` | List agents in the current entity. Filter by `status`, `role_id`. |
-| `agents.update` | Update name, model, capabilities, or status. |
-| `agents.delete` | Retire (soft delete) or hard delete. |
+## MCP tool catalog (stable)
 
-### Roles
+Every MCP tool takes an `action` parameter plus tool-specific args. Caller-kind ACLs (`Llm` / `Event` / `System`) are enforced inside `ToolRegistry::invoke` before the tool's `execute()` runs.
 
-| Verb | What |
-|---|---|
-| `roles.create` | Create a role. Args: `entity_id`, `title`, `role_type`, `parent_role_id?`. |
-| `roles.update` | Update title or `role_type`. Cannot change `entity_id`. |
-| `roles.delete` | Delete a role. Denied if occupied. |
-| `roles.assign` | Bind an occupant. Args: `role_id`, `occupant_kind`, `occupant_id`. |
-| `roles.unassign` | Vacate the role. |
-| `roles.invite_create` | Issue an invite (vacant → human occupant). |
-| `roles.invite_send` | Email the invite (no-op if SMTP not configured). |
+| Tool | Actions | Description |
+|------|---------|-------------|
+| `me` | `profile`, `permissions` | Authenticated actor + runtime metadata. |
+| `agents` | `get`, `hire`, `retire`, `list`, `projects` | Runtime workers, delegation targets, project registry. |
+| `ideas` | `store`, `search`, `update`, `delete`, `link`, `feedback`, `walk` | Durable memory, decisions, idea graph. |
+| `quests` | `create`, `list`, `show`, `update`, `close`, `cancel` | Work ledger. |
+| `events` | `create`, `list`, `enable`, `disable`, `delete`, `trigger`, `trace` | Pattern handlers, lifecycle automation. |
+| `code` | `search`, `context`, `impact`, `diff_impact`, `file`, `file_summary`, `stats`, `index`, `incremental`, `synthesize` | Code intelligence graph. |
+| `sessions` | `search` | Read-only FTS5 search over session transcripts (calling-agent scoped). |
 
-### Quests
+Internal-only tools that don't appear on the MCP surface (event-only or system-only callers):
 
-| Verb | What |
-|---|---|
-| `quests.create` | New quest. Args: `subject`, `description`, `priority`, `agent_id?`, `idea_id?`, `parent?`, `depends_on?`. |
-| `quests.assign` | Assign to an agent. |
-| `quests.update` | Change priority, description, status. |
-| `quests.close` | Close with outcome. |
-| `quests.list` | List quests. Filter by `status`, `agent_id`, `priority`. |
+- `session.info` — emit canonical session metadata for an event handler.
+- `budgets` — read-only budget queries (set as `event_only` in `tools/mod.rs`).
+- `shell`, `code` (system bash/grep helper), `web` — LLM utility tools registered in the orchestrator's `tools/mod.rs`.
 
-### Events
+## Internal IPC handlers
 
-| Verb | What |
-|---|---|
-| `events.subscribe` | Register a detector (pattern → tool calls). |
-| `events.fire` | Manually emit an event. |
-| `events.list` | Query historical events. |
+The runtime's IPC bus exposes the lower-level handlers below. Most clients won't call these directly — they're invoked by the platform proxy when forwarding `/api/*` traffic into a Company runtime.
 
-### Ideas
+### Entities + agents
 
-| Verb | What |
-|---|---|
-| `ideas.store` | Create or update an Idea. |
-| `ideas.search` | Hybrid search (BM25 + vector + temporal). |
-| `ideas.list` | List Ideas, filterable by `kind`, `tags`. |
-| `ideas.delete` | Delete an Idea. |
+| Module | Handlers |
+|--------|----------|
+| `ipc/entities.rs` | `handle_entities`, `handle_create_entity`, `handle_update_entity`, `handle_delete_entity` |
+| `ipc/agents.rs` | `handle_agents_registry`, `handle_agent_children`, `handle_agent_spawn`, `handle_agent_delete`, `handle_agent_set_status`, `handle_agent_info`, `handle_agent_identity`, `handle_save_agent_file`, `handle_budget_policies`, `handle_create_budget_policy`, `handle_set_can_ask_director`, `handle_agent_recent_inference_calls` |
+| `ipc/roots.rs` | `handle_roots`, `handle_create_root`, `handle_update_root` |
+| `ipc/roles.rs` | role CRUD, occupancy, parent edges |
 
-### Sessions
+### Ideas, quests, events
 
-| Verb | What |
-|---|---|
-| `message_to` | Append a message to a target's session. Target: `session_id` \| `agent_id` \| `user_id` \| `role_id` \| `idea_id`. |
-| `add_participant` | Add a participant to an existing session. |
-| `mention` | Inline mention; auto-subscribes the target. |
+Each lives in its own module (`ipc/ideas.rs`, `ipc/quests.rs`, `ipc/events.rs`). The MCP `ideas` / `quests` / `events` tools delegate into these handlers, so the catalog above is the user-facing contract — the IPC names will shift as the orchestrator refactors.
 
-These three are the canonical conversation verbs. There is no `ask_director`, `escalate`, `notify`, `dm`, or `send`.
+### Sessions + messaging
 
-### Channels
+`ipc/sessions.rs` + `ipc/messages.rs` implement the canonical conversation primitive. The three semantic verbs locked by [`architecture_session_primitive.md`](/) are:
 
-| Verb | What |
-|---|---|
-| `channels.upsert` | Configure a channel (Telegram, WhatsApp, email). |
-| `channels.delete` | Remove. |
+- `message_to` — append a message to a target's session (target may be `session_id`, `agent_id`, `user_id`, `role_id`, or `idea_id`).
+- `add_participant` — add a participant to an existing session.
+- `mention` — inline mention; auto-subscribes the target.
 
-### Credentials
+These are runtime-internal verbs. From MCP/REST you reach them through the proxied runtime endpoints (`/api/sessions/*`, `/api/chat`, `/api/chat/stream`), not as MCP tool actions.
 
-| Verb | What |
-|---|---|
-| `credentials.ingest` | Persist OAuth tokens (called by platform OAuth callback). |
-| `credentials.lookup` | Internal: find by `(scope, provider, name)` precedence. |
-| `credentials.delete` | Remove a credential. |
+### Inbox
 
-### Treasury
+`ipc/inbox.rs` — `handle_inbox`, `handle_answer_inbox`, `handle_dismiss_inbox`. Backs the cross-Company inbox at `/me/inbox`.
 
-| Verb | What |
-|---|---|
-| `treasury.transfer` | Execute treasury transfer (gated by role / session-key policy). |
-| `treasury.swap` | Swap tokens via integrated AMM. |
+### Channels + credentials
 
-### Governance
+| Module | Handlers |
+|--------|----------|
+| `ipc/channels.rs` | Configure inbound channel gateways (Telegram, WhatsApp, email). |
+| `ipc/credentials.rs` | Per-agent OAuth tokens (Google, GitHub) — written by the platform OAuth callback. |
 
-| Verb | What |
-|---|---|
-| `governance.propose` | Draft a proposal. |
-| `governance.vote` | Cast a vote on an active proposal. |
-| `governance.execute` | Execute a passed + timelocked proposal. |
+### Files + VFS
 
-### TRUST
+`ipc/files.rs` + `ipc/vfs.rs` — list/upload/read/delete files in an agent's working tree.
 
-| Verb | What |
-|---|---|
-| `trust.register` | On-chain `Factory.registerTRUST` call. |
-| `trust.update` | Update IPFS metadata (operating agreement). |
+### Architect
+
+`ipc/architect.rs` — the Architect agent's `draft` and `refine` verbs. (The `deploy` verb is platform-side and lives at `POST /api/architect/deploy`, not in the IPC surface.)
+
+### Status + seed
+
+`ipc/status.rs` — runtime health snapshot.
+`ipc/seed.rs` — `handle_seed_ideas` for bootstrapping fresh installs.
+
+## On-chain verbs (planned)
+
+The on-chain protocol layer (TRUST registration, treasury transfers, governance proposals) is shipped on Solana programs (`aeqi_trust`, `aeqi_governance`, `aeqi_treasury`, modules) but is **not yet exposed as IPC verbs** from the orchestrator. Today these flow through:
+
+- **Platform-side** — `POST /api/companies/create` (Solana company genesis), and orchestrator-internal calls into `solana_provisioner` / `dao_provisioner`.
+- **CLI** — `aeqi trust` subcommands operate the chain side.
+
+Per the protocol roadmap, the next slice exposes `treasury.transfer`, `treasury.swap`, `governance.propose`, `governance.vote`, `governance.execute`, and `trust.update` as first-class verbs gated by role authority. The doc that landed earlier listing them as already-shipped IPC verbs was aspirational — they don't yet exist in the orchestrator's IPC module.
 
 ## Authority gates
 
-Each verb checks authority before executing:
+For shipped verbs, authority checks happen inside the handler (or, for tools, inside `ToolRegistry::invoke`):
 
 - **Agent verbs** — caller must occupy a role with authority over the target agent (transitive closure on `role_edges`).
 - **Role verbs** — caller must hold a Director role or be the role's current occupant.
 - **Quest verbs** — caller must be the assignee, the assignee's authority chain, or the entity's Director.
-- **Treasury / Governance / TRUST** — board-tier authority required.
 - **Sessions** — anyone can `message_to` a session they participate in; `add_participant` requires authority over the target.
+
+Once on-chain verbs land, they will be board-tier gated (treasury / governance / TRUST writes).
 
 ## Tool deny lists
 
-An agent can have a `tool_deny[]` array that blocks specific verbs even if the agent's role grants them. Used heavily in the [Executive Assistant](/docs/patterns/executive-assistant) pattern (18 decisional tools blocked).
+An agent can have a `tool_deny[]` array on its definition that blocks specific verbs even when the agent's role grants them. Used heavily in the [Executive Assistant](/docs/patterns/executive-assistant) pattern (18 decisional tools blocked):
 
 ```json
 {
   "tool_deny": [
-    "treasury.transfer", "treasury.swap",
-    "governance.propose", "governance.vote", "governance.execute",
-    ...
+    "agents.hire", "agents.retire",
+    "quests.close", "quests.cancel",
+    "ideas.delete"
   ]
 }
 ```
 
+The deny list is checked inside `ToolRegistry::invoke` after the ACL but before `execute()`. A denied call returns the stable `tool_denied` reason code.
+
 ## Truthful emission
 
-Events fired during verb execution emit from the verb's actual side-effect point, not from a higher-level wrapper. This matters for stream observability — `quest.completed` fires when the runtime marks the quest done, not when the daemon stream reader sees the row update.
+Events fired during verb execution emit from the verb's actual side-effect point, not from a higher-level wrapper. This matters for stream observability: `session:quest_end` fires when the runtime marks the quest done, not when the daemon stream reader sees the row update downstream.
 
 ## Related
 
-- [REST API](/docs/api/rest) — HTTP surface for all verbs.
-- [MCP](/docs/api/mcp) — Model Context Protocol.
-- [Authentication](/docs/api/authentication).
+- [REST API](/docs/api/rest) — HTTP surface for the platform.
+- [MCP](/docs/api/mcp) — Model Context Protocol catalog (the stable external surface).
+- [Authentication](/docs/api/authentication) — JWT and API key models.
