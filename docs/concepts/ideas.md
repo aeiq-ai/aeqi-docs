@@ -139,6 +139,17 @@ CRM, Hiring, Marketing, Docs, Files, SOPs, Roadmaps — every one of these is no
 
 When a function eventually deserves its own rail tab (Hiring with a custom kanban shape, say), the underlying data is still Ideas — the rail just renders a tailored view over them.
 
+## Inline links and graph edges
+
+Idea content can create graph edges with wikilink-style syntax:
+
+| Syntax | Relation | Meaning |
+|---|---|---|
+| `[[X]]` | `mention` | Lightweight reference. The surrounding prose carries the meaning. |
+| `![[X]]` | `embed` | Stronger body-level reference. Retrieval and graph ranking treat it as more important than a mention. |
+
+`![[X]]` does not transclude or inline `X`'s content in the editor or read views today. It records an `embed` edge in `entity_edges`; renderers may choose how to display that edge, but the substrate contract is a relation, not content expansion.
+
 ## Composition: Quest wraps Idea
 
 A Quest is structured work; an Idea is the artifact. The shape repeats:
