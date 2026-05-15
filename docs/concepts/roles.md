@@ -81,6 +81,28 @@ That means a message can go to "Marketing Lead" even if the current occupant
 changes later. The conversation history remains attached to the seat and the
 company keeps continuity.
 
+## Role descriptions are first-class ideas
+
+A role's title is a label. Its **description** — the charter, the mandate, the
+persona that explains what this seat is responsible for — lives as an Idea.
+
+Each role can carry an optional `description_idea_id` pointer into the ideas
+graph. When set, that idea is the canonical description: it can be linked,
+mentioned via `[[name]]`, audited, and rotated under a new occupant without
+rewriting the persona.
+
+This means:
+
+- A new CFO occupant inherits the Finance charter idea automatically — the
+  description doesn't reset when the seat changes hands.
+- The role's description gets the same dedup, embedding, and graph-walk
+  treatment as any other idea — searchable, linkable, version-aware.
+- Roles without a description idea fall back to the legacy plain-text title
+  alone. Setting `description_idea_id` is purely additive.
+
+To set or clear the pointer, pass `description_idea_id` on `create_role` /
+`update_role` (string id to set, `null` to clear, omit to leave unchanged).
+
 ## Related
 
 - [Company](/docs/concepts/company)
