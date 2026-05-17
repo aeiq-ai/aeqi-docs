@@ -78,6 +78,11 @@ There is no `injection_mode` column. Activation is event-driven:
 
 Passing any other value to `ideas.store` returns `400 invalid scope`. There is no `domain` / `system` / `entity` scope today — those names predate the role-graph rewrite.
 
+Role titles do not propagate Idea visibility. If Alice and Bob both occupy roles titled `cto`, Alice does
+not see Bob's `self` Ideas by virtue of the matching title. Visibility is anchored to concrete `agent_id`
+values plus the explicit role DAG and `scope`: a parent can inspect descendant Ideas through the DAG, and
+wider sharing must be expressed with `siblings`, `children`, `branch`, or `global`.
+
 ## Comments and activity
 
 Every Idea can carry a session. Open the Idea, and below the content is a thread:
