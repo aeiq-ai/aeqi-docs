@@ -13,14 +13,18 @@ aeqi-inference is an OpenAI-compatible API for running inference on multiple LLM
 
 ## Authentication
 
-`POST /v1/chat/completions` and `POST /v1/embeddings` are gated by a `SubscriptionLayer` that checks for:
+Hosted `/v1/*` requests use the same platform auth path as the dashboard and
+REST API:
 
-- `Authorization: Bearer <token>` — bearer token (JWT or `sk_…` API key).
-- `X-Entity: <entity_id>` — selects which Company's balance is debited.
+- `Authorization: Bearer <token>` — a user JWT or an account API key
+  (`ak_...`).
+- `X-Trust: <trust_id>` — selects which TRUST runtime the request is scoped to.
 
-Missing the bearer returns `401 Unauthorized`. The subscription middleware is currently a skeleton — it does **not** verify JWT signatures yet; that is on the Phase 1 hardening list. A non-empty bearer is sufficient to pass the auth check today.
+Missing or invalid auth returns `401 Unauthorized`. Missing `X-Trust` returns
+`400 Bad Request`.
 
-`GET /v1/models` is **public** — no auth required.
+`GET /v1/models` is authenticated on the hosted platform because the `/v1`
+router is protected as a group.
 
 ## Lanes
 
@@ -28,11 +32,14 @@ Three planned payment lanes for inference:
 
 | Lane | Status | How it bills |
 |------|--------|--------------|
-| Subscription | Phase 1 live | Pooled per-Company credit, debited on each call. |
+| Subscription | Auth wired; balance enforcement staged | Pooled per-TRUST credit, debited on each call when the billing layer is mounted. |
 | Treasury | Scaffolded | Direct USDC debit from the Company's on-chain treasury. |
 | x402 | Planned | HTTP 402 + EIP-3009 USDC per request. |
 
-Only the subscription lane is currently wired. Treasury and x402 endpoints land in Phase 2.
+The hosted mount currently enforces platform auth and TRUST selection. Balance
+debit and treasury/x402 payment rails are staged behind the inference billing
+layer and should not be treated as universally enforced by the current hosted
+router.
 
 ## Endpoints
 
@@ -99,7 +106,7 @@ data: [DONE]
 | Status | Code | Reason |
 |--------|------|--------|
 | 401 | `auth_error` | Missing bearer header. |
-| 402 | `billing_error` | Subscription balance exhausted (`balance ≤ 0`). |
+| 402 | `billing_error` | Reserved for billing enforcement when the inference billing layer is mounted. |
 | 400 | `invalid_request_error` | Model not in `ALLOWED_MODELS`, missing field, or malformed body. |
 | 502 | `upstream_error` | DeepInfra returned an error or unexpected payload. |
 | 503 | `upstream_error` | DeepInfra unreachable. |
@@ -107,7 +114,7 @@ data: [DONE]
 
 ### GET /v1/models
 
-Public. List of currently-available models.
+Authenticated on the hosted platform. List of currently-available models.
 
 **Response (200):**
 
@@ -146,13 +153,16 @@ OpenAI, Anthropic, and DeepSeek provider adapters are stubs at this time.
 
 ## Billing & Cost Accounting
 
-Each Company has an in-memory inference balance, debited on each non-streaming completion. Phase 1 stores this in a stub `BalanceStore`; Phase 1 hardening will persist the balance in platform SQLite and back it with an LRU cache.
+The inference crate contains cost-accounting helpers and a balance-store
+interface. The hosted platform currently mounts the inference router behind
+auth; production balance enforcement is staged with the billing layer.
 
 **Pricing model:**
 
-- Billed per million tokens (input and output separately).
+- Intended billing is per million tokens (input and output separately).
 - `compute_cost_microdollars(model, prompt_tokens, completion_tokens)` produces the debit amount; it returns `0` for any model not in `pricing_for()`.
-- Cost is debited on completion of the response. For streaming requests the final usage row is debited after the stream closes; mid-stream debits are not yet implemented.
+- When the billing layer is mounted, cost is debited on completion of the
+  response. Mid-stream debits are not yet implemented.
 
 **Example:**
 
@@ -161,7 +171,9 @@ Each Company has an in-memory inference balance, debited on each non-streaming c
 - Output 500 tokens at $0.79/M = $0.000395.
 - Total ~$0.0009 (0.09¢).
 
-**Exhausted balance:** when the cached balance is `≤ 0`, the middleware short-circuits the request with `402 Payment Required`.
+`402 Payment Required` is reserved for the billing layer. Do not rely on it as a
+current hosted-platform quota signal unless your deployment explicitly enables
+inference balance enforcement.
 
 To top up, use the dashboard. Programmatic USDC top-up (treasury lane) lands in Phase 2.
 
@@ -175,7 +187,7 @@ const response = await fetch("https://app.aeqi.ai/v1/chat/completions", {
   headers: {
     "Content-Type": "application/json",
     "Authorization": `Bearer ${token}`,
-    "X-Entity": entityId,
+    "X-Trust": trustId,
   },
   body: JSON.stringify({
     model: "meta-llama/Meta-Llama-3.1-70B-Instruct",
@@ -196,7 +208,7 @@ const response = await fetch("https://app.aeqi.ai/v1/chat/completions", {
   headers: {
     "Content-Type": "application/json",
     "Authorization": `Bearer ${token}`,
-    "X-Entity": entityId,
+    "X-Trust": trustId,
   },
   body: JSON.stringify({
     model: "meta-llama/Meta-Llama-3.1-70B-Instruct",
@@ -225,7 +237,12 @@ while (true) {
 ### List models
 
 ```typescript
-const response = await fetch("https://app.aeqi.ai/v1/models");
+const response = await fetch("https://app.aeqi.ai/v1/models", {
+  headers: {
+    "Authorization": `Bearer ${token}`,
+    "X-Trust": trustId,
+  },
+});
 const models = await response.json();
 models.data.forEach((m) => console.log(`${m.id} (by ${m.owned_by})`));
 ```
@@ -240,7 +257,7 @@ from openai import OpenAI
 client = OpenAI(
     api_key="<bearer-token>",
     base_url="https://app.aeqi.ai/v1",
-    default_headers={"X-Entity": "<entity_id>"},
+    default_headers={"X-Trust": "<trust_id>"},
 )
 
 response = client.chat.completions.create(
@@ -256,7 +273,7 @@ import OpenAI from "openai";
 const client = new OpenAI({
   apiKey: "<bearer-token>",
   baseURL: "https://app.aeqi.ai/v1",
-  defaultHeaders: { "X-Entity": "<entity_id>" },
+  defaultHeaders: { "X-Trust": "<trust_id>" },
 });
 
 const response = await client.chat.completions.create({

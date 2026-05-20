@@ -79,6 +79,6 @@ The five-surface unification is the operational consequence of the underlying de
 
 - [Sessions](/docs/concepts/sessions) — the data primitive every inbox queries.
 - [Roles](/docs/concepts/roles) — `message_to(<role>)` routes to the current occupant; the inbox follows the seat.
-- [TRUST](/trust) — what a Trust's channels are scoped to.
+- [TRUST](/docs/concepts/trust) — what a Trust's channels are scoped to.
 - [Architect](/docs/methodology/architect) — `/studio` is the same chat-shape applied one turn earlier, before the Company exists.
 - [Templates and modules](/docs/architecture/templates-and-modules) — sister methodology page on a different unification (templates compose modules; inboxes compose sessions).

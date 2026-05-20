@@ -9,7 +9,7 @@ This page is the architectural view of Ideas. For the developer/MCP API surface 
 
 ## The thesis
 
-Five primitives. Everything else is a saved view over Ideas.
+Four operating primitives. Everything else is a saved view over Ideas.
 
 A CRM contact is an Idea tagged `kind:customer`. A hiring candidate is an Idea tagged `kind:recruit`. A vendor is an Idea tagged `kind:vendor`. A doc, an SOP, a roadmap entry, an ad copy variant, a press contact — Ideas with different tag conventions, different properties, different views over them.
 
@@ -140,7 +140,7 @@ The property bag is typed at the view layer, not the schema layer. Adding a new 
 
 ### Why this is the wedge
 
-CRM, Hiring, Marketing, Docs, Files, SOPs, Roadmaps — every one of these is now expressible as a saved view over Ideas. No new tables, no new primitives, no schema migration per domain. The five user-facing primitives stay locked while domain coverage expands through view configuration.
+CRM, Hiring, Marketing, Docs, Files, SOPs, Roadmaps — every one of these is now expressible as a saved view over Ideas. No new tables, no new primitives, no schema migration per domain. The operating primitive set stays locked while domain coverage expands through view configuration.
 
 When a function eventually deserves its own rail tab (Hiring with a custom kanban shape, say), the underlying data is still Ideas — the rail just renders a tailored view over them.
 
@@ -204,6 +204,7 @@ The action enum is pinned by `ideas_mcp_action_enum_drift_guard` in `aeqi-cli/sr
 |---|---|---|
 | `GET` | `/ideas` | List Ideas (entity-scoped or agent-filtered). |
 | `POST` | `/ideas` | Store a new Idea (same dedup pipeline as MCP `store`). |
+| `POST` | `/ideas/files` | Upload a root file-backed Idea with `multipart/form-data`. |
 | `GET` | `/ideas/search` | Search endpoint (UI-side counterpart to MCP `search`). |
 | `GET` | `/ideas/prefix` | Prefix lookup for picker UIs. |
 | `POST` | `/ideas/by-ids` | Batch hydrate Ideas by id list. |
@@ -212,12 +213,18 @@ The action enum is pinned by `ideas_mcp_action_enum_drift_guard` in `aeqi-cli/sr
 | `POST` | `/ideas/seed` | Bulk-seed Ideas from a preset. |
 | `PUT` | `/ideas/{id}` | Update an Idea (MCP `update`). |
 | `DELETE` | `/ideas/{id}` | Delete an Idea (MCP `delete`). |
+| `POST` | `/ideas/{id}/files` | Upload a file-backed child Idea under an existing Idea. |
 | `GET` `POST` `DELETE` | `/ideas/{id}/edges` | Read / add / remove typed edges. |
 | `GET` | `/ideas/{id}/activity` | Activity feed (system-emitted rows). |
 | `GET` | `/ideas/{id}/comments` | Comments (user/agent session messages). |
 | `POST` | `/ideas/{id}/subscribe` | Subscribe to the Idea's session for live updates. |
 | `GET` | `/ideas/{id}/children` | Tables-in-Ideas: nested Ideas under a parent. |
 | `PUT` | `/ideas/{id}/properties` | Tables-in-Ideas: schema-less property bag. |
+
+File uploads require `agent_id` and a `file` multipart field. They may include
+`scope`; child uploads take the parent from the `{id}` path segment. The runtime
+stores the artifact through the file pipeline and returns an Idea wrapper so the
+uploaded file participates in search, trees, and activity like every other Idea.
 
 The REST surface is pinned by `npm run check:rest-routes` in this repo, which walks `aeqi-platform/src/server.rs` and asserts every registered route is mentioned here or in `docs/api`.
 

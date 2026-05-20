@@ -59,7 +59,7 @@ outcome.
 ## Hiring agents
 
 Agents can be created from templates or composed directly from company context.
-Aeqi can start with a small operating team:
+aeqi can start with a small operating team:
 
 - Executive Assistant
 - Research Agent

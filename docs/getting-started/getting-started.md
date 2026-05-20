@@ -8,15 +8,20 @@ About 10 minutes end to end.
 
 Go to [aeqi.ai](https://aeqi.ai) and click **Request access**.
 
-You can sign up with email, Google, GitHub, a passkey, or a supported wallet where those options are enabled for your deployment. All doors land you in the same place: a dashboard with a personal account already provisioned.
+You can sign up with email, Google, GitHub, a passkey, or a supported wallet
+where those options are enabled for your deployment. All doors land you in the
+same place: a dashboard with a personal account and access to create or join a
+TRUST.
 
-A custodial wallet is provisioned automatically — every account has exactly one. You don't see it on the dashboard yet; it's there when you need it. See [Wallets & identity](/docs/concepts/wallets-and-identity) for the full custody model.
+Wallet and signer behavior is deployment-dependent. Some deployments can
+provision assisted signers or expose wallet login; others only use platform
+identity until a protocol module is enabled. See [Wallets & identity](/docs/concepts/wallets-and-identity).
 
 ## 2. Create your first TRUST
 
 Click **+ New TRUST** in the sidebar.
 
-In the current hosted release, the public catalog is intentionally conservative: one default aeqi Blueprint. It starts a minimal TRUST with one primary agent, one Steward, shared memory, a bootstrap Quest, and a weekly review cadence. Specialized archetypes are kept as draft inventory until their product behavior and protocol assumptions are audited again.
+In the current hosted release, the public catalog is intentionally conservative: one default aeqi Blueprint. It starts a minimal TRUST with a primary agent, shared memory, a bootstrap Quest, and a review cadence. Specialized archetypes stay out of the public catalog until their product behavior and protocol assumptions are audited.
 
 | Single blueprint | Best for |
 |---|---|
@@ -24,22 +29,21 @@ In the current hosted release, the public catalog is intentionally conservative:
 
 Pick **aeqi**. Give your TRUST a name. Click **Create**.
 
-A few things happen at once, all idempotent and reversible:
+A few things happen at once:
 
 1. A workspace is provisioned (a fresh tenant on its own port).
-2. Two roles are seeded: the primary aeqi role and the Steward.
-3. The primary agent and Steward are hired into those roles.
-4. Ideas are seeded for the TRUST mission, operating principles, capture pattern, daily rhythm, and Steward beat.
-5. Events are scheduled for session bootstrap and weekly review.
-6. One kickoff Quest asks you to define the TRUST mission before adding specialist agents or more structure.
+2. Initial roles and the primary agent are seeded.
+3. Ideas are created for the TRUST mission and operating context.
+4. Events schedule the first operating rhythm.
+5. One kickoff Quest asks you to define the TRUST mission before adding specialist agents or more structure.
 
-The wizard goes from goal to live workspace in about 90 seconds.
+The wizard takes you from goal to live workspace without requiring you to design an org chart first.
 
 ## 3. Meet your agents
 
 You land on the TRUST overview tab. The Agents row in the rail shows the agents that just got hired.
 
-Open **aeqi**. The Sessions tab shows the agent has already opened a greeting session: it asks what the TRUST should make true, then turns the answer into operating context and the first two or three Quests.
+Open the primary agent. The Sessions tab shows the agent has opened a greeting session: it asks what the TRUST should make true, then turns the answer into operating context and the first Quests.
 
 This is the **co-creation** loop in action: the agent doesn't sit idle waiting for you to give it work. It introduces itself, captures context via Quests, and uses the answers as Ideas. See [Co-creation](/docs/methodology/co-creation) for the full pattern.
 
@@ -55,7 +59,9 @@ The agent picks up the message, drafts a roadmap as a new Idea, and replies with
 - A new **Quest** appears in the Quests tab — the work the agent did to produce the draft.
 - A new **Event** appears in the Events tab — the message you sent, the trigger that fired the work.
 
-Four primitives, one user action. Quest WHAT, Idea HOW, Event WHEN, Role WHO.
+Four operating primitives, one user action: the Agent executes, the Quest
+frames the work, the Idea stores the artifact, and the Event records what
+happened.
 
 ## 5. Connect Google
 
@@ -82,11 +88,11 @@ Quests are units of work. Open the **Quests** tab and click **+ New quest**.
 | Subject | "Draft Q3 launch announcement" |
 | Description | "Long-form post for the blog. 600–800 words. Voice: confident, technical, restrained. Reference the v0.41.0 co-creation release." |
 | Priority | `high` |
-| Assigned agent | The CMO agent |
+| Assigned agent | The primary agent |
 
 Click **Create**. The agent picks it up immediately. You'll see:
 
-- Status moves `pending` → `in_progress` as the agent starts working.
+- Status moves from `todo` to `in_progress` as the agent starts working.
 - A session opens for the Quest. Tool calls, reasoning, and intermediate work all flow into the session as system messages.
 - The output Idea (the draft) is linked to the Quest via `idea_id`.
 - When the agent closes the Quest, it records an **outcome** — a one-line summary of what was done.
@@ -95,7 +101,8 @@ If the agent hits a question it can't answer alone, it `message_to`'s you in the
 
 ## 7. Where to go next
 
-You've used all five primitives. From here:
+You've used the four operating primitives and the supporting structures around
+them. From here:
 
 - **Add a board member.** Roles tab → **+ Add role** → assign Director. On-chain registration and assignment are optional deployment features, not required to use the runtime.
 - **Hire another agent.** Agents row → hover **+** → pick a template (researcher, reviewer, sales). The agent gets a charter, a role, and starts running.

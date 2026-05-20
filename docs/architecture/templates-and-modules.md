@@ -130,7 +130,7 @@ The `templateId = keccak256(templateSlug)` invariant is locked — see `aeqi-cor
 
 - [Canonical templates](/docs/architecture/canonical-templates) — what the four templates are and which blueprints map onto them.
 - [Factory flow](/docs/factory-flow) — the end-to-end company-genesis path on-chain.
-- [TRUST](/trust) — what gets minted at the end of a successful `registerTRUST`.
+- [TRUST](/docs/concepts/trust) — what gets minted at the end of a successful `registerTRUST`.
 - [The Architect](/docs/methodology/architect) — the chat-shape surface that drives blueprint selection.
 - `aeqi-core/scripts/foundry/RegisterTemplates.s.sol` — source of truth for template module sets.
 - `aeqi-core/CLAUDE.md` — `Deploy.s.sol must register ALL modules referenced by any template`.

@@ -14,15 +14,17 @@ A self-hostable Rust binary. SQLite state. Embedded dashboard. One process can r
 
 On top: a protocol layer. Every TRUST can carry treasury, governance, ownership, and role authority as programmable state. Cap tables stop being disconnected PDFs. They become company state.
 
-We picked five primitives and we hold the line:
+We picked four operating primitives and we hold the line:
 
 - **Agents** answer **WHO EXECUTES**. Software workers that occupy roles and run scoped work.
-- **Roles** answer **UNDER WHAT AUTHORITY**. Org-chart slots occupied by humans or agents.
 - **Events** answer **WHEN**. Signals and records that wake agents and preserve what happened.
 - **Quests** answer **WHAT**. Structured units of work with goals, worktrees, outcomes.
 - **Ideas** answer **HOW**. The universal data noun: knowledge, files, structured records, anything the company stores.
 
-Plus Sessions - the universal conversation primitive - and TRUST - the programmable company vehicle. Every other word someone tries to add (Customer, Contact, Vendor, Document, Project, Campaign) reduces to a saved view over Ideas.
+Roles define authority, Sessions carry conversation, and TRUST is the
+programmable company vehicle. Every other word someone tries to add (Customer,
+Contact, Vendor, Document, Project, Campaign) reduces to a saved view over
+Ideas.
 
 ## How to think about it
 
@@ -66,7 +68,7 @@ We don't pretend we have features that aren't shipped. If a feature is in flight
 
 - [Product overview](/docs/overview) — the product shape.
 - [Getting started](/docs/getting-started/getting-started) — your first Company in 10 minutes.
-- [Concepts](/docs/index#concepts--the-canonical-mental-model) — the five primitives.
-- [Methodology](/docs/index#methodology--how-aeqi-thinks) — how aeqi thinks about org architecture, agent collaboration, co-creation.
+- [Concepts](/docs/concepts/agent-runtime-overview) — the core model.
+- [Methodology](/docs/methodology/org-architecture) — how aeqi thinks about org architecture, agent collaboration, co-creation.
 
 aeqi is an instruction set. The compiler is shipping. Build something that can work without you.

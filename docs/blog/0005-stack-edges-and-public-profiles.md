@@ -54,9 +54,13 @@ The thesis from v0.41.0 keeps getting truer. Tables aren't the headline; tables 
 
 ## What's next
 
-v0.43.0 / Wave 35 wires a real LLM into the Architect. The /studio room becomes a chat surface — multi-turn refinement, cost preview, spawn-on-confirm. The hardest design problem there isn't the model; it's the conversation shape (when does the architect ask, when does it decide, what does the user see between "describe" and "deploy"). The wire is real. The model is the next thread.
+As of this v0.42.0 release note, the next thread was wiring a real model into
+the Architect. The `/studio` room was intended to become a chat surface with
+multi-turn refinement, cost preview, and spawn-on-confirm. The hardest design
+problem was not the model; it was the conversation shape.
 
-After that: the Personal Entity gets its own TRUST surface (Phase 1 already provisions; Wave 33B will surface ownership in `/me/ownership`), the `/c/<id>` URL stops being canonical (308 redirects to `/trust/<address>`), and the æconomy gains the hireable opt-in.
+The roadmap after that was a dedicated TRUST surface for the personal entity,
+canonical `/trust/<address>` routing, and hireable opt-in for the economy.
 
 The product had primitives. It had architecture. It had a thesis. v0.42.0 is the first release where Companies start talking to each other on-chain, where they have public faces, and where the room that designs them exists.
 
@@ -65,5 +69,5 @@ The product had primitives. It had architecture. It had a thesis. v0.42.0 is the
 - [Stack edges — on-chain orchestration](/docs/architecture/canonical-templates)
 - [Public profile flag](/docs/patterns/public-profile-flag)
 - [Public companies](/docs/patterns/public-companies)
-- [TRUST — On-Chain Primitive](/trust)
+- [TRUST — programmable company](/docs/concepts/trust)
 - [The co-creation surface lands](/docs/blog/0004-co-creation-surface)

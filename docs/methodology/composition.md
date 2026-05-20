@@ -2,7 +2,8 @@
 
 The same shape, repeated at every level. Quest wraps Idea. Project wraps Idea. Round wraps Idea. The wrapper holds the work-state; the Idea holds the artifact.
 
-This pattern is why aeqi has five primitives instead of fifteen.
+This pattern is why aeqi keeps the four operating primitives small instead of
+turning every business object into a new primitive.
 
 ## The wrapper pattern
 
@@ -23,7 +24,9 @@ Round {             (when shipped — fundraising)
 }
 ```
 
-A Quest produces or refines an Idea. The Quest carries lifecycle (`pending` → `in_progress` → `done`); the Idea carries content.
+A Quest produces or refines an Idea. The Quest carries lifecycle
+(`backlog` -> `todo` -> `in_progress` -> `in_review` -> `done`); the Idea
+carries content.
 
 ## Why this is right
 
@@ -48,7 +51,9 @@ A Quest with `parent=<quest_id>` is a sub-task. The parent stays `in_progress` u
 
 ## Dependencies via `depends_on`
 
-A Quest with `depends_on=<quest_id>` stays `pending` until the dependency is `done`. Use for sequential work; don't use for "blocked on a person" — that's a `message_to(<role>)` and a `decision_request` payload.
+A Quest with `depends_on=<quest_id>` stays out of active execution until the
+dependency is `done`. Use for sequential work; don't use it for "waiting on a
+person" — that's a `message_to(<role>)` and a `decision_request` payload.
 
 ## Outcomes
 

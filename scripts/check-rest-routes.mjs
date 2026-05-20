@@ -7,9 +7,9 @@
 //
 // Two sources are scanned today:
 //
-// 1. **Platform** — `../aeqi-platform/src/server.rs`. Every `.route("/api/…")`
-//    is checked as a literal path string. The platform surface is the
-//    user-facing control plane and is small enough to enumerate.
+// 1. **Platform** — `../aeqi-platform/src/routes/router.rs`. Every
+//    `.route("/api/…")` is checked as a literal path string. The platform
+//    surface is the user-facing control plane and is small enough to enumerate.
 //
 // 2. **Runtime web** — selected files under `../aeqi/crates/aeqi-web/src/routes/`.
 //    Routes registered there are mounted at `.nest("/api", ...)` in
@@ -37,7 +37,7 @@ const root = resolve(__dirname, "..");
 const sources = [
   {
     label: "platform",
-    path: resolve(root, "../aeqi-platform/src/server.rs"),
+    path: resolve(root, "../aeqi-platform/src/routes/router.rs"),
     prefix: "",
   },
   {
@@ -50,11 +50,11 @@ const sources = [
 // Routes registered by one of the sources but intentionally not in
 // user-facing docs. Each entry must have a real reason.
 const allowlist = new Set([
-  // Catch-all proxy — described as a mechanism in docs/api/rest.md but the
-  // literal `/api/{*rest}` string is implementation detail.
-  "/api/{*rest}",
-  // Internal reachability probe — short-circuits to 204 in the platform
-  // and never reaches the runtime.
+  // Internal weekly-walk launcher. It is HMAC-gated and is not a public API
+  // contract even though it is registered on the authenticated route tree.
+  "/api/walks/launch",
+  // UI reachability probe for inbox dismiss. It returns 204 and is deliberately
+  // not a tenant/runtime API surface.
   "/api/inbox/__probe__/dismiss",
 ]);
 

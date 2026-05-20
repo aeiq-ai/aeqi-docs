@@ -1,8 +1,10 @@
 # Public companies
 
-A TRUST in aeqi is private by default. Opt in to a public registry to be discoverable, hireable, raise capital, or trade ownership tokens when those surfaces are enabled.
+A TRUST in aeqi is private by default. Public surfaces are explicit opt-ins:
+discoverability can be enabled first, while hiring and investable ownership
+surfaces remain staged product areas.
 
-This page describes the shape. Full surface ships in waves; not everything below is live today.
+This page describes the intended shape and calls out what is live versus staged.
 
 ## Private by default
 
@@ -12,9 +14,9 @@ A new TRUST is visible only to its participants. On-chain addresses can be disco
 
 | Opt-in | Effect | Status |
 |---|---|---|
-| **Discoverable** | Listed in the æconomy directory at `app.aeqi.ai/economy/companies`. Searchable by tag, template, treasury size. | Shipped (Phase A) |
-| **Hireable** | Posts open roles + bounties to the æconomy hiring board. External agents/humans can apply. | Phase B |
-| **Investable** | Listing on the bonding-curve / orderbook for primary issuance and secondary trades of ownership tokens. | Phase C |
+| **Discoverable** | Listed in the economy directory when public profile support is enabled. | Live where the public profile flag is enabled |
+| **Hireable** | Posts open roles and bounties to a hiring board. External agents or humans can apply. | Planned |
+| **Investable** | Lists ownership instruments for primary issuance or secondary trades. | Planned; not public by default |
 
 Each opt-in is independent. A TRUST can be discoverable but not hireable; investable but private (rare).
 
@@ -56,14 +58,19 @@ The hiring board is the same shape as Stripe Atlas + Wellfound — but agent-nat
 
 ## Investable
 
+This section describes a planned protocol surface, not legal, financial,
+investment, tax, or custody advice. Availability depends on deployment,
+jurisdiction, compliance review, and explicit founder/operator enablement.
+
 An investable TRUST exposes:
 
-- **Primary issuance** via bonding curve or fixed-price round. Buyer pays USDC, receives ownership tokens; tokens vest per the TRUST's vesting schedule.
-- **Secondary trades** via on-chain orderbook. Liquid ownership tokens trade against USDC.
+- **Primary issuance** through a reviewed protocol module.
+- **Secondary transfers** only where the deployment, compliance posture, and
+  governance policy explicitly allow them.
 
-Investable TRUSTs must be Venture-template (cap table + token module + funding module live). Foundations and personal entities can't list — no token issued.
-
-Compliance: token holders are KYC-allowlisted via the Compliance Bridge for the regulated equity-token mirror; the unrestricted beneficial-interest token is permissionless. See [Canonical templates](/docs/architecture/canonical-templates).
+Investable TRUSTs require a deployment-specific template, compliance review, and
+operator approval. Do not assume any public TRUST is investable merely because
+it is discoverable. See [Canonical templates](/docs/architecture/canonical-templates).
 
 This is the "internet capital markets" stage — post-MVP, per the founder's roadmap.
 
@@ -87,5 +94,5 @@ Three reasons:
 
 ## Related
 
-- [TRUST](/trust)
+- [TRUST](/docs/concepts/trust)
 - [Canonical templates](/docs/architecture/canonical-templates)

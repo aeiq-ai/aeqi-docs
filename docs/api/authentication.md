@@ -17,7 +17,8 @@ The dashboard and most `/api/*` endpoints expect a JWT bearer token:
 Authorization: Bearer <jwt>
 ```
 
-The token is signed with the platform's `auth_secret`. Claims include `user_id`, `email`, optional `entity_id`, and standard `exp`/`iat`.
+The token is signed with the platform's `auth_secret`. Claims include `user_id`,
+`email`, and standard `exp`/`iat`.
 
 ### Sign up
 
@@ -116,15 +117,20 @@ POST /api/me/email/change/begin
 POST /api/me/email/change/finish
 ```
 
-### Selecting a Company
+### Selecting a TRUST
 
-After login, the JWT alone authenticates the user. When a request needs to target a specific Company runtime — anything proxied through `/api/{*rest}` — the platform reads `X-Entity`:
+After login, the JWT authenticates the user. When a request needs to target a
+specific TRUST runtime — anything proxied through `/api/{*rest}` — the platform
+reads `X-Trust`:
 
 ```
-X-Entity: <entity_id>
+X-Trust: <trust_id>
 ```
 
-If omitted, the platform falls back to the user's primary entity from the JWT claims. Calls to non-tenant routes (`/api/keys`, `/api/billing/*`, `/api/entities`, etc.) do not need `X-Entity`.
+The proxy also accepts `trust` or `trust_id` query parameters for browser flows
+that cannot set headers easily. If no TRUST is supplied, proxied runtime calls
+return `400`. Calls to non-tenant routes (`/api/keys`, `/api/billing/*`,
+`/api/trusts`, etc.) do not need `X-Trust`.
 
 ### Token lifecycle
 
@@ -147,7 +153,11 @@ For MCP and automation. Two keys, each with a distinct role:
 | Secret key | `sk_…` | One Company | `Authorization: Bearer sk_…` |
 | Account key | `ak_…` | Per user account | `X-Api-Key: ak_…` |
 
-The secret key authenticates the call against a specific Company (`(user_id, entity_id)` resolved from the key). The account key is optional but recommended for MCP — when present, the platform asserts that the secret key belongs to the same user, which guards against accidentally using a sk_ from a different account.
+The secret key authenticates the call against a specific TRUST (`user_id` and
+`trust_id` resolved from the key). The account key is optional but recommended
+for MCP — when present, the platform asserts that the secret key belongs to the
+same user, which guards against accidentally using a `sk_...` from a different
+account.
 
 **API keys require a `company` or `owner` placement tier.** Trial and free accounts cannot mint or use them; calls return `402 Payment Required` with `"MCP access requires a Company subscription"`.
 
@@ -204,7 +214,8 @@ export AEQI_SECRET_KEY=sk_...
 export AEQI_PLATFORM_URL=https://app.aeqi.ai
 ```
 
-The wrapper at `/home/claudedev/.aeqi/bin/aeqi-mcp` reads both and sets `Authorization: Bearer sk_…` plus `X-Api-Key: ak_…` on every JSON-RPC call.
+`aeqi mcp` reads both and sets `Authorization: Bearer sk_…` plus
+`X-Api-Key: ak_…` on every JSON-RPC call.
 
 Direct MCP call:
 
@@ -239,7 +250,7 @@ Account keys (`ak_…`) are identifiers — call `POST /api/account/api-key` to 
 | `Authorization: Bearer <jwt>` | Dashboard, in-browser REST | After a login flow |
 | `Authorization: Bearer sk_…` | MCP, automation | When calling on a Company's behalf |
 | `X-Api-Key: ak_…` | MCP, automation | Optional — pairs sk_ with the account |
-| `X-Entity: <entity_id>` | REST | Selects target Company for proxied calls |
+| `X-Trust: <trust_id>` | REST | Selects target TRUST for proxied calls |
 
 `X-Company` is not used.
 

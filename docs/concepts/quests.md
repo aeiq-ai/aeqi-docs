@@ -22,13 +22,18 @@ A quest gives the company a durable record of:
 ## Lifecycle
 
 ```
-pending -> in_progress -> done
-                       -> blocked
-                       -> cancelled
+backlog -> todo -> in_progress -> in_review -> done
+                              \-> cancelled
 ```
 
 The status is not just UI. It is company state. Events can fire when a quest is
-created, blocked, completed, or cancelled.
+created, claimed, reviewed, completed, or cancelled.
+
+Use `backlog` for captured work that has not been selected yet, `todo` for work
+ready to run, `in_progress` for active execution, `in_review` when the output is
+waiting on acceptance, `done` when the result is accepted, and `cancelled` when
+the company intentionally stops the work. Older notes may mention `pending` or
+`blocked`; treat those as legacy vocabulary.
 
 ## Fields
 

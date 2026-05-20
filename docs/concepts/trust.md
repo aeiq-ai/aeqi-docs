@@ -45,12 +45,26 @@ role approved it, and what outcome was accepted.
 
 That is the bridge from agent execution to accountable governance and authority.
 
+## Current product vs protocol direction
+
+Today, a TRUST is first a hosted or self-hosted programmable company runtime:
+roles, agents, quests, ideas, events, sessions, and memory in one operating
+context. Solana-backed authority, treasury, governance, and ownership are the
+protocol direction and may be enabled only in specific deployments.
+
+Public docs use TRUST for both the current runtime product and the staged
+protocol vehicle. When a page discusses custody, treasury, or ownership, read it
+as deployment-dependent unless it explicitly says the hosted product exposes
+that module.
+
 ## TRUST is not
 
 - **Not a chatbot feature.** It is the programmable company.
 - **Not a DAO-first product.** Governance exists, but token voting is not the category.
 - **Not a legal wrapper as the category.** Legal structure matters, but execution is the entry point.
-- **Not custody.** The architecture is designed around scoped authority and signer control, not aeqi holding user keys.
+- **Not blanket custody.** Some deployments may provide runtime-assisted
+  signing, but TRUST authority is designed around scoped roles, explicit
+  approvals, and signer controls rather than agents owning user keys.
 
 ## Solana direction
 

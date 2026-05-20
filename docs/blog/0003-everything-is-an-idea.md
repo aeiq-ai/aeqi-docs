@@ -10,7 +10,8 @@ I'll save you the email I get every two weeks.
 
 Every two weeks, somebody asks for a new primitive. Every two weeks, the answer is the same: **it's already there. It's an Idea.**
 
-This post is the database thesis. Why aeqi has five primitives instead of fifty.
+This post is the database thesis. Why aeqi keeps four operating primitives
+instead of letting every business object become its own table.
 
 ## The trap
 
@@ -52,16 +53,16 @@ Adding a new "tab" is a config change. Adding a new "type" is a `kind` value plu
 
 ## What gets to be a primitive
 
-Five primitives. The rule is strict:
+Four operating primitives. The rule is strict:
 
 - **Agents** — runtime workers. Not data; they execute.
 - **Quests** — structured work with state machine semantics. Not data; work has its own lifecycle.
 - **Events** — signals. Not data; they trigger.
-- **Roles** — org-chart slots with authority semantics. Not data; they grant.
 - **Ideas** — the universal data noun.
 
-Two more substrates that aren't quite primitives but are referenced everywhere:
+Three more substrates are referenced everywhere:
 
+- **Roles** — org-chart slots with authority semantics.
 - **Sessions** — the universal conversation primitive. Anything chat- or activity-shaped collapses to this.
 - **TRUST** — the on-chain identity. Anything ownership- or governance-shaped lives here.
 
@@ -89,7 +90,7 @@ Until then: properties is a JSON blob. Don't promise typed-DB UX in user-facing 
 
 Software gets simpler when you find the right axis to slice on. Every product has a moment where a team is choosing between adding a primitive or finding a substrate. Adding the primitive is easy and feels productive. Finding the substrate is harder and feels like over-engineering. Five years later, the substrate path is alive and the primitive path is a coral reef.
 
-aeqi picked the substrate path. Five primitives, locked. Every department, every workflow, every record-shape goes through the same noun.
+aeqi picked the substrate path. Four operating primitives, locked. Every department, every workflow, every record-shape goes through the same noun.
 
 The programmable company for the agent economy doesn't ship a new primitive every quarter. It ships better views over the ones that already exist.
 

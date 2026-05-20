@@ -14,9 +14,9 @@ tokens without operating context are claims against nothing legible.
 
 This paper presents **aeqi**, a runtime for **TRUSTs** — programmable
 companies that put both waves inside one operating shell. A TRUST is an
-addressable entity with five primitives (Agents, Roles, Quests, Events,
-Ideas) and a universal Session substrate that records how intent becomes
-work. Once a company can execute, remember, and expose its operating truth,
+addressable entity with four operating primitives (Agents, Quests, Events,
+Ideas), a role-authority layer, and a universal Session substrate that records
+how intent becomes work. Once a company can execute, remember, and expose its operating truth,
 governance, treasury, and ownership have something real to attach to.
 
 We position aeqi against three classes of antecedents — Decentralized
@@ -167,17 +167,20 @@ aeqi compiles a TRUST into a small, orthogonal set of primitives. Each
 corresponds to one face of the company; together they cover the
 operational surface earlier paradigms left fragmented.
 
-### 4.1 The five primitives
+### 4.1 The operating primitives
 
 | Primitive | Question | Role |
 |---|---|---|
 | **Agents** | *Who* executes | Configured workers (CEO agent, research agent, engineering agent) that occupy roles, hold tools, and run as ephemeral processes spawned per turn. |
-| **Roles** | *Under what authority* | Slots in the company's authority DAG. Carry scope, permissions, and budget. Agents and humans occupy the same role surface. |
 | **Quests** | *What* gets done | Units of work with a goal, scope, owner, optional budget, and a lifecycle that produces a durable record. The surface against which contribution and progress are observed. |
 | **Events** | *When* and *what happened* | Append-only operating history. Lifecycle transitions, decisions, tool invocations, governance outcomes, runtime signals. The organization's machine-readable memory of itself. |
 | **Ideas** | *How* the company thinks | Reusable knowledge: strategy, procedures, principles, decisions, identities, documents. Addressable, taggable, linkable. The substrate of organizational learning. |
 
-A sixth construct — the **Session** — is the universal conversation
+Roles sit beside those primitives as the authority layer: slots in the
+company's authority graph with scope, permissions, and budget. Agents and humans
+occupy the same role surface.
+
+A further construct — the **Session** — is the universal conversation
 primitive. Inbox, chat, channel, comment thread, and activity stream are
 the same data shape under different scope predicates. Three verbs
 (`message_to`, `add_participant`, `mention`) drive every conversational
@@ -202,14 +205,13 @@ coding agents.
 
 ### 4.3 The on-chain anchor
 
-The persistent identity is anchored on a public chain. The canonical
-chain is Solana; the on-chain construct is a role-graph smart account
-rather than a multisig (Anchor 0.31, secp256r1 passkey signing, native
-fee payer). Modular programs — governance, treasury, venture — compose
-around the core trust program. The chain holds identity, authority graph,
-treasury state, and the artifacts of governance. The runtime holds
-operating history and the work that produced it. Together they are the
-TRUST.
+The protocol thesis anchors persistent identity on a public chain. The
+canonical direction is Solana; the intended on-chain construct is a role-graph
+smart account rather than a multisig. Governance, treasury, and venture modules
+compose around the core trust program as staged protocol capabilities. In the
+current product, the runtime is the adoption surface and operating record; the
+on-chain modules should be read as the protocol direction unless a deployment
+explicitly exposes them.
 
 ---
 
@@ -252,17 +254,17 @@ calls a search tool eleven times, drafts a comparison Idea, and closes
 the quest. The session is preserved. The cost is debited against the
 Research role's budget. The closure is an Event.
 
-Day four. The founder convenes a governance proposal: allocate $5,000
-of treasury to a paid pilot with a design contractor. The proposal is
-an Idea. The vote is recorded as Events. The on-chain treasury module
-releases the budget against the operational role authorized to spend.
+Day four. The founder convenes a governance proposal: allocate $5,000 of
+treasury to a paid pilot with a design contractor. The proposal is an Idea. The
+approval is recorded as Events. Where the treasury module is enabled, the budget
+release is then executed against the operational role authorized to spend.
 
-Day five. A potential investor reads the TRUST. They do not request a
-data room. They open `/trust/<address>` and inspect the mission, the
-role graph, the agents and their occupancy, the quests opened and
-closed, the events that produced governance decisions, the treasury
-state. The operating reality of the firm is observable rather than
-reconstructed.
+Day five. A potential investor reads the TRUST. Instead of starting from a
+blank data-room request, they can inspect the mission, the role graph, the
+agents and their occupancy, the quests opened and closed, the events that
+produced governance decisions, and the treasury state where those modules are
+enabled. More of the operating reality of the firm is observable rather than
+reconstructed from disconnected artifacts.
 
 The example is small and the firm is small, but the substrate is
 general. Every action was an event. Every decision was a session.
@@ -302,27 +304,26 @@ Once a company can execute, remember, and expose operating truth,
 ownership and governance become things that *attach* rather than things
 that must be invented from nothing.
 
-**Ownership** is a property of the entity, not a downstream derivation
-of task logs. A TRUST has an authority graph, a treasury, and an
-ownership state — who is entitled to what share of residual value,
-under what conditions. Ownership state is recorded on chain,
-parameterized by the entity's governance module, and conditioned on
-operational events. Performance-anchored mechanisms — vesting against
-verifiable milestones rather than mere tenure — become tractable to
-ship once the underlying company is itself an operating system.
+**Ownership** is a property of the entity, not a downstream derivation of task
+logs. A mature TRUST can have an authority graph, a treasury, and an ownership
+state — who is entitled to what share of residual value, under what conditions.
+The protocol direction is for ownership state to be recorded on chain,
+parameterized by the entity's governance module, and conditioned on operational
+events. Performance-anchored mechanisms — vesting against verifiable milestones
+rather than mere tenure — become tractable once the underlying company is itself
+an operating system.
 
-**Governance** is similarly first-class. The TRUST exposes a governance
-module composable with the rest of its state. Proposals are addressable
-ideas; votes are recorded events; outcomes commit on chain; effects
-propagate through the role graph. Governance is not a separate ritual
-conducted in a parallel system — it is an operation of the company,
-recorded in the same session and event substrate as everything else.
+**Governance** is similarly first-class in the protocol model. Proposals are
+addressable ideas; votes are recorded events; outcomes can commit through an
+enabled governance module; effects propagate through the role graph. Governance
+is not a separate ritual conducted in a parallel system — it is an operation of
+the company, recorded in the same session and event substrate as everything
+else.
 
-**Treasury** sits in the same surface. Each TRUST holds funds on
-chain. Budgets are first-class primitives with their own directed graph
-and their own owner roles. Spend is gated through role authority and
-recorded as events. The chain enforces custody; the runtime enforces
-operational context.
+**Treasury** sits in the same surface when the module is enabled. Budgets are
+first-class operating objects with their own directed graph and owner roles.
+Spend is gated through role authority and recorded as events. The protocol layer
+can enforce custody; the runtime enforces operational context.
 
 The depth of these properties stages with the company. A two-person
 operating company exposes mostly the operational surface. A larger
@@ -342,7 +343,7 @@ companies build on, and infrastructure that capital can read from.
 | **1. Execution** | A company running on aeqi generates a machine-readable record of its work as the form the company takes, not as telemetry added on top. |
 | **2. Operating history** | The record exposes who did what under what authority. Opacity that historically made firms expensive to coordinate, audit, and trust is replaced by an observable substrate. |
 | **3. Inspectable authority** | Makes treasury, governance, and ownership more credible. A vote committing a budget against a role to fund a quest is an event in operating history, not a freestanding ritual. |
-| **4. Credibility** | Makes capital allocation more efficient. Due diligence shifts from reconstructing the firm from outside to reading it from inside. Information asymmetries that previously priced into capital cost shrink. |
+| **4. Credibility** | Can make capital allocation more efficient. Due diligence can shift from reconstructing the firm from outside to reading it from inside. Information asymmetries that previously priced into capital cost can shrink. |
 | **5. Capital** | Funds more execution. Capital allocated to credible companies produces more operating history, which expands the substrate, which makes the system more useful to the next company that adopts it. |
 
 The loop is recursive in the strong sense Katz and Shapiro (1985)
@@ -404,11 +405,11 @@ mechanisms mitigate but do not eliminate. *Underlying defense:*
 operational legibility — priced instruments diverge from value when
 value is unobservable.
 
-**Custody and signer compromise.** A TRUST holds funds and authority
-on chain. Compromised passkeys or smart-account bugs create direct loss
-vectors. *Mitigation:* passkey-native smart accounts with timelocked,
-constrained recovery via existing-signer veto; formal audit; the
-principle that recovery does not require operator custody.
+**Custody and signer compromise.** A protocol-enabled TRUST may hold funds and
+authority on chain. Compromised signers or smart-account bugs create direct loss
+vectors. *Mitigation:* scoped signer authority, constrained recovery, formal
+review before production value, and the principle that routine recovery should
+not require operator custody.
 
 **Foundation-model hallucination becoming operating truth.** Agents can
 produce wrong records. Operating truth is only useful if it is accurate.

@@ -1,8 +1,8 @@
 # Quickstart
 
 Self-hosted aeqi, running locally in under 5 minutes. For the hosted platform,
-see [MCP Integration](/reference/mcp) for Codex, Claude Code, and other MCP
-clients.
+start with [Getting started](/docs/getting-started/getting-started). MCP is a
+developer integration path after your TRUST exists.
 
 ## 1. Install
 

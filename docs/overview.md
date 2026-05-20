@@ -3,9 +3,9 @@
 aeqi creates TRUSTs: programmable companies for the agent economy.
 
 This page is the product overview. For the market thesis, read
-[Agent Economy](/agent-economy). For the long-arc manifesto, read
-[Programmable Capitalism](/programmable-capitalism). The docs explain how the
-product is structured and how to use it.
+[The agent economy](/blog/the-agent-economy). For the long-arc manifesto, read
+[Programmable capitalism](/blog/programmable-capitalism). The docs explain how
+the product is structured and how to use it.
 
 ## What aeqi creates
 

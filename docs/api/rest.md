@@ -1,6 +1,6 @@
 # REST API
 
-The aeqi platform exposes a REST API for entity management, authentication, billing, integrations, and the catch-all proxy that forwards `/api/*` into a Company's runtime.
+The aeqi platform exposes a REST API for TRUST management, authentication, billing, integrations, and the catch-all proxy that forwards `/api/*` into a TRUST runtime.
 
 ## Base URL
 
@@ -8,9 +8,9 @@ The aeqi platform exposes a REST API for entity management, authentication, bill
 |----------------|----------------------------------|--------------------------------------------------------|
 | Hosted         | `https://app.aeqi.ai/api`        | Platform control plane.                                |
 | Self-hosted    | `http://127.0.0.1:8443/api`      | Default platform port.                                 |
-| Tenant runtime | `http://127.0.0.1:8400+/api`     | Per-Company runtime; reached through the platform proxy, not directly. |
+| Tenant runtime | `http://127.0.0.1:8400+/api`     | Per-TRUST runtime; reached through the platform proxy, not directly. |
 
-`/api/*` routes are served by the platform binary (`aeqi-platform.service`). Anything not registered explicitly is forwarded through `routes::proxy::catch_all_proxy_handler` to the tenant runtime selected by the `X-Entity` header.
+`/api/*` routes are served by the platform binary (`aeqi-platform.service`). Anything not registered explicitly is forwarded through `routes::proxy::catch_all_proxy_handler` to the tenant runtime selected by `X-Trust` or a `trust` / `trust_id` query parameter.
 
 ## Authentication
 
@@ -20,12 +20,15 @@ Most endpoints require a JWT bearer token. The token is obtained from one of sev
 Authorization: Bearer <jwt>
 ```
 
-The `X-Entity` header selects which Company's runtime a proxied call routes to. It defaults to the user's primary entity, derived from JWT claims, but can be set explicitly to operate against any entity the caller has access to.
+The `X-Trust` header selects which TRUST runtime a proxied call routes to.
+Proxied runtime calls return `400` if no TRUST is supplied. Non-tenant platform
+routes such as login, billing, API keys, and `/api/trusts` do not need it.
 
 A small number of endpoints use other auth modes:
 
-- **API-key auth** — `/api/mcp` and `/api/mcp/validate` accept an `Authorization: Bearer ak_…` API key instead of a JWT.
-- **No auth** — `/api/companies/create` is currently programmatic genesis with no auth gate (see notes).
+- **MCP key auth** — `/api/mcp` and `/api/mcp/validate` require
+  `Authorization: Bearer sk_…`; `X-Api-Key: ak_…` is optional but recommended
+  so the platform can bind the call to the same user account.
 - **Signed OAuth state** — `/api/integrations/{provider}/callback` is reached by the user's browser after an OAuth provider redirect; the signed `state` token authenticates the call.
 - **Admin secret** — `/api/admin/*` requires the platform admin token, not a user JWT.
 
@@ -39,9 +42,12 @@ No auth required.
 
 ```
 GET /api/health
+GET /api/diagnostics/runtime-health
 ```
 
-Liveness check. Returns `{ "status": "ok" }`.
+`/api/health` is the liveness check and returns `{ "status": "ok" }`.
+`/api/diagnostics/runtime-health` exposes the runtime health summary used by
+operator and status surfaces.
 
 ### Authentication entry points
 
@@ -100,6 +106,15 @@ POST /api/auth/waitlist
 GET  /api/auth/waitlist/confirm
 ```
 
+Email unsubscribe:
+
+```
+GET  /unsubscribe
+POST /unsubscribe
+```
+
+The signed token in the unsubscribe URL is the credential for that endpoint.
+
 ### Solana welcome flow
 
 Mounted only when `AEQI_SOLANA_RPC` is configured. Used by the `/welcome` onboarding shell, which provisions a Solana custodial signer alongside the platform identity.
@@ -147,7 +162,7 @@ GET /api/blueprints
 GET /api/blueprints/{slug}
 ```
 
-Public, no `X-Entity` required. The catalog is platform-shared static content.
+Public, no `X-Trust` required. The catalog is platform-shared static content.
 
 ### Spawn (proxied)
 
@@ -156,7 +171,7 @@ POST /api/blueprints/spawn
 POST /api/blueprints/spawn-into
 ```
 
-Registered in the public router so they shadow `/api/blueprints/{slug}`; the catch-all proxy forwards them to the per-Company orchestrator selected by `X-Entity`.
+Registered in the public router so they shadow `/api/blueprints/{slug}`; the catch-all proxy forwards them to the per-TRUST orchestrator selected by `X-Trust`.
 
 ### Economy + public profiles
 
@@ -164,9 +179,12 @@ Registered in the public router so they shadow `/api/blueprints/{slug}`; the cat
 GET /api/economy/list
 GET /api/public/entities/{slug}
 GET /api/public/trust/{address}
+GET /api/public/status/walks
 ```
 
 `/api/economy/list` returns every TRUST whose placement has `public=true`, with on-chain TRUST address — drives `/economy`. `/api/public/entities/{slug}` returns the public profile JSON for a TRUST that has `public=true`; returns 404 for private workspaces (indistinguishable from non-existent). `/api/public/trust/{address}` returns the public composite viewer payload for an on-chain TRUST address when the linked workspace is public.
+`/api/public/status/walks` returns recent public walk status rows for the
+landing status surface.
 
 ### Role invitations
 
@@ -180,62 +198,16 @@ Resolves a role-invitation token to its details. Public so an unauth recipient c
 
 ```
 POST /api/mcp
-GET  /api/mcp
-DELETE /api/mcp
 POST /api/mcp/validate
 ```
 
-The first three accept an MCP JSON-RPC request and return its response. `/api/mcp/validate` echoes back which actor + entity an API key resolves to. Auth is an `Authorization: Bearer ak_…` API key; no user JWT.
+`POST /api/mcp` accepts an MCP JSON-RPC request and returns its response.
+`/api/mcp/validate` echoes back which actor and TRUST a key resolves to. Auth is
+`Authorization: Bearer sk_…`; pass `X-Api-Key: ak_…` as well when binding the
+call to a user account. `GET` and `DELETE` are not callable MCP transports on
+the hosted platform today.
 
 See [MCP](/reference/mcp) for the tool surface.
-
-### Company genesis
-
-```
-POST /api/companies/create
-POST /api/solana/companies/create
-```
-
-Provisions a TRUST on Solana for a given `company_id`. Idempotent on the deterministic trust PDA — repeating the call against an existing `company_id` returns the same trust without re-spawning. Currently has **no auth gate**: the planned x402-USDC payment header is not yet enforced on this path.
-
-**Request:**
-
-```json
-{
-  "company_id": "stable-id-string",
-  "trust_id_hex": "0x...optional 32-byte hex; omit for SHA-256 of company_id"
-}
-```
-
-**Response (200):**
-
-```json
-{
-  "company_id": "...",
-  "trust_id_hex": "0x...",
-  "trust_pubkey_b58": "...",
-  "authority_pubkey_b58": "...",
-  "already_existed": false,
-  "create_signature_b58": "...",
-  "role_init_signature_b58": "...",
-  "token_init_signature_b58": "...",
-  "governance_init_signature_b58": "...",
-  "role_module_pda_b58": "...",
-  "token_module_pda_b58": "...",
-  "governance_module_pda_b58": "...",
-  "role_module_state_pda_b58": "...",
-  "token_module_state_pda_b58": "...",
-  "governance_module_state_pda_b58": "..."
-}
-```
-
-**Errors:**
-
-- `400 Bad Request` — invalid `trust_id_hex`.
-- `502 Bad Gateway` — the custodial signer for `company_id` could not be provisioned or funded.
-- `500 Internal Server Error` — the Solana wallet service is misconfigured or unreachable.
-
-The endpoint is mounted only when the platform has been started with a working Solana wallet service (`AEQI_SOLANA_RPC` set). Without it, both routes return 404.
 
 ### LLM proxy
 
@@ -247,7 +219,8 @@ Forwards OpenAI-compatible chat traffic to the upstream LLM provider configured 
 
 ## Authenticated Endpoints
 
-Require a valid JWT bearer. Specific endpoints additionally require a Company context via `X-Entity`.
+Require a valid JWT bearer. Proxied runtime endpoints additionally require a
+TRUST context via `X-Trust` or `trust` / `trust_id`.
 
 ### Account
 
@@ -264,9 +237,13 @@ POST /api/auth/sessions/revoke-others
 GET  /api/auth/invite-codes
 POST /api/auth/invite-codes
 GET  /api/admin/overview
+GET  /api/account/notifications
+POST /api/account/notifications/stop
+POST /api/account/notifications/resume
 ```
 
 `/api/admin/overview` is the *user-facing* admin view (returns 200 only if the caller is a platform admin); it is not part of the admin secret-guarded surface below.
+The notification routes expose and update the user's channel suppression state.
 
 ### Email change
 
@@ -306,9 +283,13 @@ POST /api/billing/switch-to-usdc
 
 Subscription and payment management via Stripe (USD or USDC).
 
-### Companies (entities)
+### TRUSTs and legacy entity aliases
 
 ```
+GET    /api/trusts
+POST   /api/trusts
+DELETE /api/trusts/{trust_id}
+PUT    /api/trusts/{trust_id}
 GET    /api/entities
 POST   /api/entities
 DELETE /api/entities/{name}
@@ -321,13 +302,15 @@ POST   /api/roots
 DELETE /api/roots/{name}
 ```
 
-`/api/roots/*` is a legacy alias for `/api/entities/*` — both call the same handlers. New code should use `/api/entities`.
+`/api/trusts` is the canonical user-owned TRUST collection. `/api/entities/*`
+and `/api/roots/*` are legacy aliases for older clients.
 
 ### /start launch
 
 ```
 POST /api/start/launch
 POST /api/start/check-name
+GET  /api/start/launch/status/{trust_id}
 ```
 
 `launch` provisions a personal Company via the `/start` experience. Gated by subscription status (`subscription_required` HTTP 402 if missing) and a workspace cap of 10 companies per user (`workspace_cap_exceeded` HTTP 402; admins exempt).
@@ -356,6 +339,44 @@ POST /api/start/check-name
 ```
 
 Placement provisioning (sandbox / host / VPS) proceeds async; poll the placement until its `status` flips from `pending` to `ready`. `check-name` returns whether a display name is available for the caller.
+
+### Runtime provisioning
+
+```
+POST /api/runtime/provision
+POST /api/runtime/provision-treasury
+GET  /api/runtime/status
+```
+
+Provision attaches managed runtime capacity to a TRUST. The Stripe and treasury
+paths converge on the same placement lifecycle; `status` reads the live
+placement and service state.
+
+### Solana and protocol routes
+
+Mounted only when the relevant Solana services are configured.
+
+```
+POST /api/companies/create
+POST /api/solana/companies/create
+POST /api/solana/first-buy
+POST /api/solana/curve-sell
+POST /api/solana/token-mint
+POST /api/solana/token-burn
+POST /api/solana/token-transfer
+POST /api/solana/vesting-create
+POST /api/solana/budget-module-init
+POST /api/solana/budget-create
+POST /api/solana/funding-module-init
+POST /api/solana/funding-request-create
+GET  /api/curves/{trust_id}/state
+```
+
+These authenticated routes back staged protocol modules: genesis, first-buy,
+curves, token operations, vesting, budgets, and funding requests. Treat them as
+deployment-dependent protocol surfaces, not baseline hosted-app requirements.
+Normal hosted users create TRUSTs through `/api/trusts` or `/api/start/launch`;
+protocol genesis is for Solana-enabled deployments.
 
 ### Architect deploy
 
@@ -402,18 +423,33 @@ Manage custom domains for Company runtimes.
 ### Role invitations
 
 ```
-POST /api/entities/{entity_id}/roles/{role_id}/invitations
-GET  /api/entities/{entity_id}/invitations
+POST /api/trusts/{trust_id}/roles/{role_id}/invitations
+GET  /api/trusts/{trust_id}/invitations
+POST /api/entities/{trust_id}/roles/{role_id}/invitations
+GET  /api/entities/{trust_id}/invitations
 POST /api/invitations/{token}/accept
 POST /api/invitations/{token}/decline
 GET  /api/me/directed-entities
 ```
 
-Invite users to roles within an entity; accept or decline. `/api/me/directed-entities` lists every entity the caller has been granted directed access to.
+Invite users to roles within a TRUST; accept or decline. `/api/trusts/*` is the
+canonical surface. `/api/entities/*` is the legacy alias. `/api/me/directed-entities`
+lists every entity the caller has been granted directed access to.
+
+### Identity resolver
+
+```
+GET /api/identity/resolve
+```
+
+Authenticated batch lookup for public keys into known identity records. The
+batch size is capped by the platform resolver.
 
 ## Proxied Runtime Endpoints
 
-Everything under `/api/*` that is not explicitly listed above is forwarded by `catch_all_proxy_handler` to the runtime selected by `X-Entity`. Examples handled this way:
+Everything under `/api/*` that is not explicitly listed above is forwarded by
+`catch_all_proxy_handler` to the runtime selected by `X-Trust` or `trust` /
+`trust_id`. Examples handled this way:
 
 ```
 GET    /api/agents
@@ -432,15 +468,17 @@ A few proxied paths have platform-side specialisation registered explicitly so t
 - `GET /api/chat/stream` — server-sent events / WebSocket stream proxy.
 - `GET /api/ideas/{id}/comments` — proxies the runtime reply but injects user display names from the platform user table.
 - `GET /api/roles`, `GET /api/roles/{id}` — proxies and patches `occupant_name` for human occupants.
-- `ANY /api/inbox/__probe__/dismiss` — short-circuits to 204; reachability probe, never forwarded.
 
 ### Runtime ideas surface
 
-The runtime registers the following routes under `/api/ideas/*`. Use them through the platform proxy with `X-Entity` set, not directly against the per-tenant runtime port.
+The runtime registers the following routes under `/api/ideas/*`. Use them
+through the platform proxy with `X-Trust` set, not directly against the
+per-tenant runtime port.
 
 ```
 GET    /api/ideas                       List visible ideas (query: agent_id?)
 POST   /api/ideas                       Create or supersede an idea
+POST   /api/ideas/files                 Upload a root file-backed Idea
 GET    /api/ideas/search                Hybrid BM25 + vector search
 GET    /api/ideas/prefix                Prefix-match for autocomplete
 POST   /api/ideas/by-ids                Batch fetch by id list
@@ -449,6 +487,7 @@ GET    /api/ideas/graph                 Adjacency view for the graph renderer
 POST   /api/ideas/seed                  Bulk insert seed ideas (blueprint apply)
 PUT    /api/ideas/{id}                  Update name / content / tags
 DELETE /api/ideas/{id}                  Delete (fails 409 if a quest still references it)
+POST   /api/ideas/{id}/files            Upload a file-backed child Idea
 GET    /api/ideas/{id}/edges            Edges incident to one idea
 POST   /api/ideas/{id}/edges            Add a typed edge
 DELETE /api/ideas/{id}/edges            Remove a typed edge
@@ -458,6 +497,12 @@ POST   /api/ideas/{id}/subscribe        Subscribe the caller to comment notifica
 GET    /api/ideas/{id}/children         List children (Tables Phase 2)
 PUT    /api/ideas/{id}/properties       Update typed properties bag
 ```
+
+File uploads use `multipart/form-data`. The required fields are `agent_id` and
+`file`; optional fields are `scope` and, for root uploads, the parentless route
+`/api/ideas/files`. The child route sets `parent_idea_id` from the path and
+forwards both forms to the runtime `files_upload` IPC verb, which creates an
+Idea wrapper for the artifact.
 
 `link`, `feedback`, and `walk` are MCP-only verbs — there are no REST routes for them. The MCP dispatcher rewrites them into IPC commands (`link_idea`, `feedback_idea`, `walk_ideas`).
 

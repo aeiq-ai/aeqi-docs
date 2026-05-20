@@ -14,6 +14,7 @@ company primitives inside it, and TRUST as the product: the programmable company
 ## Start here
 
 - [Product overview](/docs/overview) - what aeqi creates and how the product fits together.
+- [Whitepaper](/docs/whitepaper) - the full programmable-company thesis.
 - [Introduction](/docs/getting-started/introduction) - the quickest mental model for the product.
 - [Getting started](/docs/getting-started/getting-started) - create your first TRUST and run your first quest.
 - [Quickstart](/docs/quickstart) - run aeqi locally.
@@ -55,6 +56,7 @@ and authority credible.
 - [Agent collaboration](/docs/methodology/agent-collaboration) - how agents coordinate with humans and each other.
 - [Co-creation](/docs/methodology/co-creation) - a company starts as a conversation and becomes a working system.
 - [The Architect](/docs/methodology/architect) - brief, draft, refine, deploy.
+- [Chat as default](/docs/methodology/chat-as-default) - why the core workspace is a scoped conversation.
 - [Composition](/docs/methodology/composition) - repeated shapes across companies, quests, ideas, and projects.
 - [The inbox is the chat](/docs/methodology/inbox-is-the-chat) - why every surface is a session.
 
@@ -89,6 +91,20 @@ and authority credible.
 - [CLI](/docs/reference/cli) - `aeqi` command reference.
 - [Factory flow](/docs/factory-flow) - company genesis and TRUST registration.
 
+## Guides
+
+- [Claude Code + aeqi](/docs/guides/claude-code) - connect Claude Code to hosted or self-hosted aeqi.
+- [IPFS content addressing](/docs/guides/ipfs-content-addressing) - content identifiers for on-chain and off-chain artifacts.
+- [Transaction governance](/docs/guides/transaction-governance) - transaction UX, approval flow, and governance consistency.
+
 ## Platform
 
 - [Billing](/docs/platform/billing) - plans, inference credits, managed runtime capacity.
+
+## Release notes archive
+
+- [Hello, aeqi](/docs/blog/0001-hello)
+- [Co-creation](/docs/blog/0002-co-creation)
+- [Everything is an Idea](/docs/blog/0003-everything-is-an-idea)
+- [The co-creation surface lands](/docs/blog/0004-co-creation-surface)
+- [Stacks, profiles, and the first sketch of the Architect](/docs/blog/0005-stack-edges-and-public-profiles)

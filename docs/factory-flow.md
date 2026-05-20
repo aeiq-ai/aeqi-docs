@@ -3,7 +3,7 @@
 The Factory is the core on-chain component for creating TRUSTs, funds, and company entities in aeqi. It is a multi-stage wizard for creating programmable companies with proper governance, vesting, and funding structures.
 
 **Companion docs:**
-- [TRUST](/trust) - the programmable company registered on-chain.
+- [TRUST](/docs/concepts/trust) - the programmable company registered on-chain.
 - [Canonical templates](/docs/architecture/canonical-templates) - the four locked TRUST archetypes.
 
 ## Architecture Philosophy

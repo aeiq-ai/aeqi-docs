@@ -120,6 +120,6 @@ The retired `aeqi-runtime.service` is no longer used — its responsibilities sp
 ## Related
 
 - [Runtime](/docs/architecture/runtime)
-- [TRUST](/trust) — programmable company
+- [TRUST](/docs/concepts/trust) — programmable company
 - [REST API](/docs/api/rest)
 - [Authentication](/docs/api/authentication)
