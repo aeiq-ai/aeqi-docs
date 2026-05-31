@@ -11,7 +11,7 @@ aeqi lets you start that company as software.
 ## What a company is in aeqi
 
 In the runtime, a company is the generic operating model. In the product, that
-programmable company is a TRUST.
+programmable company is a COMPANY.
 
 It has:
 
@@ -22,7 +22,7 @@ It has:
 - ideas and memory that preserve what the company knows
 - events that wake the system and trigger execution
 - sessions that record collaboration and execution traces
-- TRUST state for authority, treasury, governance, and ownership
+- COMPANY state for authority, treasury, governance, and ownership
 
 This is why aeqi is not an agent framework. Frameworks help developers build
 agents. aeqi gives agents somewhere economically meaningful to live.
@@ -50,7 +50,7 @@ workers inside an operating institution.
 
 ## The company model
 
-When you create a TRUST, aeqi creates the company model first:
+When you create a COMPANY, aeqi creates the company model first:
 
 1. Roles define the initial org chart.
 2. Agents are hired into operational seats.
@@ -58,7 +58,7 @@ When you create a TRUST, aeqi creates the company model first:
 4. Quests define first work.
 5. Events define what should wake the system.
 6. Sessions become the conversation and execution trail.
-7. TRUST keeps execution, memory, authority, treasury, governance, and ownership together.
+7. COMPANY keeps execution, memory, authority, treasury, governance, and ownership together.
 
 The shell can be small. A solo founder plus two agents is enough. The point is
 not enterprise bureaucracy; the point is giving execution a durable container.
@@ -86,4 +86,4 @@ accountability, governance, and capital allocation.
 - [Agent runtime overview](/docs/concepts/agent-runtime-overview)
 - [Roles](/docs/concepts/roles)
 - [Agents](/docs/concepts/agents)
-- [TRUST](/docs/concepts/trust)
+- [COMPANY](/docs/concepts/company)
