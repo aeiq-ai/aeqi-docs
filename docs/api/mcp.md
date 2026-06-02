@@ -1,32 +1,48 @@
 # MCP Integration
 
-aeqi exposes your TRUST as a Model Context Protocol server. Once a TRUST exists,
-Codex, Claude Code, and other MCP clients can use the same TRUST context the
-dashboard uses: Ideas, Quests, Agents, Events, code intelligence, and runtime
-state.
+aeqi exposes your Company as a Model Context Protocol server. Once a Company
+exists, Codex, Claude Code, and other MCP clients can use the same operating
+context the dashboard uses: Ideas, Quests, Agents, Events, Sessions, code
+intelligence, browser evidence, and runtime state.
 
 The important distinction: aeqi is not just another tool server. The MCP is the
-working surface for the TRUST. Codex can search memory before editing, file
-Quests for non-trivial work, inspect the code graph before changing APIs, and
-store durable lessons back into the TRUST when the work is done.
+working surface for the Company. Codex can search memory before editing, file
+Quests for non-trivial work, inspect the code graph before changing APIs,
+delegate to runtime agents, and store durable lessons back into Company memory
+when the work is done.
+
+## Surface Role
+
+Use MCP when an AI client should operate aeqi directly:
+
+| Need | MCP gives the client |
+|---|---|
+| Memory | Search, store, update, link, and walk Ideas. |
+| Work ledger | Create, inspect, update, close, and cancel Quests. |
+| Runtime agents | Inspect, hire, retire, and delegate work to Agents. |
+| Automation | Create, inspect, enable, disable, and trace Events. |
+| Code intelligence | Search symbols, inspect context, compute impact, and refresh indexes. |
+| Browser evidence | Capture page snapshots and screenshots into Company evidence stores. |
+
+REST is for application integration. MCP is for AI operators.
 
 ## What Runs Where
 
 For hosted aeqi, `aeqi mcp` is a client process. Your MCP client starts it over
 stdio, and the process authenticates to the platform, validates the selected
-TRUST, then routes tool calls into that TRUST's managed runtime.
+Company runtime, then routes tool calls into that managed runtime.
 
 It does not start the hosted runtime. The runtime already exists in aeqi. The
-CLI is the bridge between your local AI client and the TRUST runtime.
+CLI is the bridge between your local AI client and the Company runtime.
 
 For self-hosted aeqi, you run the runtime yourself with `aeqi start`, then run
 `aeqi mcp` against that local config and socket.
 
 ## Identity Model
 
-Hosted MCP normally acts as the authenticated user inside the selected TRUST:
+Hosted MCP normally acts as the authenticated user inside the selected Company:
 
-- `AEQI_SECRET_KEY` (`sk_...`) selects and authenticates the TRUST runtime.
+- `AEQI_SECRET_KEY` (`sk_...`) selects and authenticates the underlying runtime.
 - `AEQI_API_KEY` (`ak_...`) binds the call to your user account.
 - `AEQI_AGENT` is only a client hint for logs and context. It is not your
   account identity and does not make Quests agent-owned.
@@ -37,7 +53,7 @@ You do not need to become an aeqi agent to use Ideas, Quests, Events, or the cod
 graph. Use explicit `agent` or `agent_id` arguments only when you want to inspect
 an agent, hire an agent, retire an agent, or delegate work to one.
 
-`quests(action='list')` is scoped to the selected TRUST runtime by default and
+`quests(action='list')` is scoped to the selected Company runtime by default and
 silently drops cross-runtime `scope: "global"` quests, even when `project` is
 passed. If you have a specific quest ID, resolve it with
 `quests(action='show', quest_id='…')` rather than trusting an empty list result.
@@ -45,13 +61,13 @@ passed. If you have a specific quest ID, resolve it with
 ## Requirements
 
 - A hosted aeqi account at [app.aeqi.ai](https://app.aeqi.ai).
-- At least one TRUST already created.
+- At least one Company already created.
 - An account key (`ak_...`) from [Account -> API](https://app.aeqi.ai/account?tab=api).
-- A secret key (`sk_...`) from the TRUST API keys page.
+- A secret key (`sk_...`) from the Company API keys page.
 - The `aeqi` CLI on your `PATH`, or an absolute path to the `aeqi` binary.
 - Codex or another MCP-compatible client.
 
-The `sk_...` key selects and authenticates the TRUST runtime. The `ak_...` key
+The `sk_...` key selects and authenticates the runtime. The `ak_...` key
 binds the call to your user account and should be supplied for hosted use. See
 [Authentication](/docs/api/authentication) for creation and rotation.
 
@@ -90,8 +106,9 @@ trust_level = "trusted"
 ```
 
 That setting only tells Codex it may work in the local repository. It does not
-authenticate to aeqi and it is not the same thing as an aeqi TRUST. The aeqi
-connection comes from the MCP server and the `ak_...` / `sk_...` keys.
+authenticate to aeqi and it is not the same thing as an aeqi Company or runtime
+selector. The aeqi connection comes from the MCP server and the `ak_...` /
+`sk_...` keys.
 
 ## Claude Code Setup
 
@@ -134,7 +151,7 @@ Expected result:
 
 - `ok: true`
 - a `mode` such as `platform`
-- an `entity_id` for the TRUST runtime, where the API still exposes that wire name
+- an `entity_id` for the runtime, where the API still exposes that wire name
 - runtime connection details
 
 Then ask Codex to search memory:
@@ -144,7 +161,7 @@ ideas(action='search', query='project operating rules', limit=5)
 ```
 
 If that returns results or an empty successful response, Codex is connected to
-the TRUST and can use the MCP during work.
+the Company runtime and can use the MCP during work.
 
 ## Operating Loop For Codex
 
@@ -167,7 +184,7 @@ blank chat.
 
 ## Common User Stories
 
-### Work as yourself with TRUST memory
+### Work as yourself with Company memory
 
 Use this when Codex or Claude Code is doing work in a repository and should
 remember decisions across sessions:
@@ -178,8 +195,8 @@ ideas(action='search', query='deployment rules for this project', limit=5)
 quests(action='create', subject='Fix staging deploy health check')
 ```
 
-The client is acting as your authenticated account in the TRUST. The Quest is
-TRUST/user-scoped unless you pass an agent.
+The client is acting as your authenticated account in the Company runtime. The
+Quest is user-scoped unless you pass an agent.
 
 ### Delegate to an existing agent
 
@@ -201,7 +218,7 @@ runtime with its role, memory, tools, and event handlers.
 
 ### Hire a new agent, then give it work
 
-Use this when the TRUST needs a new persistent worker:
+Use this when the Company needs a new persistent worker:
 
 ```text
 agents(action='hire', template='analyst')
@@ -229,7 +246,7 @@ ideas(action='store', name='auth/redirect-invariant', tags=['auth', 'procedure']
 quests(action='close', quest_id='67-123', result='Fixed redirect regression and verified tests.')
 ```
 
-The client remains Codex or Claude Code. aeqi supplies the durable TRUST
+The client remains Codex or Claude Code. aeqi supplies the durable Company
 context, execution ledger, agents, and code graph.
 
 ## Tool Catalog
@@ -245,7 +262,7 @@ Codex may display those tools with the MCP server prefix. For example, raw
 
 | Tool | Actions | Use it for |
 |---|---|---|
-| `me` | `profile`, `permissions` | Confirm the authenticated user, TRUST runtime, and grants. |
+| `me` | `profile`, `permissions` | Confirm the authenticated user, Company runtime, and grants. |
 | `ideas` | `store`, `search`, `update`, `delete`, `link`, `feedback`, `walk` | Durable memory, decisions, procedures, strategy, and graph-linked knowledge. |
 | `quests` | `create`, `list`, `show`, `update`, `close`, `cancel` | Work tracking, handoff, audit trail, and completion records. |
 | `agents` | `get`, `hire`, `retire`, `list`, `projects` | Runtime workers, delegation targets, and project registry. |
@@ -288,7 +305,7 @@ This is **intentional**: graph-mutation and feedback verbs are operator/MCP-driv
 
 ## Examples
 
-Search TRUST memory before changing behavior:
+Search Company memory before changing behavior:
 
 ```text
 ideas(action='search', query='authentication patterns token rotation', limit=5)
@@ -336,7 +353,7 @@ quests(
 
 | Variable | Required | Default | Description |
 |---|---:|---|---|
-| `AEQI_SECRET_KEY` | Hosted | - | TRUST secret key (`sk_...`) for the TRUST runtime. |
+| `AEQI_SECRET_KEY` | Hosted | - | Secret key (`sk_...`) for the selected Company runtime. |
 | `AEQI_API_KEY` | Hosted | - | Account key (`ak_...`) that binds calls to your user account. |
 | `AEQI_PLATFORM_URL` | Hosted | - | Hosted platform URL, for example `https://app.aeqi.ai`. Set this explicitly for hosted use. |
 | `AEQI_CONFIG` | Self-hosted | - | Path to a local `aeqi.toml` when not using hosted keys. |
@@ -381,8 +398,8 @@ args = ["--config", "/path/to/aeqi.toml", "mcp"]
 | Symptom | Check |
 |---|---|
 | Codex does not show any aeqi tools | Restart Codex after editing `~/.codex/config.toml`; confirm the table name is `[mcp_servers.aeqi]`. |
-| Authentication fails | Confirm `AEQI_SECRET_KEY` starts with `sk_...`, belongs to the selected TRUST, and has not been revoked. |
-| Calls authenticate but show the wrong context | Confirm `AEQI_API_KEY` is the account key for the same user and that the secret key was created under the intended TRUST. |
+| Authentication fails | Confirm `AEQI_SECRET_KEY` starts with `sk_...`, belongs to the selected Company runtime, and has not been revoked. |
+| Calls authenticate but show the wrong context | Confirm `AEQI_API_KEY` is the account key for the same user and that the secret key was created under the intended Company. |
 | `aeqi` is not found | Use an absolute `command` path in the Codex config. |
 | Self-hosted calls cannot connect | Confirm `aeqi start` is running and `AEQI_CONFIG` points at the same runtime config. |
 

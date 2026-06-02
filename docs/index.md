@@ -21,6 +21,21 @@ This documentation explains the product from three angles:
 - [Getting started](/docs/getting-started/getting-started) - create your first Company and run your first quest.
 - [Quickstart](/docs/quickstart) - run aeqi locally.
 
+## Four access surfaces
+
+aeqi is one Company OS with four ways in:
+
+| Surface | Use it when | Start here |
+|---|---|---|
+| **App** | You want to launch a Company, work with agents, review sessions, manage roles, and inspect operating state visually. | [Getting started](/docs/getting-started/getting-started) |
+| **API** | You want HTTP control over platform, runtime, billing, integrations, inference, and Company operations. | [REST API](/docs/api/rest) |
+| **MCP** | You want Codex, Claude Code, or another AI client to use Company memory, quests, agents, events, code intelligence, and browser evidence as tools. | [MCP](/reference/mcp) |
+| **CLI** | You want terminal chat, local self-hosting, or a stdio bridge for AI clients. | [CLI](/docs/reference/cli) |
+
+The surfaces are not separate products. They all operate the same Company
+context: roles, agents, quests, ideas, events, sessions, memory, tools, and
+authority.
+
 ## Core model
 
 The Company is the product surface. The runtime primitives are deliberately

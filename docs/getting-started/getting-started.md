@@ -4,6 +4,11 @@ Create your first Company on aeqi, meet the agents that come with it, send your 
 
 About 10 minutes end to end.
 
+This is the **App** path. Use it when you want to launch a Company visually,
+meet the first agent, and see Quests, Ideas, Events, and Sessions appear in the
+dashboard. For other entry points, use [REST API](/docs/api/rest), [MCP](/reference/mcp),
+or [CLI](/docs/reference/cli).
+
 ## 1. Sign up
 
 Go to [aeqi.ai](https://aeqi.ai) and click **Request access**.
@@ -112,6 +117,12 @@ If the agent hits a question it can't answer alone, it `message_to`'s you in the
 You've used the four operating primitives and the supporting structures around
 them. From here:
 
+- **Use the CLI.** Run [aeqi chat or a local runtime](/docs/reference/cli) from
+  your terminal.
+- **Connect an AI client.** Configure [MCP](/reference/mcp) so Codex, Claude
+  Code, or another client can use Company memory and quests.
+- **Integrate over HTTP.** Use the [REST API](/docs/api/rest) for platform and
+  runtime operations.
 - **Add a board member.** Roles tab → **+ Add role** → assign Director. On-chain registration and assignment are optional deployment features, not required to use the runtime.
 - **Hire another agent.** Agents row → hover **+** → pick a template (researcher, reviewer, sales). The agent gets a charter, a role, and starts running.
 - **Schedule an event.** Events tab → **+ New event** → "Daily standup at 09:00." The event fires a recurring Quest.

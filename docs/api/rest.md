@@ -5,13 +5,19 @@ billing, integrations, and the catch-all proxy that forwards `/api/*` into a
 Company runtime. Lower-level headers and routes still use `trust` / `X-Trust`
 as the runtime selection term.
 
+Use the REST API when software needs to operate aeqi over HTTP: account flows,
+Company launch, runtime provisioning, integrations, billing, public profiles,
+inference, and proxied runtime operations. Use [MCP](/reference/mcp) when an AI
+client should operate Company memory, quests, agents, events, and code
+intelligence as tools.
+
 ## Base URL
 
 | Environment    | URL                              | Notes                                                  |
 |----------------|----------------------------------|--------------------------------------------------------|
 | Hosted         | `https://app.aeqi.ai/api`        | Platform control plane.                                |
 | Self-hosted    | `http://127.0.0.1:8443/api`      | Default platform port.                                 |
-| Tenant runtime | `http://127.0.0.1:8400+/api`     | Per-TRUST runtime; reached through the platform proxy, not directly. |
+| Tenant runtime | `http://127.0.0.1:8400+/api`     | Per-Company runtime; reached through the platform proxy, not directly. |
 
 `/api/*` routes are served by the platform binary (`aeqi-platform.service`). Anything not registered explicitly is forwarded through `routes::proxy::catch_all_proxy_handler` to the tenant runtime selected by `X-Trust` or a `trust` / `trust_id` query parameter.
 
@@ -23,8 +29,8 @@ Most endpoints require a JWT bearer token. The token is obtained from one of sev
 Authorization: Bearer <jwt>
 ```
 
-The `X-Trust` header selects which TRUST runtime a proxied call routes to.
-Proxied runtime calls return `400` if no TRUST is supplied. Non-tenant platform
+The `X-Trust` header selects which Company runtime a proxied call routes to.
+Proxied runtime calls return `400` if no runtime is supplied. Non-tenant platform
 routes such as login, billing, API keys, and `/api/trusts` do not need it.
 
 A small number of endpoints use other auth modes:
@@ -230,7 +236,7 @@ Forwards OpenAI-compatible chat traffic to the upstream LLM provider configured 
 ## Authenticated Endpoints
 
 Require a valid JWT bearer. Proxied runtime endpoints additionally require a
-TRUST context via `X-Trust` or `trust` / `trust_id`.
+Company runtime context via `X-Trust` or `trust` / `trust_id`.
 
 ### Account
 

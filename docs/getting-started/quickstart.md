@@ -4,6 +4,15 @@ Self-hosted aeqi, running locally in under 5 minutes. For the hosted platform,
 start with [Getting started](/docs/getting-started/getting-started). MCP is a
 developer integration path after your Company exists.
 
+The local quickstart starts all four surfaces on your machine:
+
+| Surface | Local entry |
+|---|---|
+| **App** | Embedded dashboard at `http://127.0.0.1:8400` |
+| **API** | Local REST API mounted by `aeqi start` |
+| **MCP** | `aeqi mcp` against the local runtime socket |
+| **CLI** | `aeqi setup`, `aeqi start`, `aeqi chat`, `aeqi assign`, and related commands |
+
 ## 1. Install
 
 Install script (Linux, macOS, WSL):
@@ -59,5 +68,7 @@ Sign in and hire your first agent.
 
 - [Concepts: Agents](/docs/concepts/agents) — the agent tree and identity model
 - [Concepts: Quests](/docs/concepts/quests) — how work gets dispatched
+- [CLI](/docs/reference/cli) — terminal chat, local runtime, and MCP bridge
+- [REST API](/docs/api/rest) — hosted and self-hosted HTTP surfaces
 - [MCP Integration](/reference/mcp) — drive your hosted Company from Codex, Claude Code, or another MCP client
 - [Claude Code + aeqi](/docs/guides/claude-code) — Claude-specific setup and hooks

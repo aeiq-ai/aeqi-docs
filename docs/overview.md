@@ -50,6 +50,21 @@ That loop is the practical surface of aeqi:
 intent -> execution -> memory -> accountability -> authority
 ```
 
+## Four access surfaces
+
+aeqi exposes the same Company through four surfaces:
+
+| Surface | What it is | Why it matters |
+|---|---|---|
+| **App** | The hosted dashboard for launching a Company, managing agents, roles, quests, ideas, events, sessions, integrations, and runtime state. | Humans need a calm operating surface, not only an API key. |
+| **API** | REST and inference endpoints for account, runtime, integration, billing, Company, and model operations. | Software systems need stable contracts, auth, idempotency, and auditability. |
+| **MCP** | A tool bridge for AI clients such as Codex and Claude Code. | AI agents need Company memory, quest tracking, code intelligence, and durable lessons while they work. |
+| **CLI** | The `aeqi` terminal client and local runtime entry point. | Operators need chat, self-hosting, scripting, and a stdio MCP bridge from the shell. |
+
+This is the difference between a primitive API and a Company OS. A primitive API
+exposes actions. aeqi gives those actions a Company context: role, authority,
+quest, session trace, memory, event history, and operating outcome.
+
 ## Why it matters
 
 Agents make execution faster. Faster execution makes company drift more
@@ -78,4 +93,6 @@ an owner, and a place in the company's operating history.
 - [Getting started](/docs/getting-started/getting-started)
 - [Company](/docs/concepts/company)
 - [Agent runtime overview](/docs/concepts/agent-runtime-overview)
+- [CLI](/docs/reference/cli)
+- [MCP](/reference/mcp)
 - [TRUST](/docs/concepts/trust)
