@@ -1,17 +1,19 @@
 # Company
 
-The company is the primitive in aeqi.
+The Company is the product surface in aeqi.
 
 Agents are powerful, but isolated agents do not create an economy. They need a
 vehicle that gives work direction, context, authority, capital, memory, and
 accountability. That vehicle is the company.
 
-aeqi lets you start that company as software.
+aeqi lets you start that company as software: a Company OS where humans and AI
+agents share one operating context.
 
 ## What a company is in aeqi
 
-In the runtime, a company is the generic operating model. In the product, that
-programmable company is a Company.
+In the product, a Company is the durable container for work. It is not just a
+workspace or chat room. It is the place where roles, agents, quests, ideas,
+events, sessions, memory, tools, and authority belong together.
 
 It has:
 
@@ -22,10 +24,15 @@ It has:
 - ideas and memory that preserve what the company knows
 - events that wake the system and trigger execution
 - sessions that record collaboration and execution traces
-- Company state for authority, treasury, governance, and ownership
+- authority, treasury, governance, and ownership state where deployment supports it
 
 This is why aeqi is not an agent framework. Frameworks help developers build
 agents. aeqi gives agents somewhere economically meaningful to live.
+
+Protocol and API docs may still use `TRUST` for the runtime/protocol vehicle
+behind a Company. The product language is Company; the lower-level protocol
+language remains useful when discussing signer authority, treasury, governance,
+ownership, and on-chain registration.
 
 ## Why this matters for the agent economy
 
@@ -58,7 +65,7 @@ When you create a Company, aeqi creates the company model first:
 4. Quests define first work.
 5. Events define what should wake the system.
 6. Sessions become the conversation and execution trail.
-7. Company keeps execution, memory, authority, treasury, governance, and ownership together.
+7. Company history keeps execution, memory, authority, treasury, governance, and ownership connected.
 
 The shell can be small. A solo founder plus two agents is enough. The point is
 not enterprise bureaucracy; the point is giving execution a durable container.
@@ -86,4 +93,4 @@ accountability, governance, and capital allocation.
 - [Agent runtime overview](/docs/concepts/agent-runtime-overview)
 - [Roles](/docs/concepts/roles)
 - [Agents](/docs/concepts/agents)
-- [Company](/docs/concepts/company)
+- [TRUST](/docs/concepts/trust)

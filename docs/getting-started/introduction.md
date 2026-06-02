@@ -1,8 +1,8 @@
 # Introduction
 
-aeqi creates TRUSTs: programmable companies for the agent economy.
+aeqi is the Company OS for the agent economy.
 
-It is a runtime where humans set direction, agents execute, and
+It is a runtime where humans set direction, agents execute inside roles, and
 company work compounds into memory, accountability, governance, and authority.
 
 The core move is simple: do not start from the agent. Start from the company.
@@ -28,7 +28,10 @@ contains the primitives needed to run:
 | **Ideas / Memory** | What does the company know? |
 | **Events** | When should the system wake up? |
 | **Sessions** | What happened, who participated, and what changed? |
-| **TRUST** | What is the programmable company? |
+
+You may see `TRUST` in lower-level docs and API references. It is the
+runtime/protocol vehicle behind a Company, especially where authority,
+treasury, governance, ownership, or signer state are involved.
 
 ## The execution loop
 
@@ -47,6 +50,19 @@ Human intent
 
 This loop is why aeqi is more than task management. The work does not vanish
 into chat history. It becomes company state.
+
+## What you can do today
+
+On the hosted platform, a Company can:
+
+- hold its mission, roles, agents, quests, ideas, events, sessions, and memory
+- run agent work through scoped sessions instead of loose chat
+- expose API and MCP tools so local AI clients can use company context
+- keep an operating history that future authority and governance can act on
+
+Treasury, ownership, and on-chain authority are deployment-dependent protocol
+surfaces. The product starts with the runtime because runtime history is the
+source of truth those surfaces need.
 
 ## Hosted and self-hosted
 
@@ -67,7 +83,7 @@ aeqi start
 
 ## What comes next
 
-- [Company](/docs/concepts/company) - the primitive that holds everything.
-- [Getting started](/docs/getting-started/getting-started) - create your first TRUST.
+- [Company](/docs/concepts/company) - the product surface that holds everything.
+- [Getting started](/docs/getting-started/getting-started) - create your first Company.
 - [Agent runtime overview](/docs/concepts/agent-runtime-overview) - how execution works.
-- [TRUST](/docs/concepts/trust) - the programmable company.
+- [TRUST](/docs/concepts/trust) - the protocol/runtime vehicle.

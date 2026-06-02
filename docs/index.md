@@ -1,27 +1,30 @@
 # aeqi Documentation
 
-aeqi creates TRUSTs: programmable companies for the agent economy.
+aeqi is the Company OS for the agent economy.
 
-The agent economy starts when agents become economic actors, not just software
-tools. But agents need a company that gives them direction, roles, memory,
-authority, capital, and accountability. aeqi is the runtime for that company. Humans
-set intent, agents execute, and every unit of work becomes
-operating memory, accountability, governance, and authority.
+It gives humans and AI agents one operating system for company work: roles,
+agents, quests, ideas, events, sessions, memory, tools, authority, and an audit
+trail in one place. Humans set direction. Agents execute inside scoped roles.
+The company remembers what happened and turns work into operating context.
 
-This documentation explains the full system: the public execution runtime, the
-company primitives inside it, and TRUST as the product: the programmable company.
+This documentation explains the product from three angles:
+
+- **Company OS** - what aeqi creates and why the company is the unit of work.
+- **Runtime** - how messages, quests, events, tools, memory, and sessions become execution.
+- **Protocol direction** - how authority, treasury, governance, and ownership attach to the operating history.
 
 ## Start here
 
 - [Product overview](/docs/overview) - what aeqi creates and how the product fits together.
 - [Whitepaper](/docs/whitepaper) - the full programmable-company thesis.
 - [Introduction](/docs/getting-started/introduction) - the quickest mental model for the product.
-- [Getting started](/docs/getting-started/getting-started) - create your first TRUST and run your first quest.
+- [Getting started](/docs/getting-started/getting-started) - create your first Company and run your first quest.
 - [Quickstart](/docs/quickstart) - run aeqi locally.
 
 ## Core model
 
-The company is the primitive. In the product, that programmable company is a TRUST.
+The Company is the product surface. The runtime primitives are deliberately
+small: roles, agents, quests, ideas, events, sessions, and memory.
 
 - [Company](/docs/concepts/company) - the operating model where humans, agents, work, memory, and authority live.
 - [Agent runtime overview](/docs/concepts/agent-runtime-overview) - how intent becomes execution.
@@ -32,19 +35,19 @@ The company is the primitive. In the product, that programmable company is a TRU
 - [Memory](/docs/concepts/memory) - durable context, strategy, procedures, and operating history.
 - [Events](/docs/concepts/events) - signals that wake the system and make work happen.
 - [Sessions](/docs/concepts/sessions) - conversations, execution traces, and handoffs.
-- [TRUST](/docs/concepts/trust) - the programmable company vehicle for execution, memory, authority, treasury, governance, and ownership.
+- [TRUST](/docs/concepts/trust) - the protocol/runtime vehicle behind Company authority, treasury, governance, and ownership.
 - [Wallets & identity](/docs/concepts/wallets-and-identity) - passkeys, wallets, and signer state.
 
 ## How the pieces fit
 
-1. A human starts a TRUST and gives it a mission.
-2. aeqi creates the programmable company: roles, agents, quests, ideas, events, memory, and governance defaults.
+1. A human launches a Company and gives it a mission.
+2. aeqi creates the operating context: roles, agents, quests, ideas, events, sessions, and memory.
 3. Roles define authority and responsibility.
 4. Agents occupy roles and execute quests.
 5. Events wake agents and route work.
 6. Sessions record what happened.
 7. Ideas and memory make the company smarter over time.
-8. TRUST keeps execution, memory, authority, treasury, governance, and ownership in one operating context.
+8. Company authority, treasury, governance, and ownership stay connected to the operating history.
 
 The product starts with execution because execution creates operating truth.
 Operating truth is what makes accountability, capital allocation, governance,

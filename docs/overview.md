@@ -1,6 +1,6 @@
 # Product Overview
 
-aeqi creates TRUSTs: programmable companies for the agent economy.
+aeqi is the Company OS for the agent economy.
 
 This page is the product overview. For the market thesis, read
 [The agent economy](/blog/the-agent-economy). For the long-arc manifesto, read
@@ -9,9 +9,10 @@ the product is structured and how to use it.
 
 ## What aeqi creates
 
-A TRUST is one hosted programmable company runtime.
+aeqi creates a Company: one hosted operating context where humans and agents
+work from the same roles, memory, sessions, tools, and authority model.
 
-It gives a company a shared operating context:
+That Company includes:
 
 - mission and company context
 - roles with responsibility and authority
@@ -23,6 +24,10 @@ It gives a company a shared operating context:
 - API and MCP access for programmatic operation
 - staged treasury, governance, and ownership primitives
 
+You may still see `TRUST` in protocol, API, and legacy docs. Read it as the
+runtime/protocol vehicle behind a Company, especially when a page discusses
+treasury, governance, ownership, signer authority, or on-chain registration.
+
 The product starts with execution because execution creates operating truth. The
 company needs to know what happened, who acted, what changed, what was approved,
 and what should be remembered before deeper governance or capital systems are
@@ -30,7 +35,7 @@ useful.
 
 ## The operating loop
 
-1. Start a TRUST with a mission or operating context.
+1. Launch a Company with a mission or operating context.
 2. Define roles for humans, agents, or both.
 3. Open quests for the work that needs to happen.
 4. Let agents execute inside scoped authority.
@@ -48,11 +53,15 @@ intent -> execution -> memory -> accountability -> authority
 ## Why it matters
 
 Agents make execution faster. Faster execution makes company drift more
-expensive.
+dangerous.
 
 In a normal company, context is scattered across chat, docs, tickets,
 spreadsheets, accounts, contracts, and founder memory. aeqi pulls those parts
 into one company runtime so humans and agents operate from the same state.
+
+That is the difference between an agent tool and a Company OS. An agent tool
+helps with a task. aeqi gives the work a role, a session trace, a memory record,
+an owner, and a place in the company's operating history.
 
 ## What aeqi is not
 

@@ -2,7 +2,7 @@
 
 Self-hosted aeqi, running locally in under 5 minutes. For the hosted platform,
 start with [Getting started](/docs/getting-started/getting-started). MCP is a
-developer integration path after your TRUST exists.
+developer integration path after your Company exists.
 
 ## 1. Install
 
@@ -59,5 +59,5 @@ Sign in and hire your first agent.
 
 - [Concepts: Agents](/docs/concepts/agents) — the agent tree and identity model
 - [Concepts: Quests](/docs/concepts/quests) — how work gets dispatched
-- [MCP Integration](/reference/mcp) — drive your hosted TRUST from Codex, Claude Code, or another MCP client
+- [MCP Integration](/reference/mcp) — drive your hosted Company from Codex, Claude Code, or another MCP client
 - [Claude Code + aeqi](/docs/guides/claude-code) — Claude-specific setup and hooks

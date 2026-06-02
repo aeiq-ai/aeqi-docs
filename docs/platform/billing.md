@@ -2,15 +2,15 @@
 
 ## Launch plans
 
-The atomic billing unit is a **TRUST**: one programmable company with its own
-runtime, agents, quests, sessions, memory, and capacity limits.
+The atomic billing unit is a **Company**: one hosted operating context with its
+own runtime, agents, quests, sessions, memory, and capacity limits.
 
 | Plan | Price | Best for |
 |------|-------|----------|
 | Standard | $49/month | Focused launches and early operating loops |
 | Pro | $69 first month, then $149/month | Heavier agent work from day one |
 
-Both plans include one TRUST, unlimited agents, managed hosting, API + MCP
+Both plans include one Company, unlimited agents, managed hosting, API + MCP
 access, and the company primitives needed to run work through roles, quests,
 events, sessions, ideas, and memory.
 
@@ -24,10 +24,10 @@ events, sessions, ideas, and memory.
 The plan controls execution capacity. You can change capacity later as agent
 volume, model choice, and long-running work increase.
 
-## Multiple TRUSTs
+## Multiple Companies
 
-Each launched TRUST chooses Standard or Pro independently. Joining a TRUST
-owned by another user is free unless you launch your own paid TRUST.
+Each launched Company chooses Standard or Pro independently. Joining a Company
+owned by another user is free unless you launch your own paid Company.
 
 ## Inference usage
 
@@ -43,6 +43,6 @@ logs, custom integrations, and higher capacity.
 
 ## See also
 
-- [TRUST](/docs/concepts/trust) - the programmable company
+- [TRUST](/docs/concepts/trust) - the protocol/runtime vehicle behind Company authority
 - [Inference API](/docs/api/inference) - inference endpoints and limits
 - [MCP](/reference/mcp) - exposing aeqi as tools to agent clients

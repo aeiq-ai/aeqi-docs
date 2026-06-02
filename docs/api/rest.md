@@ -1,6 +1,9 @@
 # REST API
 
-The aeqi platform exposes a REST API for TRUST management, authentication, billing, integrations, and the catch-all proxy that forwards `/api/*` into a TRUST runtime.
+The aeqi platform exposes a REST API for Company management, authentication,
+billing, integrations, and the catch-all proxy that forwards `/api/*` into a
+Company runtime. Lower-level headers and routes still use `trust` / `X-Trust`
+as the runtime selection term.
 
 ## Base URL
 
@@ -140,6 +143,7 @@ GET  /api/auth/welcome/github/callback
 ```
 GET /api/integrations/google/callback
 GET /api/integrations/github/callback
+GET /api/integrations/etsy/callback
 ```
 
 Reached by the user's browser after the OAuth provider redirects back. The signed `state` token resolves the owning agent + entity. The matching authenticated start/status endpoints are under [Authenticated Endpoints → Integrations](#integrations).
@@ -159,10 +163,12 @@ POST /api/webhooks/whatsapp
 
 ```
 GET /api/blueprints
+GET /api/blueprints/default
 GET /api/blueprints/{slug}
 ```
 
 Public, no `X-Trust` required. The catalog is platform-shared static content.
+`/api/blueprints/default` returns the configured default launch blueprint.
 
 ### Spawn (proxied)
 
@@ -179,10 +185,14 @@ Registered in the public router so they shadow `/api/blueprints/{slug}`; the cat
 GET /api/economy/list
 GET /api/public/entities/{slug}
 GET /api/public/trust/{address}
+GET /api/public/trust/{address}/assets
+GET /api/public/trust/{address}/incorporation
 GET /api/public/status/walks
 ```
 
 `/api/economy/list` returns every TRUST whose placement has `public=true`, with on-chain TRUST address — drives `/economy`. `/api/public/entities/{slug}` returns the public profile JSON for a TRUST that has `public=true`; returns 404 for private workspaces (indistinguishable from non-existent). `/api/public/trust/{address}` returns the public composite viewer payload for an on-chain TRUST address when the linked workspace is public.
+The `/assets` and `/incorporation` subresources expose public document bundles
+for a public TRUST address when those modules are present.
 `/api/public/status/walks` returns recent public walk status rows for the
 landing status surface.
 
@@ -237,12 +247,16 @@ POST /api/auth/sessions/revoke-others
 GET  /api/auth/invite-codes
 POST /api/auth/invite-codes
 GET  /api/admin/overview
+GET  /api/admin/llm-provider
+POST /api/admin/llm-provider
 GET  /api/account/notifications
 POST /api/account/notifications/stop
 POST /api/account/notifications/resume
 ```
 
 `/api/admin/overview` is the *user-facing* admin view (returns 200 only if the caller is a platform admin); it is not part of the admin secret-guarded surface below.
+`/api/admin/llm-provider` reads or updates the active hosted inference provider
+configuration for platform admins.
 The notification routes expose and update the user's channel suppression state.
 
 ### Email change
@@ -290,6 +304,11 @@ GET    /api/trusts
 POST   /api/trusts
 DELETE /api/trusts/{trust_id}
 PUT    /api/trusts/{trust_id}
+GET    /api/trusts/{trust_id}/assets
+GET    /api/trusts/{trust_id}/incorporation
+GET    /api/trusts/{trust_id}/email/messages
+POST   /api/trusts/{trust_id}/email/test
+GET    /api/trusts/{trust_id}/website/analytics
 GET    /api/entities
 POST   /api/entities
 DELETE /api/entities/{name}
@@ -304,6 +323,8 @@ DELETE /api/roots/{name}
 
 `/api/trusts` is the canonical user-owned TRUST collection. `/api/entities/*`
 and `/api/roots/*` are legacy aliases for older clients.
+The `assets`, `incorporation`, `email`, and `website/analytics` subroutes back
+Company website, document, inbox, and analytics panels for a selected runtime.
 
 ### /start launch
 
@@ -388,6 +409,17 @@ Same provisioning path as `/start/launch`, but the Blueprint is the architect-ge
 
 ### Integrations
 
+Company app OAuth and per-agent OAuth.
+
+Company-scoped app connections:
+
+```
+GET /api/trust/{trust_ref}/apps/google/start
+GET /api/trust/{trust_ref}/apps/google/status
+GET /api/trust/{trust_ref}/apps/etsy/start
+GET /api/trust/{trust_ref}/apps/etsy/status
+```
+
 Per-agent OAuth, one start/status pair per provider:
 
 ```
@@ -397,7 +429,10 @@ GET /api/agents/{agent_id}/integrations/github/start
 GET /api/agents/{agent_id}/integrations/github/status
 ```
 
-`start` returns a signed redirect to the provider. The matching callbacks `/api/integrations/google/callback` and `/api/integrations/github/callback` are listed above as public routes — Google/GitHub redirect there without our auth header.
+`start` returns a signed redirect to the provider. The matching callbacks
+`/api/integrations/google/callback`, `/api/integrations/github/callback`, and
+`/api/integrations/etsy/callback` are listed above as public routes; providers
+redirect there without our auth header.
 
 ### API keys
 

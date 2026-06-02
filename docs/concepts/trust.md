@@ -1,6 +1,6 @@
 # TRUST
 
-TRUST is the product name for the programmable company created by aeqi.
+TRUST is the lower-level runtime/protocol vehicle behind an aeqi Company.
 
 The entry point is execution: humans set direction, agents execute, and
 memory compounds. A TRUST is where that execution, memory, authority, treasury,
@@ -18,7 +18,8 @@ governance, and ownership live together.
 | Agent authority | Scoped ability for agents to act under human-defined permissions |
 
 TRUST is not a separate object beside the company. In aeqi, the TRUST is the
-programmable company: execution, authority, and ownership in the same system.
+vehicle that can bind Company execution, authority, and ownership into the same
+system.
 
 ## Why it exists
 
@@ -47,14 +48,14 @@ That is the bridge from agent execution to accountable governance and authority.
 
 ## Current product vs protocol direction
 
-Today, a TRUST is first a hosted or self-hosted programmable company runtime:
-roles, agents, quests, ideas, events, sessions, and memory in one operating
-context. Solana-backed authority, treasury, governance, and ownership are the
-protocol direction and may be enabled only in specific deployments.
+Today, the user-facing product language is Company. A Company is first a hosted
+or self-hosted runtime: roles, agents, quests, ideas, events, sessions, and
+memory in one operating context. TRUST is the lower-level runtime/protocol term
+used where the system needs a stable vehicle for authority, treasury,
+governance, ownership, signer controls, and on-chain registration.
 
-Public docs use TRUST for both the current runtime product and the staged
-protocol vehicle. When a page discusses custody, treasury, or ownership, read it
-as deployment-dependent unless it explicitly says the hosted product exposes
+When a page discusses custody, treasury, ownership, or on-chain authority, read
+it as deployment-dependent unless it explicitly says the hosted product exposes
 that module.
 
 ## TRUST is not
@@ -62,6 +63,8 @@ that module.
 - **Not a chatbot feature.** It is the programmable company.
 - **Not a DAO-first product.** Governance exists, but token voting is not the category.
 - **Not a legal wrapper as the category.** Legal structure matters, but execution is the entry point.
+- **Not the beginner product vocabulary.** New users should think Company first.
+  TRUST is for protocol, API, authority, and deployment-specific surfaces.
 - **Not blanket custody.** Some deployments may provide runtime-assisted
   signing, but TRUST authority is designed around scoped roles, explicit
   approvals, and signer controls rather than agents owning user keys.

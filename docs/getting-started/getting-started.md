@@ -1,6 +1,6 @@
 # Getting started
 
-Create your first TRUST on aeqi, meet the agents that come with it, send your first message, and ship your first Quest. This walkthrough uses the hosted platform at [app.aeqi.ai](https://app.aeqi.ai); if you'd rather self-host, jump to the [Quickstart](/docs/quickstart).
+Create your first Company on aeqi, meet the agents that come with it, send your first message, and ship your first Quest. This walkthrough uses the hosted platform at [app.aeqi.ai](https://app.aeqi.ai); if you'd rather self-host, jump to the [Quickstart](/docs/quickstart).
 
 About 10 minutes end to end.
 
@@ -11,39 +11,47 @@ Go to [aeqi.ai](https://aeqi.ai) and click **Request access**.
 You can sign up with email, Google, GitHub, a passkey, or a supported wallet
 where those options are enabled for your deployment. All doors land you in the
 same place: a dashboard with a personal account and access to create or join a
-TRUST.
+Company.
 
 Wallet and signer behavior is deployment-dependent. Some deployments can
 provision assisted signers or expose wallet login; others only use platform
 identity until a protocol module is enabled. See [Wallets & identity](/docs/concepts/wallets-and-identity).
 
-## 2. Create your first TRUST
+## 2. Create your first Company
 
-Click **+ New TRUST** in the sidebar.
+Click **Launch Company** or **+ New Company**.
 
-In the current hosted release, the public catalog is intentionally conservative: one default aeqi Blueprint. It starts a minimal TRUST with a primary agent, shared memory, a bootstrap Quest, and a review cadence. Specialized archetypes stay out of the public catalog until their product behavior and protocol assumptions are audited.
+In the current hosted release, the public catalog is intentionally conservative:
+one default aeqi Blueprint. It starts a minimal Company with a primary agent,
+shared memory, a bootstrap Quest, and a review cadence. Specialized archetypes
+stay out of the public catalog until their product behavior and protocol
+assumptions are audited.
 
 | Single blueprint | Best for |
 |---|---|
-| **aeqi** | A general TRUST shell. The mission defines the operating structure. |
+| **aeqi** | A general Company shell. The mission defines the operating structure. |
 
-Pick **aeqi**. Give your TRUST a name. Click **Create**.
+Pick **aeqi**. Give your Company a name. Click **Create**.
 
 A few things happen at once:
 
 1. A workspace is provisioned (a fresh tenant on its own port).
 2. Initial roles and the primary agent are seeded.
-3. Ideas are created for the TRUST mission and operating context.
+3. Ideas are created for the Company mission and operating context.
 4. Events schedule the first operating rhythm.
-5. One kickoff Quest asks you to define the TRUST mission before adding specialist agents or more structure.
+5. One kickoff Quest asks you to define the Company mission before adding specialist agents or more structure.
 
 The wizard takes you from goal to live workspace without requiring you to design an org chart first.
 
+Some API and protocol surfaces still call this runtime vehicle a `TRUST`.
+Beginner product surfaces should be read as Company-first; `TRUST` is the
+underlying runtime/protocol term.
+
 ## 3. Meet your agents
 
-You land on the TRUST overview tab. The Agents row in the rail shows the agents that just got hired.
+You land on the Company overview tab. The Agents row in the rail shows the agents that just got hired.
 
-Open the primary agent. The Sessions tab shows the agent has opened a greeting session: it asks what the TRUST should make true, then turns the answer into operating context and the first Quests.
+Open the primary agent. The Sessions tab shows the agent has opened a greeting session: it asks what the Company should make true, then turns the answer into operating context and the first Quests.
 
 This is the **co-creation** loop in action: the agent doesn't sit idle waiting for you to give it work. It introduces itself, captures context via Quests, and uses the answers as Ideas. See [Co-creation](/docs/methodology/co-creation) for the full pattern.
 
@@ -67,7 +75,7 @@ happened.
 
 Where enabled for your deployment, open the agent's **Integrations** tab and click **Connect Google**. You'll be redirected through Google's OAuth flow and asked to consent to specific scopes (Gmail send, Gmail read, Calendar read/write).
 
-When you return, the agent has Gmail and Calendar access — scoped to **this agent only**, not the whole TRUST. The token is encrypted in the per-tenant credentials substrate. Other agents in the same TRUST stay disconnected unless you explicitly connect them.
+When you return, the agent has Gmail and Calendar access — scoped to **this agent only**, not the whole Company. The token is encrypted in the per-tenant credentials substrate. Other agents in the same Company stay disconnected unless you explicitly connect them.
 
 This is "[Path B](/docs/patterns/oauth-path-b)" — per-agent OAuth. The pattern generalizes to any provider (Slack, Notion, GitHub, etc.).
 

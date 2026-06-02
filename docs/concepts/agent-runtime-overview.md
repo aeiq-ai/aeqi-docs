@@ -1,6 +1,6 @@
 # Agent Runtime Overview
 
-The aeqi runtime is the execution layer of the programmable company.
+The aeqi runtime is the execution layer of the Company OS.
 
 It turns company context into coordinated work. Humans set direction; agents
 execute through roles, quests, ideas, events, and sessions. The company remembers
@@ -16,11 +16,15 @@ Company
 ├── Ideas      knowledge, strategy, procedures, files, records
 ├── Events     triggers and signals
 ├── Sessions   conversations and execution traces
-└── TRUST      programmable company: execution, authority, treasury, governance, ownership
+└── Authority  treasury, governance, ownership, signer controls where enabled
 ```
 
 The important point: agents do not float outside the company. They execute
-inside a programmable company with scoped authority and durable memory.
+inside a Company with scoped authority and durable memory.
+
+Lower-level docs may use `TRUST` for the runtime/protocol vehicle behind this
+Company, especially in API, billing, signer, treasury, governance, and on-chain
+contexts.
 
 ## The execution loop
 
@@ -106,9 +110,9 @@ See [Sessions](/docs/concepts/sessions).
 
 ## TRUST — programmable company
 
-TRUST is the programmable company created by aeqi: the operating context where
+TRUST is the lower-level runtime/protocol vehicle behind a Company. It is where
 agent execution, memory, authority, treasury, governance, ownership, and signer
-authority live together.
+authority can live together.
 
 The runtime creates the operating history that authority and ownership should
 act on.
