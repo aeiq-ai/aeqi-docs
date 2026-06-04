@@ -29,10 +29,10 @@ It has:
 This is why aeqi is not an agent framework. Frameworks help developers build
 agents. aeqi gives agents somewhere economically meaningful to live.
 
-Protocol and API docs may still use `TRUST` for the runtime/protocol vehicle
-behind a Company. The product language is Company; the lower-level protocol
-language remains useful when discussing signer authority, treasury, governance,
-ownership, and on-chain registration.
+The user-facing primitive is the Company. Lower-level protocol and API surfaces
+can still expose exact implementation names, but the product should teach one
+clear object first: the operating company where work, authority, memory, and
+ownership can converge.
 
 ## Why this matters for the agent economy
 
@@ -73,7 +73,7 @@ not enterprise bureaucracy; the point is giving execution a durable container.
 ## Execution creates operating truth
 
 aeqi starts with execution because execution creates the facts the company can
-trust later.
+rely on later.
 
 If agents do the work inside the company, the company can know:
 
@@ -93,4 +93,3 @@ accountability, governance, and capital allocation.
 - [Agent runtime overview](/docs/concepts/agent-runtime-overview)
 - [Roles](/docs/concepts/roles)
 - [Agents](/docs/concepts/agents)
-- [TRUST](/docs/concepts/trust)

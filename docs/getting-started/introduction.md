@@ -29,10 +29,6 @@ contains the primitives needed to run:
 | **Events** | When should the system wake up? |
 | **Sessions** | What happened, who participated, and what changed? |
 
-You may see `TRUST` in lower-level docs and API references. It is the
-runtime/protocol vehicle behind a Company, especially where authority,
-treasury, governance, ownership, or signer state are involved.
-
 ## The execution loop
 
 The runtime turns intent into execution:
@@ -86,4 +82,3 @@ aeqi start
 - [Company](/docs/concepts/company) - the product surface that holds everything.
 - [Getting started](/docs/getting-started/getting-started) - create your first Company.
 - [Agent runtime overview](/docs/concepts/agent-runtime-overview) - how execution works.
-- [TRUST](/docs/concepts/trust) - the protocol/runtime vehicle.

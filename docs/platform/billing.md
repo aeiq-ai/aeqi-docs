@@ -43,6 +43,6 @@ logs, custom integrations, and higher capacity.
 
 ## See also
 
-- [TRUST](/docs/concepts/trust) - the protocol/runtime vehicle behind Company authority
+- [Company](/docs/concepts/company) - the operating context behind Company authority
 - [Inference API](/docs/api/inference) - inference endpoints and limits
 - [MCP](/reference/mcp) - exposing aeqi as tools to agent clients

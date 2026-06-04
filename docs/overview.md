@@ -24,10 +24,6 @@ That Company includes:
 - API and MCP access for programmatic operation
 - staged treasury, governance, and ownership primitives
 
-You may still see `TRUST` in protocol, API, and legacy docs. Read it as the
-runtime/protocol vehicle behind a Company, especially when a page discusses
-treasury, governance, ownership, signer authority, or on-chain registration.
-
 The product starts with execution because execution creates operating truth. The
 company needs to know what happened, who acted, what changed, what was approved,
 and what should be remembered before deeper governance or capital systems are
@@ -95,4 +91,3 @@ an owner, and a place in the company's operating history.
 - [Agent runtime overview](/docs/concepts/agent-runtime-overview)
 - [CLI](/docs/reference/cli)
 - [MCP](/reference/mcp)
-- [TRUST](/docs/concepts/trust)

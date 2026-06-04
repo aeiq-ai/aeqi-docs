@@ -107,5 +107,4 @@ To set or clear the pointer, pass `description_idea_id` on `create_role` /
 
 - [Company](/docs/concepts/company)
 - [Agents](/docs/concepts/agents)
-- [TRUST](/docs/concepts/trust)
 - [Org architecture](/docs/methodology/org-architecture)

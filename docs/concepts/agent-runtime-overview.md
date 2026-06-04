@@ -22,10 +22,6 @@ Company
 The important point: agents do not float outside the company. They execute
 inside a Company with scoped authority and durable memory.
 
-Lower-level docs may use `TRUST` for the runtime/protocol vehicle behind this
-Company, especially in API, billing, signer, treasury, governance, and on-chain
-contexts.
-
 ## The execution loop
 
 ```
@@ -107,17 +103,6 @@ decisions, and final outcomes. A session can be a chat, a quest execution, an
 inbox thread, a channel bridge, or a role-addressed conversation.
 
 See [Sessions](/docs/concepts/sessions).
-
-## TRUST — programmable company
-
-TRUST is the lower-level runtime/protocol vehicle behind a Company. It is where
-agent execution, memory, authority, treasury, governance, ownership, and signer
-authority can live together.
-
-The runtime creates the operating history that authority and ownership should
-act on.
-
-See [TRUST](/docs/concepts/trust).
 
 ## Hosted and self-hosted runtime
 

@@ -81,7 +81,7 @@ This keeps the agent useful without making it the owner of company authority.
 
 ## Related
 
-- [TRUST](/docs/concepts/trust)
+- [Company](/docs/concepts/company)
 - [Roles](/docs/concepts/roles)
 - [Agents](/docs/concepts/agents)
 - [Transaction & governance](/docs/guides/transaction-governance)
