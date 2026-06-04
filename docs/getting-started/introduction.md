@@ -60,14 +60,14 @@ Treasury, ownership, and on-chain authority are deployment-dependent protocol
 surfaces. The product starts with the runtime because runtime history is the
 source of truth those surfaces need.
 
-## Hosted and self-hosted
+## Hosted and private deployment
 
 On the hosted platform at [app.aeqi.ai](https://app.aeqi.ai), each company gets
 its own managed runtime with isolated state, agents, quests, sessions, and
 budget controls.
 
-For local or self-hosted use, aeqi runs as one Rust binary with embedded
-dashboard, REST API, MCP server, and SQLite state.
+Private deployments run the same Company runtime inside infrastructure approved
+for the customer. Deployment details are scoped during onboarding.
 
 ```
 aeqi start

@@ -10,7 +10,7 @@ aeqi is the substrate.
 
 ## What we built
 
-A self-hostable Rust binary. SQLite state. Embedded dashboard. One process can run a TRUST - agents, roles, events, quests, ideas, sessions, and memory - under a single tenant. Source-available to inspect and self-host; hosted access opens through the launch plans.
+A hosted Company runtime with SQLite state, embedded dashboard, and isolated operating history. One runtime can run a TRUST - agents, roles, events, quests, ideas, sessions, and memory - under a single tenant. Hosted access opens through the launch plans; private deployment is scoped with customers that need it.
 
 On top: a protocol layer. Every TRUST can carry treasury, governance, ownership, and role authority as programmable state. Cap tables stop being disconnected PDFs. They become company state.
 

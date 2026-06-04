@@ -6,12 +6,13 @@ Use it for three jobs:
 
 - **Hosted client** - chat with agents and operate an existing Company runtime.
 - **MCP bridge** - expose aeqi tools to Codex, Claude Code, and other AI clients.
-- **Self-hosted runtime** - run a local Company runtime with dashboard, API,
-  scheduler, MCP socket, and agent execution in one process.
+- **Private runtime** - run a Company runtime with dashboard, API, scheduler,
+  MCP socket, and agent execution in approved private deployments.
 
 For hosted use, the CLI does not run the runtime on your laptop. It
 authenticates to the platform and talks to the managed Company runtime. For
-self-hosting, `aeqi start` runs the runtime locally.
+private deployments, `aeqi start` runs the approved runtime locally or on the
+customer's infrastructure.
 
 You may still see `TRUST` in exact command names, secret keys, and protocol
 fields. Treat it as the lower-level runtime/protocol selector behind the
@@ -24,7 +25,7 @@ The CLI is the operator shell for the other surfaces:
 | Need | Command path |
 |---|---|
 | Terminal chat with a hosted agent | `aeqi chat` |
-| Local runtime setup | `aeqi setup`, `aeqi start` |
+| Private runtime setup | `aeqi setup`, `aeqi start` |
 | MCP bridge for AI clients | `aeqi mcp` |
 | Work dispatch and monitoring | `aeqi assign`, `aeqi monitor` |
 | Local diagnostics | `aeqi doctor`, `aeqi paths` |
@@ -34,18 +35,9 @@ operators and scripts.
 
 ## Installation
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/aeqiai/aeqi/main/scripts/install.sh | sh
-```
-
-Or build from source:
-
-```bash
-git clone https://github.com/aeqiai/aeqi.git
-cd aeqi
-cargo build --release
-# binary at target/release/aeqi
-```
+The public path is hosted access. Accepted users receive CLI access through the
+hosted onboarding flow. Private deployments receive installation details during
+deployment scoping.
 
 ## Mental model
 
@@ -55,7 +47,7 @@ The CLI has three jobs:
 |---|---|---|
 | Talk to a hosted Company | `aeqi chat` | Opens a terminal chat with an existing runtime agent, using your account key. |
 | Expose aeqi to an AI coding client | `aeqi mcp` | Starts an MCP server process so Codex, Claude Code, or another MCP client can use aeqi tools. |
-| Run a local runtime | `aeqi setup`, `aeqi start` | Creates and runs a self-hosted Company runtime on your machine. |
+| Run a private runtime | `aeqi setup`, `aeqi start` | Creates and runs a private Company runtime for approved deployments. |
 
 The most common hosted path is:
 
@@ -193,7 +185,7 @@ explicitly when you want to delegate to, inspect, or filter for an agent.
 to a specific runtime agent. Most human-operated CLI and MCP setups should leave
 it unset.
 
-## Local self-host commands
+## Private runtime commands
 
 ### `aeqi init`
 
@@ -442,7 +434,7 @@ Run `aeqi <cmd> --help` for the current flags.
 | `AEQI_API_URL` | `aeqi chat` | Hosted platform URL for chat, for example `https://app.aeqi.ai`. |
 | `AEQI_SECRET_KEY` | `aeqi mcp` | Secret key (`sk_...`) that selects and authenticates the Company runtime. |
 | `AEQI_PLATFORM_URL` | `aeqi mcp` | Hosted platform URL for MCP validation, for example `https://app.aeqi.ai`. |
-| `AEQI_CONFIG` | self-hosted MCP clients | Path to a local runtime config when not using hosted keys. |
+| `AEQI_CONFIG` | private MCP clients | Path to a private runtime config when not using hosted keys. |
 | `AEQI_AGENT` | MCP clients | Optional client hint. It is not account identity and does not own Quests. |
 | `AEQI_AGENT_ID` | MCP clients | Explicit runtime agent binding for special cases. Leave unset unless you know you need it. |
 

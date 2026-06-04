@@ -1,74 +1,57 @@
 # Quickstart
 
-Self-hosted aeqi, running locally in under 5 minutes. For the hosted platform,
-start with [Getting started](/docs/getting-started/getting-started). MCP is a
-developer integration path after your Company exists.
+Hosted aeqi, from account to first Company loop. MCP is a developer integration
+path after your Company exists.
 
-The local quickstart starts all four surfaces on your machine:
+The hosted quickstart uses four surfaces:
 
-| Surface | Local entry |
+| Surface | Entry |
 |---|---|
-| **App** | Embedded dashboard at `http://127.0.0.1:8400` |
-| **API** | Local REST API mounted by `aeqi start` |
-| **MCP** | `aeqi mcp` against the local runtime socket |
-| **CLI** | `aeqi setup`, `aeqi start`, `aeqi chat`, `aeqi assign`, and related commands |
+| **App** | Hosted dashboard at `https://app.aeqi.ai` |
+| **API** | REST API mounted by the hosted platform |
+| **MCP** | `aeqi mcp` against the selected Company runtime |
+| **CLI** | `aeqi chat`, `aeqi mcp`, and related hosted-client commands |
 
-## 1. Install
+## 1. Create a Company
 
-Install script (Linux, macOS, WSL):
+Start from the hosted app:
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/aeqiai/aeqi/main/scripts/install.sh | sh
+```text
+https://app.aeqi.ai/signup
 ```
 
-Or build from source (requires Rust stable):
-
-```bash
-git clone https://github.com/aeqiai/aeqi.git
-cd aeqi
-cargo build --release
-# binary at target/release/aeqi
-```
-
-See [Installation](/docs/installation) for Cargo, Docker, and manual source builds.
+See [Getting started](/docs/getting-started/getting-started) for the full app walkthrough.
 
 ## 2. Configure
 
-```bash
-aeqi setup
-```
+Create API keys from the dashboard when you want to connect MCP or CLI clients:
 
-The wizard detects your environment: inside a git repo it configures the current workspace, otherwise it writes to `~/.aeqi/`. SQLite databases are created on first run.
+- Account key (`ak_...`) from Account -> API.
+- Secret key (`sk_...`) from the Company API keys page.
 
-Set an LLM provider key:
+Hosted plans include monthly LLM token capacity for normal agent execution.
 
-```bash
-aeqi secrets set OPENROUTER_API_KEY sk-or-...
-```
-
-OpenRouter, Anthropic, and Ollama are supported.
-
-## 3. Start
+## 3. Connect
 
 ```bash
-aeqi start
+AEQI_SECRET_KEY=sk_... AEQI_API_KEY=ak_... AEQI_PLATFORM_URL=https://app.aeqi.ai aeqi mcp
 ```
 
-Runs the daemon, REST API, and dashboard in one process. Default port is `8400`.
+The CLI authenticates with the platform and routes tool calls into your managed Company runtime.
 
-## 4. Open the Dashboard
+## 4. Open the dashboard
 
 ```
-http://127.0.0.1:8400
+https://app.aeqi.ai
 ```
 
-Sign in and hire your first agent.
+Sign in, open your Company, and run the first Quest.
 
 ## Next Steps
 
 - [Concepts: Agents](/docs/concepts/agents) — the agent tree and identity model
 - [Concepts: Quests](/docs/concepts/quests) — how work gets dispatched
 - [CLI](/docs/reference/cli) — terminal chat, local runtime, and MCP bridge
-- [REST API](/docs/api/rest) — hosted and self-hosted HTTP surfaces
+- [REST API](/docs/api/rest) — hosted HTTP surfaces
 - [MCP Integration](/reference/mcp) — drive your hosted Company from Codex, Claude Code, or another MCP client
 - [Claude Code + aeqi](/docs/guides/claude-code) — Claude-specific setup and hooks

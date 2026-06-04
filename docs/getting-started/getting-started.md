@@ -1,6 +1,6 @@
 # Getting started
 
-Create your first Company on aeqi, meet the agents that come with it, send your first message, and ship your first Quest. This walkthrough uses the hosted platform at [app.aeqi.ai](https://app.aeqi.ai); if you'd rather self-host, jump to the [Quickstart](/docs/quickstart).
+Create your first Company on aeqi, meet the agents that come with it, send your first message, and ship your first Quest. This walkthrough uses the hosted platform at [app.aeqi.ai](https://app.aeqi.ai).
 
 About 10 minutes end to end.
 

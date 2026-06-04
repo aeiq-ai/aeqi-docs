@@ -35,8 +35,8 @@ Company runtime, then routes tool calls into that managed runtime.
 It does not start the hosted runtime. The runtime already exists in aeqi. The
 CLI is the bridge between your local AI client and the Company runtime.
 
-For self-hosted aeqi, you run the runtime yourself with `aeqi start`, then run
-`aeqi mcp` against that local config and socket.
+Private deployments may use a deployment-specific config and socket. Hosted
+users should use the platform keys below.
 
 ## Identity Model
 
@@ -363,9 +363,10 @@ quests(
 Do not commit `ak_...` or `sk_...` keys to a repository. Prefer local client
 config, a password manager, or environment injection.
 
-## Self-Hosted
+## Private deployment
 
-For self-hosted aeqi, run the local runtime first:
+Private deployments receive deployment-specific runtime and config instructions
+during onboarding. The local MCP shape is:
 
 ```bash
 aeqi start
@@ -382,7 +383,7 @@ args = ["mcp"]
 AEQI_CONFIG = "/path/to/aeqi.toml"
 ```
 
-No hosted keys are required when the MCP server connects to your own local
+Hosted keys are not required when the MCP server connects to an approved private
 runtime.
 
 You can also pass the config explicitly:

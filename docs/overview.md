@@ -55,7 +55,7 @@ aeqi exposes the same Company through four surfaces:
 | **App** | The hosted dashboard for launching a Company, managing agents, roles, quests, ideas, events, sessions, integrations, and runtime state. | Humans need a calm operating surface, not only an API key. |
 | **API** | REST and inference endpoints for account, runtime, integration, billing, Company, and model operations. | Software systems need stable contracts, auth, idempotency, and auditability. |
 | **MCP** | A tool bridge for AI clients such as Codex and Claude Code. | AI agents need Company memory, quest tracking, code intelligence, and durable lessons while they work. |
-| **CLI** | The `aeqi` terminal client and local runtime entry point. | Operators need chat, self-hosting, scripting, and a stdio MCP bridge from the shell. |
+| **CLI** | The `aeqi` terminal client and MCP bridge. | Operators need chat, scripting, and a stdio MCP bridge from the shell. |
 
 This is the difference between a primitive API and a Company OS. A primitive API
 exposes actions. aeqi gives those actions a Company context: role, authority,

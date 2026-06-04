@@ -7,7 +7,7 @@ Connect Claude Code to your aeqi runtime over MCP. Claude Code gets persistent m
 - aeqi account with a company at [app.aeqi.ai](https://app.aeqi.ai)
 - Active workspace subscription
 - Claude Code
-- `aeqi` CLI — see [Installation](/docs/installation)
+- `aeqi` CLI access — see [Installation](/docs/installation)
 
 ## 1. Keys
 
@@ -40,7 +40,7 @@ Add the aeqi CLI to `~/.claude/settings.json`:
 
 `aeqi mcp` authenticates with the platform on startup, then routes tool calls directly to your company's runtime.
 
-For self-hosted, omit the keys and set `AEQI_CONFIG` to your `aeqi.toml`. The MCP server connects to the local daemon over `~/.aeqi/rm.sock`.
+Private deployments may use a deployment-specific config path instead of hosted keys.
 
 ## 3. Tools
 

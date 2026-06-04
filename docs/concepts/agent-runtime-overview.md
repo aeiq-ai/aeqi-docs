@@ -104,12 +104,13 @@ inbox thread, a channel bridge, or a role-addressed conversation.
 
 See [Sessions](/docs/concepts/sessions).
 
-## Hosted and self-hosted runtime
+## Hosted and private runtime
 
 On the hosted platform, each company runs in an isolated managed runtime with
 its own state and budget controls.
 
-Self-hosted, aeqi runs as one Rust binary:
+Private deployments run the same runtime inside infrastructure approved for the
+customer:
 
 ```
 aeqi start

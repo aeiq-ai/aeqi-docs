@@ -49,7 +49,7 @@ That is the bridge from agent execution to accountable governance and authority.
 ## Current product vs protocol direction
 
 Today, the user-facing product language is Company. A Company is first a hosted
-or self-hosted runtime: roles, agents, quests, ideas, events, sessions, and
+or private runtime: roles, agents, quests, ideas, events, sessions, and
 memory in one operating context. TRUST is the lower-level runtime/protocol term
 used where the system needs a stable vehicle for authority, treasury,
 governance, ownership, signer controls, and on-chain registration.
