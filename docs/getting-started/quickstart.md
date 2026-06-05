@@ -29,7 +29,7 @@ Create API keys from the dashboard when you want to connect MCP or CLI clients:
 - Account key (`ak_...`) from Account -> API.
 - Secret key (`sk_...`) from the Company API keys page.
 
-Hosted plans include monthly LLM token capacity for normal agent execution.
+Hosted plans include monthly runtime credits for normal agent execution.
 
 ## 3. Connect
 

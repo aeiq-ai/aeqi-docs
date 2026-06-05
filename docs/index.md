@@ -117,7 +117,7 @@ and authority credible.
 
 ## Platform
 
-- [Billing](/docs/platform/billing) - plans, inference credits, managed runtime capacity.
+- [Billing](/docs/platform/billing) - plans, runtime credits, managed runtime capacity.
 
 ## Release notes archive
 

@@ -3,43 +3,68 @@
 ## Launch plans
 
 The atomic billing unit is a **Company**: one hosted operating context with its
-own runtime, agents, quests, sessions, memory, and capacity limits.
+own runtime, members, agents, quests, sessions, memory, and monthly runtime
+credit allowance.
 
-| Plan | Price | Best for |
-|------|-------|----------|
-| Standard | $49/month | Focused launches and early operating loops |
-| Pro | $69 first month, then $149/month | Heavier agent work from day one |
+| Plan | Price | Included capacity | Best for |
+|---|---:|---|---|
+| Personal | $0 today, then $49/month | 1 member, 10k trial credits, then 100k credits/month after trial, S server | Solo founder trial |
+| Startup | $99/month for the first 3 months for the First 100 companies, then $190/month | 3 members, 400k credits/month, M server | Founding teams |
+| Scaleup | $490/month | 10 members, 2M credits/month, L server | Higher-capacity company operations |
 
-Both plans include one Company, unlimited agents, managed hosting, API + MCP
-access, and the company primitives needed to run work through roles, quests,
-events, sessions, ideas, and memory.
+Every launch plan includes one hosted Company, Company profile, roles, agents,
+quests, ideas, events, memory, managed hosting, API access, and MCP access.
 
-## Capacity
+## Runtime credits
 
-| Plan | Monthly LLM tokens | Runtime |
-|------|--------------------|---------|
-| Standard | 5M tokens | 2 vCPU, 4 GB RAM, 40 GB storage |
-| Pro | 20M tokens | 8 vCPU, 16 GB RAM, 160 GB storage |
+Runtime credits are USD-subunits for hosted execution capacity:
 
-The plan controls execution capacity. You can change capacity later as agent
-volume, model choice, and long-running work increase.
+```text
+1,000 credits = $1 of runtime capacity
+```
+
+Plan credits are a monthly allowance. Runtime pauses at zero instead of creating
+surprise overage invoices.
+
+Personal starts with 10k trial credits during the 7-day card-required trial.
+After the trial converts, Personal receives 100k runtime credits/month.
+
+## Monthly credit add-ons
+
+Paid-plan credit add-ons are separate monthly subscriptions:
+
+| Add-on | Price | Self-serve limit |
+|---|---:|---|
+| 10k extra credits/month | $10/month | Up to 100k extra credits/month |
+
+Personal add-ons unlock after the trial converts. Larger committed runtime
+credit packages are Enterprise.
+
+## Annual billing
+
+Annual billing is a plan cadence, not a credit add-on. It bills ten months for a
+year of the same plan capacity:
+
+| Plan | Annual price |
+|---|---:|
+| Personal | $490/year after trial conversion |
+| Startup | $1,900/year |
+| Scaleup | $4,900/year |
+
+Monthly credit add-ons stay monthly even when the base plan is annual.
 
 ## Multiple Companies
 
-Each launched Company chooses Standard or Pro independently. Joining a Company
-owned by another user is free unless you launch your own paid Company.
-
-## Inference usage
-
-Included monthly LLM tokens cover normal hosted agent execution. Usage above the
-included capacity may require a plan change, top-up, or your own provider key.
-
-See [Inference API](/docs/api/inference) for programmatic inference behavior.
+Each launched Company chooses Personal, Startup, or Scaleup independently.
+Joining a Company owned by another user is free unless you launch your own paid
+Company.
 
 ## Enterprise
 
-Enterprise plans are available for dedicated infrastructure, SSO, SLAs, audit
-logs, custom integrations, and higher capacity.
+More than 10 members, larger committed runtime credit capacity, dedicated
+infrastructure, SSO, SLAs, audit logs, or custom integrations are Enterprise.
+Book a call instead of trying to force those requirements through self-serve
+billing.
 
 ## See also
 

@@ -109,12 +109,12 @@ There's no separate "Portfolio" page. Treasury *is* the portfolio.
 | Flow | Source | Destination | Settled |
 |---|---|---|---|
 | **Subscription** | Personal card | aeqi platform | Per month |
-| **Inference top-up** | Plan change, top-up, or provider key | Inference provider via aeqi | Per usage policy |
+| **Runtime credit add-on** | Billing page | aeqi platform | Monthly subscription |
 | **Treasury** | Customers, investors, internal | Treasury balance | Protocol or off-chain settlement |
 
 Subscription does NOT debit treasury — failure modes diverge. A TRUST with no treasury but an active product still needs to keep running. Treasury is the TRUST's own money.
 
-Three money flows stay distinct: subscription, inference capacity, and treasury.
+Three money flows stay distinct: subscription, runtime credit capacity, and treasury.
 
 ## Templates — the locked-in shapes
 
