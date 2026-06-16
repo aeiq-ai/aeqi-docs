@@ -1,10 +1,16 @@
 # Factory Flow Reference
 
-The Factory is the core on-chain component for creating TRUSTs, funds, and company entities in aeqi. It is a multi-stage wizard for creating programmable companies with proper governance, vesting, and funding structures.
+> **Protocol / contract reference — deployment-dependent.** This page describes
+> the on-chain registration path for a Company's TRUST contract. Most operators
+> never touch it: launching a Company through the App, Architect, or API does not
+> require reading this. The canonical chain is **Solana**; the code shapes below
+> are illustrative of the provisioning model, not a literal current ABI.
+
+The Factory is the on-chain component for registering the TRUST contract behind a Company in aeqi. It is the multi-stage path that registers a programmable company's on-chain state — governance, vesting, and funding structures — when a deployment opts into the protocol layer.
 
 **Companion docs:**
-- [TRUST](/docs/concepts/trust) - the programmable company registered on-chain.
-- [Canonical templates](/docs/architecture/canonical-templates) - the four locked TRUST archetypes.
+- [TRUST](/docs/concepts/trust) - the on-chain vehicle behind a Company.
+- [Canonical templates](/docs/architecture/canonical-templates) - the four canonical Company archetypes.
 
 ## Architecture Philosophy
 
@@ -105,9 +111,17 @@ This allows template-agnostic discovery: instead of hardcoding budget IDs, the p
 
 ## Template Types
 
-The Factory ships with three template families:
+The Factory ships with the four canonical template families (matching
+[Canonical templates](/docs/architecture/canonical-templates) and
+[Org architecture](/docs/methodology/org-architecture)):
 
-### 1. Venture Template
+### 1. Entity Template
+
+- **Default**: 100% to directors
+- **Modules**: Roles, Treasury, Budget
+- **Use Case**: Minimal organizational structure (e.g., a service company)
+
+### 2. Venture Template
 
 - **Default Allocations**:
   - Founder Pool: 28%
@@ -118,16 +132,16 @@ The Factory ships with three template families:
 - **Modules**: Token, Governance, Roles, Vesting, Budget, AMM
 - **Use Case**: Startup cap tables with founder lockup and team vesting
 
-### 2. Fund Template
+### 3. Foundation Template
+
+- **Default**: No ownership token minted; mission-locked
+- **Modules**: Roles, Governance, Treasury, Budget
+- **Use Case**: Steward entity — governance and budget, no fundraising
+
+### 4. Fund Template
 
 - **Modules**: Fund, Governance, Roles, Treasury, Budget
-- **Use Case**: Venture fund with LP governance and fund management
-
-### 3. Entity Template
-
-- **Default**: 100% to directors
-- **Modules**: Roles, Treasury, Budget
-- **Use Case**: Minimal organizational structure (e.g., a service company)
+- **Use Case**: Venture fund with LP/GP governance and fund management
 
 ## Role Types
 
@@ -283,7 +297,7 @@ struct ResolvedConfig {
    - Role types are recognized
    - All addresses are valid
 
-3. **Contract-side** (Factory.sol):
+3. **Contract-side** (the on-chain Factory program):
    - Template is active
    - ipfsCid is non-zero
    - Declared signers array is non-empty
@@ -333,37 +347,22 @@ To add a new config type (e.g., permissions matrix, fee structure):
 
 ## Debugging & Operations
 
-### Verify the Smoke Test
-
-See [`click-to-dao-smoke-test.md`](https://aeqi.ai/docs) for the full recipe. Quick checks:
-
-```bash
-# Is Factory registered with templates?
-curl -sS http://127.0.0.1:8500/graphql -d \
-  '{"query":"{ blueprintsForFactory(factoryAddress: \"0x...\") { templateId } }"}' | jq .
-
-# Did the TRUST get registered?
-curl -sS http://127.0.0.1:8500/graphql -d \
-  '{"query":"{ trusts { id } }"}' | jq .
-```
+On Solana, on-chain addresses are base58 (not `0x`-hex), and the platform
+registry is per-environment Postgres. The checks below are illustrative; consult
+your deployment's runtime for exact endpoints and connection strings.
 
 ### Trace a Failed Provisioning
 
-Check the logs in order:
+Check the path in order:
 
 ```bash
-# 1. Platform received the request
-sudo journalctl -u aeqi-platform.service -n 100 | grep -i 'dao_provisioner\|registerTRUST'
+# 1. Platform received the provisioning request
+sudo journalctl -u aeqi-platform.service -n 100 | grep -i 'provision\|registerTRUST'
 
-# 2. Transaction was mined
-curl -sS http://127.0.0.1:8545 -X POST -H 'Content-Type: application/json' \
-  --data '{"jsonrpc":"2.0","method":"eth_getLogs","params":[...],"id":1}'
+# 2. The indexer observed the registration event on chain
 
-# 3. Indexer picked it up
-sudo journalctl -u aeqi-indexer.service -n 50 | grep -i 'TrustRegistered'
-
-# 4. Runtime placement was written
-sudo sqlite3 /var/lib/aeqi/platform.db \
+# 3. The runtime placement was written to the Postgres registry
+psql "$DATABASE_URL" -c \
   "SELECT entity_id, trust_address, status FROM runtime_placements WHERE trust_address IS NOT NULL;"
 ```
 

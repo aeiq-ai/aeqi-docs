@@ -9,21 +9,20 @@ credit allowance.
 ### Personal
 
 - **Price:** $0 today, then $49/month.
-- **Included capacity:** 1 member, 10k trial credits, then 100k credits/month
-  after trial, S server.
+- **Included capacity:** 1 member, 100 trial credits, then 1,000 credits/month
+  after trial, small runtime.
 - **Best for:** solo founder trial.
 
 ### Startup
 
-- **Price:** $99/month for the first 3 months for the First 100 companies, then
-  $190/month.
-- **Included capacity:** 3 members, 400k credits/month, M server.
+- **Price:** $190/month.
+- **Included capacity:** 3 members, 4,000 credits/month, team runtime.
 - **Best for:** founding teams.
 
 ### Scaleup
 
 - **Price:** $490/month.
-- **Included capacity:** 10 members, 2M credits/month, L server.
+- **Included capacity:** 10 members, 10,000 credits/month, scale runtime.
 - **Best for:** higher-capacity company operations.
 
 Every launch plan includes one hosted Company, Company profile, roles, agents,
@@ -34,22 +33,22 @@ quests, ideas, events, memory, managed hosting, API access, and MCP access.
 Runtime credits are USD-subunits for hosted execution capacity:
 
 ```text
-1,000 credits = $1 of runtime capacity
+100 credits = $1 of runtime capacity (1 credit = 1 cent)
 ```
 
 Plan credits are a monthly allowance. Runtime pauses at zero instead of creating
 surprise overage invoices.
 
-Personal starts with 10k trial credits during the 7-day card-required trial.
-After the trial converts, Personal receives 100k runtime credits/month.
+Personal starts with 100 trial credits during the 3-day card-required trial.
+After the trial converts, Personal receives 1,000 runtime credits/month.
 
 ## Monthly credit add-ons
 
 Paid-plan credit add-ons are separate monthly subscriptions:
 
-- **Pack:** 10k extra credits/month.
-- **Price:** $10/month.
-- **Self-serve limit:** up to 100k extra credits/month.
+- **Pack:** 250 extra credits/month.
+- **Price:** $25/month.
+- **Self-serve limit:** up to 250 extra credits/month.
 
 Personal add-ons unlock after the trial converts. Larger committed runtime
 credit packages are Enterprise.

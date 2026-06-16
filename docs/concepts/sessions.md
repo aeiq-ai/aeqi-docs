@@ -90,7 +90,7 @@ A session can target a Role rather than a specific occupant (`message_to(target=
 
 A session that needs a reply from a specific participant carries `awaiting_at` (the timestamp when it was set) and surfaces in their inbox until cleared. The cleared state is implicit: the next message from the awaited participant resets the awaiting marker.
 
-The legacy `awaiting_at` column will retire in Wave 5; the canonical mechanism is a system message with `payload.kind=decision_request` plus an `awaiting=<participant_id>` field.
+The legacy `awaiting_at` column is planned to retire; the canonical mechanism is a system message with `payload.kind=decision_request` plus an `awaiting=<participant_id>` field.
 
 ## What Sessions don't cover
 

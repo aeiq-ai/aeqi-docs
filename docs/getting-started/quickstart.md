@@ -26,15 +26,22 @@ See [Getting started](/docs/getting-started/getting-started) for the full app wa
 
 Create API keys from the dashboard when you want to connect MCP or CLI clients:
 
-- Account key (`ak_...`) from Account -> API.
-- Secret key (`sk_...`) from the Company API keys page.
+- Account key (`ak_...`) from Account -> API. Sent as `X-Api-Key`; it identifies which account you are.
+- Secret key (`sk_...`) from the Company API keys page. Sent as the Bearer token; it selects which Company runtime to drive.
 
 Hosted plans include monthly runtime credits for normal agent execution.
 
 ## 3. Connect
 
 ```bash
-AEQI_SECRET_KEY=sk_... AEQI_API_KEY=ak_... AEQI_PLATFORM_URL=https://app.aeqi.ai aeqi mcp
+AEQI_SECRET_KEY=sk_... AEQI_API_KEY=ak_... aeqi mcp
+```
+
+`AEQI_API_URL` defaults to `https://app.aeqi.ai`, so you can omit it against hosted
+aeqi. Set it only to point at a different deployment:
+
+```bash
+AEQI_SECRET_KEY=sk_... AEQI_API_KEY=ak_... AEQI_API_URL=https://app.aeqi.ai aeqi mcp
 ```
 
 The CLI authenticates with the platform and routes tool calls into your managed Company runtime.

@@ -20,7 +20,7 @@ external client                            ├── orchestrator
                                            └── workers
 ```
 
-A runtime hosts ONE Company's data and agents. The platform spawns and manages tenant runtimes; clients hit the platform proxy and get routed to the right runtime by `entity_id`.
+A runtime hosts ONE Company's data and agents. The platform spawns and manages tenant runtimes; clients hit the platform proxy and get routed to the right runtime by the per-request Company selector (`X-Company`, internally an `entity_id`).
 
 ## What lives in the runtime
 

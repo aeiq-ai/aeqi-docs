@@ -61,17 +61,18 @@ Director
 Boards can be flat. Operating teams can be hierarchical. The graph belongs to
 the company, not to any single agent.
 
-## Runtime roles and TRUST roles
+## Operating roles vs authority roles
 
 Not every role needs on-chain authority.
 
 | Tier | Where it lives | Purpose |
 |---|---|---|
 | Operating role | Runtime | Work routing, tool scope, responsibility |
-| Authority role | TRUST + runtime mirror | Treasury, governance, ownership, signer authority |
+| Authority role | Runtime, mirrored to the on-chain protocol layer | Treasury, governance, ownership, signer authority |
 
 A content researcher can be runtime-only. A director, treasury controller, or
-governance seat should be reflected in TRUST.
+governance seat carries an authority tier that is enforced through the
+[protocol layer](/docs/concepts/trust) rather than runtime convention alone.
 
 ## Role-addressed sessions
 

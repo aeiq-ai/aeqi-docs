@@ -37,9 +37,10 @@ The runtime's IPC bus exposes the lower-level handlers below. Most clients won't
 
 | Module | Handlers |
 |--------|----------|
-| `ipc/entities.rs` | `handle_entities`, `handle_create_entity`, `handle_update_entity`, `handle_delete_entity` |
+| `ipc/entities.rs` | `handle_entities` (returns `{ ok, roots: [...] }`), `handle_create_entity`, `handle_update_entity`, `handle_delete_entity`, plus per-Company view CRUD (`handle_list_views`, `handle_upsert_views`, `handle_delete_view`) |
+| `ipc/entity_agents.rs` | `handle_create_default_agent`, `handle_update_default_agent` |
 | `ipc/agents.rs` | `handle_agents_registry`, `handle_agent_children`, `handle_agent_spawn`, `handle_agent_delete`, `handle_agent_set_status`, `handle_agent_info`, `handle_agent_identity`, `handle_save_agent_file`, `handle_budget_policies`, `handle_create_budget_policy`, `handle_set_can_ask_director`, `handle_agent_recent_inference_calls` |
-| `ipc/roots.rs` | `handle_roots`, `handle_create_root`, `handle_update_root` |
+| `ipc/templates.rs` | `handle_list_templates`, `handle_template_detail`, `handle_spawn_template`, `handle_spawn_template_into_entity` — back the company-template catalog and spawn. (There is no `ipc/roots.rs` or `ipc/blueprints.rs` module.) |
 | `ipc/roles.rs` | role CRUD, occupancy, parent edges |
 
 ### Ideas, quests, events
@@ -82,10 +83,9 @@ These are runtime-internal verbs. From MCP/REST you reach them through the proxi
 
 ## On-chain verbs (planned)
 
-The on-chain protocol layer (TRUST registration, treasury transfers, governance proposals) is shipped on Solana programs (`aeqi_trust`, `aeqi_governance`, `aeqi_treasury`, modules) but is **not yet exposed as IPC verbs** from the orchestrator. Today these flow through:
+The on-chain protocol layer (Company registration, treasury transfers, governance proposals) is shipped as Solana programs under `projects/aeqi-solana/programs/` (`aeqi-factory`, `aeqi-company`, `aeqi-governance`, `aeqi-treasury`, plus module programs) but is **not yet exposed as IPC verbs** from the orchestrator. Today these flow through:
 
-- **Platform-side** — `POST /api/companies/create` (Solana company genesis), and orchestrator-internal calls into `solana_provisioner` / `dao_provisioner`.
-- **CLI** — `aeqi trust` subcommands operate the chain side.
+- **Platform-side** — `POST /api/companies/create` (Solana company genesis), the `/api/solana/*` operation routes, and orchestrator-internal calls into `solana_provisioner` / `dao_provisioner`.
 
 Per the protocol roadmap, the next slice exposes `treasury.transfer`, `treasury.swap`, `governance.propose`, `governance.vote`, `governance.execute`, and `trust.update` as first-class verbs gated by role authority. The doc that landed earlier listing them as already-shipped IPC verbs was aspirational — they don't yet exist in the orchestrator's IPC module.
 

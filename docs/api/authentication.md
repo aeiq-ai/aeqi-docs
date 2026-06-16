@@ -113,24 +113,43 @@ A single login-codes row backs all three. Either the typed 6-digit code or the c
 ```
 POST /api/auth/forgot-password
 POST /api/auth/reset-password
+POST /api/auth/change-password
 POST /api/me/email/change/begin
 POST /api/me/email/change/finish
 ```
 
-### Selecting a TRUST
+`forgot-password` / `reset-password` are the unauthenticated recovery pair;
+`change-password` changes the password for an already-authenticated session.
+
+### Profile
+
+Authenticated profile management:
+
+```
+POST /api/auth/update-profile
+POST /api/auth/update-avatar
+POST /api/auth/welcome/profile-name
+```
+
+`update-profile` and `update-avatar` edit the signed-in user's display profile.
+`welcome/profile-name` sets the display name during the first-run welcome flow.
+
+### Selecting a Company
 
 After login, the JWT authenticates the user. When a request needs to target a
-specific TRUST runtime — anything proxied through `/api/{*rest}` — the platform
-reads `X-Trust`:
+specific Company runtime — anything proxied through `/api/{*rest}` — the platform
+reads the `X-Company` header:
 
 ```
-X-Trust: <trust_id>
+X-Company: <company_id>
 ```
 
-The proxy also accepts `trust` or `trust_id` query parameters for browser flows
-that cannot set headers easily. If no TRUST is supplied, proxied runtime calls
-return `400`. Calls to non-tenant routes (`/api/keys`, `/api/billing/*`,
-`/api/trusts`, etc.) do not need `X-Trust`.
+`X-Entity` is still accepted as a fallback header. The proxy also accepts
+`company_id` (canonical) or `trust_id` (legacy alias) query parameters for
+browser flows that cannot set headers easily. If no Company is supplied,
+proxied runtime calls return `400 { "error": "X-Company header required" }`.
+Calls to non-tenant routes (`/api/keys`, `/api/billing/*`, `/api/companies`,
+etc.) do not need `X-Company`.
 
 ### Token lifecycle
 
@@ -153,8 +172,8 @@ For MCP and automation. Two keys, each with a distinct role:
 | Secret key | `sk_…` | One Company | `Authorization: Bearer sk_…` |
 | Account key | `ak_…` | Per user account | `X-Api-Key: ak_…` |
 
-The secret key authenticates the call against a specific TRUST (`user_id` and
-`trust_id` resolved from the key). The account key is optional but recommended
+The secret key authenticates the call against a specific Company (`user_id` and
+the Company id resolved from the key). The account key is optional but recommended
 for MCP — when present, the platform asserts that the secret key belongs to the
 same user, which guards against accidentally using a `sk_...` from a different
 account.
@@ -250,9 +269,12 @@ Account keys (`ak_…`) are identifiers — call `POST /api/account/api-key` to 
 | `Authorization: Bearer <jwt>` | Dashboard, in-browser REST | After a login flow |
 | `Authorization: Bearer sk_…` | MCP, automation | When calling on a Company's behalf |
 | `X-Api-Key: ak_…` | MCP, automation | Optional — pairs sk_ with the account |
-| `X-Trust: <trust_id>` | REST | Selects target TRUST for proxied calls |
+| `X-Company: <company_id>` | REST | Selects the target Company for proxied calls |
+| `X-Entity: <company_id>` | REST | Legacy fallback for `X-Company` |
 
-`X-Company` is not used.
+`X-Company` is the canonical proxy selector; `X-Entity` is accepted as a
+fallback. The proxy also reads a `company_id` (legacy alias `trust_id`) query
+parameter for browser flows that cannot set headers.
 
 ## Tiers
 

@@ -22,7 +22,7 @@ That Company includes:
 - events and sessions as operating history
 - memory that compounds across the company
 - API and MCP access for programmatic operation
-- staged treasury, governance, and ownership primitives
+- treasury, governance, and ownership primitives — staged, meaning deployment-dependent and not on by default
 
 The product starts with execution because execution creates operating truth. The
 company needs to know what happened, who acted, what changed, what was approved,

@@ -35,20 +35,20 @@ company knows, add what they learn, and carry context forward into future work.
 
 That makes the company smarter over time.
 
-## Activation modes
+## How ideas activate
 
-Ideas can be used in different ways:
+There is no "mode" flag on an idea. Activation is event-driven. When a session
+starts, a `session:start` handler in the runtime assembles the relevant ideas —
+an agent's identity and standing instructions (ideas tagged `identity` +
+`evergreen`) plus anything retrieved for the work at hand — and appends them to
+the system prompt. "Always-loaded" is just a convention layered through that
+event, not a property of the row.
 
-| Mode | Behavior |
-|---|---|
-| Always | Loaded into relevant sessions by default |
-| Recall | Retrieved when needed |
-| Event | Activated by a trigger |
-| Attached | Bound to a quest, role, agent, or session |
-
-Agent identity can be represented as always-available ideas. Company strategy
-can be stored as evergreen ideas. Quest-specific context can be attached only to
-the work that needs it.
+So agent identity reads as evergreen identity ideas; company strategy as
+evergreen ideas; quest-specific context as ideas attached to the quest. The
+mechanism is the same retrieval-and-assembly path in every case. For the
+developer view of scopes, ranking, and the MCP/REST surface, see
+[Ideas](/docs/concepts/ideas).
 
 ## Memory and accountability
 

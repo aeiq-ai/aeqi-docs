@@ -17,9 +17,9 @@ There is no separate slug column. The URL segment in `app.aeqi.ai/<slug>` IS the
 
 ## The reserved-slug deny list
 
-The frontend router needs to know which top-level segments are app shell, auth, or assets — never public profiles. A naive `/:slug` route would shadow `/me`, `/start`, `/admin`, every API namespace, and every static prefix.
+The frontend router needs to know which top-level segments are app shell, auth, or assets — never public profiles. A naive `/:slug` route would shadow `/account`, `/start`, `/admin`, every API namespace, and every static prefix.
 
-`apps/ui/src/App.tsx` defines `RESERVED_SLUGS` as the source of truth: `api`, `auth`, `me`, `c`, `trust`, `start`, `studio`, `economy`, `blueprints`, `signup`, `login`, `verify`, `waitlist`, `reset-password`, `invitations`, `admin`, `agents`, `change-password`, `sessions`, `assets`, `static`, `signin`. Any new top-level shell path must land in this set in the same diff.
+`apps/ui/src/App.tsx` defines `RESERVED_SLUGS` as the source of truth: `api`, `auth`, `account`, `c`, `company`, `launch`, `templates`, `markets`, `economy`, `referrals`, `acting-as`, `inbox`, `start`, `network`, `identity`, `onboarding`, `signup`, `login`, `verify`, `waitlist`, `reset-password`, `invitations`, `admin`, `agents`, `change-password`, `sessions`, `assets`, `static`, `signin`. Any new top-level shell path must land in this set in the same diff.
 
 ```tsx
 function PublicProfileRoute({ protectedFallback }) {

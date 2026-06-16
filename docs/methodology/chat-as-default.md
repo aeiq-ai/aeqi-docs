@@ -2,18 +2,16 @@
 
 Every conversation-primary surface in aeqi opens on the chat. The other things — settings, configuration, tools, integrations — live one click deeper, in a `/settings/` sub-surface. The rail is in settings, not next to the chat.
 
-Locked v0.57.0 in the drilled-agent redesign (commit `e8305fc6`).
-
 ## The rule
 
 A surface whose primary verb is "talk" defaults to its transcript.
 
 | Surface | Default URL | Settings URL |
 |---|---|---|
-| Agent (drilled) | `/trust/<address>/agents/<id>/` | `/trust/<address>/agents/<id>/settings/` |
-| Entity inbox | `/trust/<address>/inbox` | (no separate settings — config lives on `/account` and per-agent rails) |
+| Agent (drilled) | `/company/<address-or-id>/agents/<id>/` | `/company/<address-or-id>/agents/<id>/settings/` |
+| Entity inbox | `/company/<address-or-id>/inbox` | (no separate settings — config lives on `/account` and per-agent rails) |
 | Idea detail | `/ideas/<id>` | (no separate settings — the body is the thread) |
-| Trust channels | `/trust/<address>/channels/<sid>` | `/trust/<address>/settings` |
+| Company channels | `/company/<address-or-id>/channels/<sid>` | `/company/<address-or-id>/settings` |
 
 The default surface ships header + chat. Settings ships header + rail + body. The two never overlap; you don't see the rail while you're typing, and you don't see the composer while you're flipping tools on and off.
 
@@ -29,12 +27,12 @@ This matches the [inbox-is-the-chat](/docs/methodology/inbox-is-the-chat) lock f
 
 A drilled-agent surface is the canonical reference.
 
-**Default** (`/trust/<address>/agents/<id>/` or `.../inbox/<session>`):
+**Default** (`/company/<address-or-id>/agents/<id>/` or `.../inbox/<session>`):
 - Header: back · agent name · `+ New session` · Settings link
 - Body: full-width chat — `SessionsRail` on the left if the agent has multiple sessions, `SessionDetail` + `Composer` on the right
 - No nav rail
 
-**Settings** (`/trust/<address>/agents/<id>/settings/<tab>`):
+**Settings** (`/company/<address-or-id>/agents/<id>/settings/<tab>`):
 - Header: back · agent name · breadcrumb (one level deeper)
 - Left rail: Overview · Personality · Quests · Events · Ideas · Channels · Treasury · Tools · Integrations
 - Body: the selected tab
@@ -44,7 +42,7 @@ The rail is the agent's full configuration surface. It is not removed; it is mov
 The same shape extends:
 
 - **Idea detail** already shipped this way. The body **is** the thread; "settings" is degenerate because an Idea's properties are inline-editable in the header. Reference shape.
-- **Personal inbox** and **Trust channels** follow when their settings sub-surfaces ship.
+- **Personal inbox** and **Company channels** follow when their settings sub-surfaces ship.
 - **Future channel detail surfaces** (Telegram, Slack, email per-thread views) inherit the rule by default.
 
 ## Backward compatibility
@@ -57,7 +55,7 @@ When a future surface relocates its rail this way, mirror the pattern: a constan
 
 This is not "hide the configuration." Settings is one click away, linked from the surface header, discoverable. The point is the **default** — what a returning user sees when they type the URL or click the agent in the sidebar.
 
-This is also not "every page is a chat." Surfaces whose primary verb is configuration (`/settings/*`, `/c/<entity>/governance`, billing) default to their config. The rule is asymmetric: chat-primary defaults to chat; config-primary defaults to config. Neither steals the other's default.
+This is also not "every page is a chat." Surfaces whose primary verb is configuration (`/settings/*`, `/company/<address-or-id>/governance`, billing) default to their config. The rule is asymmetric: chat-primary defaults to chat; config-primary defaults to config. Neither steals the other's default.
 
 ## Related
 

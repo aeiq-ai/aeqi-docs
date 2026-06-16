@@ -40,7 +40,7 @@ Pick **aeqi**. Give your Company a name. Click **Create**.
 
 A few things happen at once:
 
-1. A workspace is provisioned (a fresh tenant on its own port).
+1. A workspace is provisioned (a fresh tenant on its own managed runtime).
 2. Initial roles and the primary agent are seeded.
 3. Ideas are created for the Company mission and operating context.
 4. Events schedule the first operating rhythm.
@@ -86,11 +86,11 @@ This is "[Path B](/docs/patterns/oauth-path-b)" — per-agent OAuth. The pattern
 
 From this point on, the agent can:
 
-- Send mail from your shared inbox (`gmail.send`).
-- Search and reply (`gmail.search`).
-- Find busy times (`calendar.find_busy`), propose slots (`calendar.propose_slots`), create meetings (`calendar.create_event`), generate Meet links (`meet.create`).
+- Send mail from your shared inbox.
+- Search and reply.
+- Find busy times, propose slots, create meetings, and generate Meet links.
 
-Tools call the right account because credentials are scoped by `(scope_kind=Agent, scope_id=<this agent>, provider=google)`.
+Tools call the right account because the credentials are scoped to this agent. See [Per-agent OAuth](/docs/patterns/oauth-path-b) for the scoping model.
 
 ## 6. Spawn a Quest
 
@@ -99,7 +99,7 @@ Quests are units of work. Open the **Quests** tab and click **+ New quest**.
 | Field | Example |
 |-------|---------|
 | Subject | "Draft Q3 launch announcement" |
-| Description | "Long-form post for the blog. 600–800 words. Voice: confident, technical, restrained. Reference the v0.41.0 co-creation release." |
+| Description | "Long-form post for the blog. 600–800 words. Voice: confident, technical, restrained. Reference the co-creation release." |
 | Priority | `high` |
 | Assigned agent | The primary agent |
 

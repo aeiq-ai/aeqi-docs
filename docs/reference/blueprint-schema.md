@@ -1,34 +1,40 @@
-# Blueprint schema
+# Company template schema
 
-A blueprint is a JSON manifest describing a TRUST starter kit: one root agent plus seed agents, events, ideas, quests, and roles. The runtime spawns a fresh TRUST from this manifest in one IPC call.
+A company template is a JSON manifest describing a Company starter kit: one root agent plus seed agents, events, ideas, quests, roles, and views. The runtime spawns a fresh Company from this manifest in one IPC call.
 
-The canonical Rust type is `aeqi_orchestrator::ipc::blueprints::Blueprint`. The on-disk JSON in `aeqi/presets/blueprints/*.json` is the source of truth for editing. The current public catalog embeds only `aeqi.json`; the other manifests are draft inventory until they pass a fresh product and protocol audit.
+The canonical Rust type is `aeqi_orchestrator::ipc::templates::CompanyTemplate`. The on-disk JSON lives at `aeqi/presets/templates/*.json` and is the source of truth for editing. The product ships **exactly two** company templates (founder decision 2026-06-10): `new-company.json` and `existing-company.json`. Other manifests are draft inventory under `presets/templates/drafts/` until they pass a fresh product and protocol audit.
+
+> The older `Blueprint` naming and the `/api/blueprints/*` routes are still present for backward compatibility; the catalog they return is the same company-template set.
 
 ## Shape
 
 ```jsonc
 {
-  "slug": "aeqi",
-  "name": "aeqi",
-  "tagline": "Start a TRUST with one primary agent and one operating steward.",
+  "slug": "new-company",
+  "name": "New company",
+  "tagline": "Start a new company with a full team behind one CEO ...",
   "description": "...",
 
-  // User-facing category. Free-form string, defaults to "".
+  // User-facing category. One of: "company" | "foundation" | "fund". Defaults to "".
   "category": "company",
 
   // On-chain archetype. One of: "entity" | "venture" | "foundation" | "fund".
   // The Factory expects templateId = keccak256(template).
-  "template": "venture",
+  "template": "entity",
 
-  // Required. The single root agent that owns the TRUST.
+  // Required. The single root agent that owns the Company.
   "root": {
-    "name": "aeqi",
-    "model": "anthropic/claude-sonnet-4.6",
+    "name": "CEO",
+    "model": "deepseek/deepseek-v4-flash",
     "color": "#0a0a0b",
-    "avatar": "rocket",
     "system_prompt": "...",
-    "proactive_greeting": "Hi — I'm your Founder. ..."
+    "proactive_greeting": "I'm your CEO — your single point of contact ..."
   },
+
+  // Optional. Saved dashboard views installed at spawn.
+  "seed_views": [
+    { "key": "my-sessions", "label": "My sessions", "path": "sessions", "search": "?view=mine", "pinned": true }
+  ],
 
   // Optional. Child agents under root. owner is always "root" in v1.
   "seed_agents": [
@@ -72,8 +78,8 @@ The canonical Rust type is `aeqi_orchestrator::ipc::blueprints::Blueprint`. The 
   "seed_quests": [
     {
       "owner": "root",
-      "subject": "Define the TRUST mission",
-      "description": "Write the one-sentence mission into the TRUST mission idea.",
+      "subject": "Define the Company mission",
+      "description": "Write the one-sentence mission into the Company mission idea.",
       "labels": ["onboarding"]
     }
   ],
@@ -114,9 +120,10 @@ The canonical Rust type is `aeqi_orchestrator::ipc::blueprints::Blueprint`. The 
 | `name` | string | yes | User-facing display name. |
 | `tagline` | string | no | One-liner. Defaults to `""`. |
 | `description` | string | no | Long form. Defaults to `""`. |
-| `category` | string | no | Free-form display category. Defaults to `""`. |
-| `template` | string | no | On-chain archetype slug. One of `entity`, `venture`, `foundation`, `fund`. The Factory routes provisioning by `keccak256(template)`. Defaults to `""`. |
+| `category` | string | no | Display category. One of `company`, `foundation`, `fund`. Defaults to `""`. |
+| `template` | string | no | On-chain archetype slug. One of `entity`, `venture`, `foundation`, `fund`. The Factory routes provisioning by `keccak256(template)`. Both shipped company templates use `entity`. Defaults to `""`. |
 | `root` | object | yes | The single root agent (see [Root agent](#root-agent)). |
+| `seed_views` | array | no | Saved dashboard views installed at spawn. Defaults to `[]`. |
 | `seed_agents` | array | no | Child agents. Defaults to `[]`. |
 | `seed_events` | array | no | Event handlers. Defaults to `[]`. |
 | `seed_ideas` | array | no | Seed memory. Defaults to `[]`. |
@@ -126,7 +133,7 @@ The canonical Rust type is `aeqi_orchestrator::ipc::blueprints::Blueprint`. The 
 
 ### Root agent
 
-`root` is a single `RootAgentSpec`, not an array. Every TRUST has exactly one root agent.
+`root` is a single `DefaultAgentSpec`, not an array. Every Company has exactly one root agent.
 
 | Field | Type | Notes |
 |-------|------|-------|
@@ -188,54 +195,60 @@ Each `SeedAgentSpec` matches the root shape plus an `owner` field. In v1, `owner
 
 ## Catalog endpoints
 
-Public, no auth required:
+Public, no auth required. Two parallel families return the same company-template catalog:
 
 ```
-GET /api/blueprints                 # Catalog summary (kind, slug, name, tagline, counts)
-GET /api/blueprints/{slug}          # Full Blueprint JSON for one entry
+GET /api/templates                  # Company launch catalog (templates[] + agent_templates[])
+GET /api/templates/default          # The default launch template (new-company)
+GET /api/templates/{slug}           # Full template JSON for one slug
+
+GET /api/blueprints                 # Legacy alias: same catalog under blueprints[]
+GET /api/blueprints/default         # Configured default blueprint slug
+GET /api/blueprints/{slug}          # Full template JSON for one slug
 ```
 
-Catalog entries carry `kind: "single"` so the frontend can branch consistently if other blueprint families ship later. They include counts (`agent_count`, `event_count`, `idea_count`, `quest_count`) plus a trimmed `root` (name/model/color) for card rendering.
+The `/api/templates` family is the current launch surface; `/api/blueprints` is retained for older clients. Both wrap `full_catalog()` over the two shipped company templates. List responses carry the catalog plus a parallel `agent_templates[]`; detail responses include the full `seed_agents` / `seed_events` / `seed_ideas` / `seed_quests` arrays.
 
 ## Provisioning
 
-Spawn a TRUST from a blueprint with one of:
+Spawn a Company from a template with one of:
 
 ```
-POST /api/start/launch              # TRUST via the /start experience
+POST /api/start/launch              # Company via the /start experience
 POST /api/architect/deploy          # Architect-generated inline JSON instead of a catalog slug
 POST /api/blueprints/spawn          # Tenant-scoped IPC spawn (proxied to the runtime)
 ```
 
-`/api/start/launch` is the canonical user-facing path; `/api/blueprints/spawn` is the lower-level IPC verb the orchestrator owns. Both pass through gates on subscription status and the workspace company cap.
+`/api/start/launch` is the canonical user-facing path; `/api/blueprints/spawn` is the lower-level IPC verb the orchestrator owns (it maps to the `spawn_template` handler in `ipc/templates.rs`). Both pass through gates on subscription status and the workspace company cap.
 
 ## Built-in catalog
 
-The platform binary embeds this public manifest (`aeqi-platform/blueprints/aeqi.json`, mirrored from `aeqi/presets/blueprints/aeqi.json`):
+The runtime and platform binaries embed these two manifests via `include_str!` from `aeqi/presets/templates/`:
 
-| Slug | Template |
-|------|----------|
-| `aeqi` | venture |
+| Slug | Template | What |
+|------|----------|------|
+| `new-company` | entity | A new company with a full team behind one CEO. The default launch template. |
+| `existing-company` | entity | Import an existing operation: map bottlenecks and open the first improvement quest. |
 
-Draft manifests can still live under `aeqi/presets/blueprints/`, but they are not part of the public catalog until they are explicitly added to the embedded list in both runtime and platform. Each blueprint declares its on-chain template via `template`; the Factory expects `keccak256(template)`, **not** `keccak256(slug)`.
+Draft manifests live under `aeqi/presets/templates/drafts/`, but they are not part of the public catalog until they are explicitly promoted. Each template declares its on-chain archetype via `template`; the Factory expects `keccak256(template)`, **not** `keccak256(slug)`.
 
 ## Editing
 
 ```bash
 # Edit the source
-$EDITOR aeqi/presets/blueprints/aeqi.json
+$EDITOR aeqi/presets/templates/new-company.json
 
-# Rebuild — blueprints are embedded via include_str!
+# Rebuild — templates are embedded via include_str!
 cd aeqi && ./scripts/deploy.sh
 # Then redeploy the platform binary so it picks up the new catalog
 ```
 
 Tips:
 
-- Blueprints are embedded at compile time. JSON edits require a full rebuild + redeploy.
+- Templates are embedded at compile time. JSON edits require a full rebuild + redeploy.
 - Don't rename `slug` — it's the catalog primary key and ends up in URLs.
 - Don't rename role `key`s — they're load-bearing for `seed_role_edges`.
-- Test a new blueprint locally with `aeqi start` then `POST /api/blueprints/spawn` against the local runtime, or `POST /api/start/launch` against the hosted platform once the new JSON ships.
+- Test a new template locally with `aeqi start` then `POST /api/blueprints/spawn` against the local runtime, or `POST /api/start/launch` against the hosted platform once the new JSON ships.
 
 ## Related
 

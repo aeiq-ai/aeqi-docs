@@ -1,18 +1,18 @@
 # Org architecture
 
-A TRUST in aeqi is a graph of slots and edges, not a table of titles. This page explains how the pieces fit: TRUSTs, Roles, ownership tokens, and governance.
+A Company in aeqi is a graph of slots and edges, not a table of titles. This page explains how the pieces fit: Companies, Roles, ownership tokens, and governance. (The Company's on-chain vehicle is the TRUST contract; this page names it only where the on-chain artifact is what's actually meant.)
 
-## TRUSTs are entities
+## Companies are entities
 
-A TRUST is the programmable company in aeqi: a workspace with a fresh UUID, a SQLite database, runtime state, and optional protocol state. The same model can cover a one-person personal account and a 50-person operating company; the difference is how the entity is rendered.
+A Company is the programmable operating shell in aeqi: a workspace with its own entity ID, a runtime database, runtime state, and optional protocol state. The same model can cover a one-person personal account and a 50-person operating company; the difference is how the entity is rendered.
 
 | URL | Shape |
 |---|---|
-| `/trust/<address>/*` | Every entity — your personal entity or a joint TRUST — lives here once it's registered on chain. Rail: Overview · Roles · Ownership · Treasury · Governance. Single-occupant entities collapse Roles/Ownership/Governance gracefully. |
-| `/c/<entity_id>/*` | Transient fallback for entities pre-registration. 308 redirects to `/trust/<address>/*` once the on-chain registration completes. |
-| `/account` | User-scoped settings only (auth, billing, signers). Not an entity surface — your own entity is at `/trust/<your-address>/*`. |
+| `/company/<address-or-id>/*` | The canonical operating-system route. Every entity — your personal entity or a joint Company — lives here. Rail: Overview · Roles · Ownership · Treasury · Governance. Single-occupant entities collapse Roles/Ownership/Governance gracefully. |
+| `/trust/<address>/*` | Legacy alias. Replace-redirects to `/company/<address-or-id>/*` after the entity hydrates. Old bookmarks keep working. |
+| `/account` | User-scoped settings only (auth, billing, signers). Not an entity surface — your own entity is at `/company/<your-address-or-id>/*`. |
 
-Same underlying contract. One canonical URL shape; everything is an entity.
+One canonical URL shape; everything is an entity.
 
 ## Roles are the org chart
 
@@ -38,18 +38,18 @@ Two distinct layers, kept orthogonal.
 
 | Layer | `role_type` | Who | Where it lives | Power |
 |---|---|---|---|---|
-| **Board** | `director` | Founders typically | On-chain TRUST contract + runtime mirror | Governance: signs the smart account, votes proposals. |
+| **Board** | `director` | Founders typically | On-chain TRUST contract + runtime mirror | Governance: signs the smart account, votes proposals. (TRUST here is the literal on-chain contract.) |
 | **Org chart** | `operational` | CEO + C-suite + reports + agents | Runtime only | Operational: spawn agents, configure tools, route work. |
 
 C-suite operational titles are NOT directors. CFO, CMO, CLO, CISO are `role_type='operational'`. They report to CEO via `role_edges`, not via signing authority. They get on-chain bindings only if and when the founder explicitly elects them to the board (rare; usually only founders are board).
 
 A founder typically holds both — one Director seat plus a CEO seat. Two rows for the same human.
 
-The bug pattern to watch (2026-05-06): creating CFO/CMO/CLO/CISO as `role_type='director'` made the on-chain board count jump from 1 to 5. Don't ship director-typed roles for non-board seats.
+Operational seats (CFO/CMO/CLO/CISO) must not be typed as `director`: a director-typed role binds to the on-chain board and inflates the signer count. Reserve `director` for actual board seats.
 
 ## Ownership tokens — the cap table
 
-For Venture-template TRUSTs, ownership can become protocol state. The TRUST tracks ownership issuance, transfer restrictions, and cap-table state when enabled.
+For Venture-template Companies, ownership can become protocol state. The Company tracks ownership issuance, transfer restrictions, and cap-table state when enabled.
 
 | Mechanism | Purpose |
 |---|---|
@@ -60,7 +60,7 @@ For Venture-template TRUSTs, ownership can become protocol state. The TRUST trac
 
 Ownership tokens are independent from governance tokens. A Director-tier role doesn't automatically hold equity; equity holders don't automatically have a board seat. Two distinct authorities.
 
-For Foundation-template TRUSTs, no ownership token is minted. Mission-locked, governance-only.
+For Foundation-template Companies, no ownership token is minted. Mission-locked, governance-only.
 
 ## Governance — proposals and votes
 
@@ -83,7 +83,7 @@ Vote weight is configured per template:
 
 | Template | Voting basis |
 |---|---|
-| Entity | None or Director-tier 1-of-N, depending on the TRUST's configured roles. |
+| Entity | None or Director-tier 1-of-N, depending on the Company's configured roles. |
 | Venture | Token-weighted + Director veto. |
 | Foundation | Director-tier multi-sig + Protector role veto. |
 | Fund | LP/GP weighted. |
@@ -100,7 +100,7 @@ Treasury is the canonical financial surface. It folds three lenses:
 | **Budgets** | Allocated spend per role / per agent / per project. |
 | **Transactions** | Inbound and outbound history. |
 
-A Treasury row is the same primitive at every entity scope — a joint TRUST's `/trust/<address>/treasury` and your personal entity's `/trust/<your-address>/treasury` render through the same code path and the same UI.
+A Treasury row is the same primitive at every entity scope — a joint Company's `/company/<address-or-id>/treasury` and your personal entity's `/company/<your-address-or-id>/treasury` render through the same code path and the same UI.
 
 There's no separate "Portfolio" page. Treasury *is* the portfolio.
 
@@ -112,13 +112,13 @@ There's no separate "Portfolio" page. Treasury *is* the portfolio.
 | **Runtime credit add-on** | Billing page | aeqi platform | Monthly subscription |
 | **Treasury** | Customers, investors, internal | Treasury balance | Protocol or off-chain settlement |
 
-Subscription does NOT debit treasury — failure modes diverge. A TRUST with no treasury but an active product still needs to keep running. Treasury is the TRUST's own money.
+Subscription does NOT debit treasury — failure modes diverge. A Company with no treasury but an active product still needs to keep running. Treasury is the Company's own money.
 
 Three money flows stay distinct: subscription, runtime credit capacity, and treasury.
 
-## Templates — the locked-in shapes
+## Templates — the canonical shapes
 
-Four canonical TRUST templates ship today:
+Four canonical Company templates ship today:
 
 - **Entity** — flexible shell. No enforced state machine. Custom org structures.
 - **Venture** — growth engine. Cap table, vesting, governance, fundraising rounds.
@@ -127,24 +127,24 @@ Four canonical TRUST templates ship today:
 
 See [Canonical templates](/docs/architecture/canonical-templates) for the contract-level configuration.
 
-## Stack blueprints — multi-TRUST graphs
+## Stack blueprints — multi-Company graphs
 
-A stack blueprint is a graph of (single-blueprint, name) tuples + cross-TRUST edges. Use it to ship a multi-TRUST structure as a unit:
+A stack blueprint is a graph of (single-blueprint, name) tuples + cross-Company edges. Use it to ship a multi-Company structure as a unit:
 
 - **Founder + spinout** — personal entity holds 30% + Founder role in a venture spinout.
 - **VC fund + 3 portfolio companies** — fund holds 20% + Director role in each.
 
-The wizard provisions all entities in topo-sorted order. On-chain edges (TokenOwnership transfers, RoleAssignment writes, scheduled treasury flows) are stubbed in v1; W33B worktree implements them. See [Stack blueprints](/docs/reference/blueprint-schema).
+The wizard provisions all entities in topo-sorted order. The cross-company on-chain edges (ownership transfers, role assignment writes, scheduled treasury flows) are not yet written on chain. See [Stack blueprints](/docs/reference/blueprint-schema).
 
 ## Summary
 
-- A TRUST is the programmable company. It has an ID and optional protocol address.
+- A Company is the programmable operating shell. It has an entity ID and an optional on-chain address.
 - Roles are the org-chart slots; agents and humans occupy them.
 - Authority is the transitive closure over `role_edges`.
 - Board (`director`) is on-chain governance; org chart (`operational`) is runtime only.
 - Treasury folds balance + budgets + transactions.
-- Templates are locked-in TRUST configurations; pick at creation.
-- Stacks are multi-TRUST graphs.
+- Templates are canonical Company configurations; pick at creation.
+- Stacks are multi-Company graphs.
 
 ## Related
 

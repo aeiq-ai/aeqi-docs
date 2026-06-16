@@ -19,7 +19,7 @@ Quests live in `sessions.db` (NOT `aeqi.db` — common mistake). Ideas live in `
 entities(
   id          TEXT PRIMARY KEY,    -- UUID; the workspace/TRUST id
   display_name TEXT,
-  blueprint   TEXT,                 -- e.g. "aeqi"
+  blueprint   TEXT,                 -- launch template slug, e.g. "new-company"
   trust_address TEXT?,              -- on-chain TRUST contract; NULL pre-registration
   created_at  INTEGER
 )
@@ -201,7 +201,7 @@ Restore is the reverse — drop the new files in place and restart the service.
 
 ## Per-tenant isolation
 
-Each tenant runtime has its own data directory; the platform proxy routes `X-Entity` headers to the right tenant and the runtime never sees other tenants' data. The data directory's location depends on whether the tenant runs sandboxed or in-host:
+Each tenant runtime has its own data directory; the platform proxy routes the per-request Company selector (`X-Company`, fallback `X-Entity`) to the right tenant and the runtime never sees other tenants' data. The data directory's location depends on whether the tenant runs sandboxed or in-host:
 
 | Placement | systemd unit | Data directory |
 |---|---|---|

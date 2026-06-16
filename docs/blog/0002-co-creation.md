@@ -17,7 +17,7 @@ Pick a blueprint. Name your Company. Click Spawn. About 90 seconds later you hav
 - **Ideas seeded** — mission, values, default SOPs, regulatory tracker (when relevant). The reference shape: aeqi ships with 45 Ideas out of the gate.
 - **Events scheduled** — daily standups, weekly reviews, monthly compliance checks, quarterly board prep. 28 in the aeqi reference. Paused by default; you flip them on as you need them.
 - **Kickoff Quests open** — 3 to 5 work items per agent, ready to pick up. "Help me calibrate my voice." "Connect your shared mailbox." "Draft your first 30 days."
-- **TRUST registered** — on-chain. Optional; you can defer if you want runtime-only.
+- **Company registered on-chain** — optional; you can defer if you want runtime-only.
 
 The workspace is alive before you write the first message.
 

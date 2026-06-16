@@ -1,8 +1,8 @@
 # Co-creation
 
-A blueprint doesn't spawn a static folder. It creates a living TRUST — agents already greeting you, kickoff Quests already open, Ideas already seeded. The workspace then *interviews* you to fill in the gaps.
+A blueprint doesn't spawn a static folder. It creates a living Company — agents already greeting you, kickoff Quests already open, Ideas already seeded. The workspace then *interviews* you to fill in the gaps.
 
-This is the Co-creation thesis (the v0.41.0 release framing). Same shape both ways: the product captures user thought; the founder captures founder thought.
+This is the Co-creation thesis. Same shape both ways: the product captures user thought; the founder captures founder thought.
 
 ## The capture-and-expand loop
 
@@ -28,9 +28,9 @@ When a blueprint is provisioned (single or stack), the workspace boots with:
 | Ideas | Mission, values, default SOPs, regulatory tracker (when applicable). |
 | Events | Daily/weekly/monthly cadences, paused by default. |
 | Kickoff Quests | One or two open Quests per agent: "Draft your first 30 days," "Connect your shared mailbox," etc. |
-| TRUST | On-chain registration (when the user opts to register; can be deferred). |
+| On-chain registration | The Company's TRUST contract is registered on chain when the user opts in; can be deferred. |
 
-The aeqi reference company ships with 7 agents, 11 roles, 45 ideas, 28 events, 3 open kickoff Quests. That's the reference shape.
+The aeqi reference company ships with roughly seven agents and a dozen-plus roles, plus seeded Ideas, Events, and a handful of open kickoff Quests. That's the reference shape.
 
 ## Agent-driven onboarding
 

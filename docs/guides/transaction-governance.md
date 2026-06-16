@@ -2,6 +2,16 @@
 
 This document outlines best practices for handling transactions and governance operations in the aeqi platform. These patterns ensure consistency, security, and excellent user experience across the entire application.
 
+> **Chain context.** The code in this guide is the **EVM** layer: wagmi hooks
+> (`useWriteContract`, `writeContractAsync`), TypeChain factories
+> (`TRUST__factory`, `TokenModule__factory`, `FundingModule__factory`), and
+> `0x`-prefixed addresses/calldata. aeqi's Solana governance programs (under
+> `projects/aeqi-solana/`) expose the same logical operations through Anchor,
+> not these factory patterns — don't copy these snippets onto the Solana layer.
+> Identifiers containing `TRUST` (`TRUST__factory`, `trustContract`,
+> `trust_address`) are on-chain contract/protocol names and are kept verbatim;
+> user-facing prose says "Company".
+
 ## Table of Contents
 
 - [Transaction Handling](#transaction-handling)
@@ -164,7 +174,7 @@ interface ProposalModalConfig {
 Always generate calldata using contract factories:
 
 ```typescript
-// For TRUST configuration updates
+// For Company configuration updates (TRUST is the on-chain contract name)
 const calldata = TRUST__factory.createInterface().encodeFunctionData(
   'setBytesConfig',
   [

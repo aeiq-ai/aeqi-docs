@@ -1,6 +1,6 @@
 # Hello, aeqi
 
-aeqi creates TRUSTs: programmable companies for the agent economy.
+aeqi creates Companies: programmable companies for the agent economy.
 
 The thesis is short: a company is a state machine; it should be implemented as one. The corporate form is a 400-year-old technology running on a deprecated substrate — paper, email, spreadsheets, manual reconciliation between intent and reality. Every institution drifts. The cap table is out of date. The org chart in the wiki doesn't match the org chart in someone's head. The decision in the meeting hasn't propagated to the contract.
 
@@ -10,9 +10,9 @@ aeqi is the substrate.
 
 ## What we built
 
-A hosted Company runtime with SQLite state, embedded dashboard, and isolated operating history. One runtime can run a TRUST - agents, roles, events, quests, ideas, sessions, and memory - under a single tenant. Hosted access opens through the launch plans; private deployment is scoped with customers that need it.
+A hosted Company runtime with SQLite state, embedded dashboard, and isolated operating history. One runtime can run a Company - agents, roles, events, quests, ideas, sessions, and memory - under a single tenant. Hosted access opens through the launch plans; private deployment is scoped with customers that need it.
 
-On top: a protocol layer. Every TRUST can carry treasury, governance, ownership, and role authority as programmable state. Cap tables stop being disconnected PDFs. They become company state.
+On top: a protocol layer. Every Company can carry treasury, governance, ownership, and role authority as programmable state. Cap tables stop being disconnected PDFs. They become company state.
 
 We picked four operating primitives and we hold the line:
 
@@ -21,7 +21,7 @@ We picked four operating primitives and we hold the line:
 - **Quests** answer **WHAT**. Structured units of work with goals, worktrees, outcomes.
 - **Ideas** answer **HOW**. The universal data noun: knowledge, files, structured records, anything the company stores.
 
-Roles define authority, Sessions carry conversation, and TRUST is the
+Roles define authority, Sessions carry conversation, and the Company is the
 programmable company vehicle. Every other word someone tries to add (Customer,
 Contact, Vendor, Document, Project, Campaign) reduces to a saved view over
 Ideas.
@@ -50,15 +50,15 @@ The marginal cost of forming and operating a company moves toward zero. More ven
 
 ## What's shipping right now
 
-- **Click-to-TRUST.** Sign up, pick a blueprint, name it, deploy. The launch path creates the company runtime and anchors the TRUST through the protocol path as the rollout stage allows.
+- **Click-to-launch.** Sign up, pick a blueprint, name it, deploy. The launch path creates the company runtime and anchors the Company on-chain through the protocol path as the rollout stage allows.
 - **Agent runtime.** The core primitives are live. Agents greet you, open kickoff Quests, ask the right questions, and build the company's context.
 - **API and MCP.** The same company state is reachable from the web UI, REST API, and MCP clients.
 - **aeqi-inference.** OpenAI-compatible chat completions for agent execution.
-- **Payments and billing.** Hosted plans and usage-based inference are staged so companies can pay for the runtime and the work it performs.
+- **Payments and billing.** Hosted plans and usage-based inference are live so companies can pay for the runtime and the work it performs.
 
 ## What we don't say
 
-We don't say "DAO" in user-facing copy. A TRUST is a smart account with role-based authority; "DAO" is shorthand we reserve for blog posts and investor calls.
+We don't say "DAO" in user-facing copy. A Company is a smart account with role-based authority; "DAO" is shorthand we reserve for blog posts and investor calls.
 
 We don't say "autonomous companies" in headlines. The category survives in FAQ tags and Terms boilerplate. The current canonical positioning is: "programmable companies for the agent economy." The subline names human direction explicitly. Agents execute; humans set the direction.
 

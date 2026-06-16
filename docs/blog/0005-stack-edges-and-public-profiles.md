@@ -24,7 +24,7 @@ See [Public profile flag](/docs/patterns/public-profile-flag) for the engineerin
 
 ## The Architect surface, stubbed
 
-The Architect agent is the wedge that makes aeqi uncopyable: describe a TRUST in English, get a programmable company draft. The full stack ships in waves. v0.42.0 lands the first one.
+The Architect agent is the wedge that makes aeqi uncopyable: describe a Company in English, get a programmable company draft. The full stack ships in waves. v0.42.0 lands the first one.
 
 `/studio` is now a real surface in the dashboard. It accepts a paragraph of intent, calls a stub LLM that returns a hand-written stack blueprint, and renders the components + edges as a tree you can spawn. The LLM is stubbed today; the wire is real. The architect crate exists, the IPC verb is plumbed, the tools are registered. Every layer below the model call is solid — when Wave 35 wires a real model in, nothing else has to change.
 

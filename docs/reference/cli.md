@@ -14,9 +14,9 @@ authenticates to the platform and talks to the managed Company runtime. For
 private deployments, `aeqi start` runs the approved runtime locally or on the
 customer's infrastructure.
 
-You may still see `TRUST` in exact command names, secret keys, and protocol
-fields. Treat it as the lower-level runtime/protocol selector behind the
-Company.
+You may still see `trust` in some secret keys, on-chain account fields, and
+protocol-level names. Treat it as the lower-level runtime/protocol selector
+behind the Company; the top-level command is `aeqi company`, not `aeqi trust`.
 
 ## Surface Role
 
@@ -369,14 +369,18 @@ aeqi team
 aeqi team --root assistant
 ```
 
-### `aeqi trust`
+### `aeqi company`
 
-Trust-kernel utilities — read or update the on-chain TRUST account for a
-local runtime entity id. Subcommands cover account inspection, role management, and
-chain-side actions.
+Company-kernel utilities for a local runtime. Two subcommands:
+
+- `aeqi company derive --entity-id <id>` — derive the canonical Company
+  identity for a Company/entity id (add `--json` for machine output).
+- `aeqi company root-only --runtime-dir <dir> --keep-company <id>` — prune a
+  hosted runtime so only one root Company/entity remains. Dry-runs by default;
+  pass `--apply` (with `--confirm <id>`) to write.
 
 ```bash
-aeqi trust --help
+aeqi company --help
 ```
 
 ### `aeqi audit`

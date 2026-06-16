@@ -5,7 +5,7 @@ instructions, files, structured records, comments, decisions, and reusable
 context. Anything that should persist in the company is an Idea unless it is
 another core primitive.
 
-This page is the architectural view of Ideas. For the developer/MCP API surface (search, store, scopes, ranking), see [Memory (Ideas)](/docs/concepts/memory).
+This page is the architectural and developer view of Ideas — the data model, scopes, ranking, and the MCP/REST surface. For the narrative on why memory compounds into operating truth, see [Ideas and Memory](/docs/concepts/memory).
 
 ## The thesis
 
@@ -190,6 +190,7 @@ Both speak to the same store; neither shadows the other.
 |---|---|
 | `store` | Persist an Idea (`name`, `content`, `tags`). Goes through dedup + tag policy. |
 | `search` | Tag-routed BM25 + vector retrieval with MMR diversification. |
+| `list` | Enumerate the corpus as compact rows (optional `kind` filter + `limit`) — the inventory / hygiene-pass verb. |
 | `update` | Patch an Idea by id (`name` / `content` / `tags`). |
 | `delete` | Remove an Idea by id. |
 | `link` | Write a typed edge between two Ideas (`mention` / `embed` / `link`). |
@@ -237,7 +238,7 @@ When you add a verb, decide which surface it belongs on. If it's both, wire both
 
 ## Related
 
-- [Memory (Ideas)](/docs/concepts/memory) — developer/MCP surface for search, store, ranking.
+- [Ideas and Memory](/docs/concepts/memory) — why memory compounds into operating truth.
 - [Sessions](/docs/concepts/sessions) — Idea comments are session messages.
 - [Quests](/docs/concepts/quests) — Quests can wrap an Idea via `idea_id`.
 - [Composition](/docs/methodology/composition) — the wrapper pattern.

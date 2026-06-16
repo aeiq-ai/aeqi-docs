@@ -11,6 +11,15 @@ The core principle: **IPFS CIDs are serialized differently depending on their st
 
 This separation ensures compatibility with contract ABIs while maintaining IPFS conventions for document references.
 
+> **Chain context.** The code in this guide is the **EVM** layer: TypeChain
+> factories (`Factory__factory`, `TRUST__factory`), `writeContractAsync`, and
+> `0x`-prefixed hex encoding. The hex-encoding step exists because EVM `bytes`
+> arguments are not UTF-8 strings. aeqi's Solana programs (under
+> `projects/aeqi-solana/`) serialize CIDs through Anchor/Borsh instead and do
+> not use this `0x${hex}` convention — apply the encoding rules below only to
+> EVM contract calls. `registerTRUST` is the on-chain contract function name
+> and is kept verbatim; the product noun in prose is "Company".
+
 ## Storage Formats
 
 ### On-Chain: Hex-Encoded CIDs
@@ -169,7 +178,7 @@ const agreementCid = await pinToIPFS(operatingAgreementPDF);
 // 2. Create parent document with references (use string format)
 const parentData = {
   version: 1,
-  name: 'My TRUST',
+  name: 'My Company',
   references: [
     {
       type: 'operating-agreement',
@@ -193,12 +202,14 @@ Validate CID format before encoding or decoding:
 
 ```typescript
 function isValidCidString(cid: string): boolean {
-  // CIDv0: Starts with "Qm", exactly 46 characters
-  if (cid.startsWith('Qm') && cid.length === 46) return true;
-  
-  // CIDv1: Starts with "ba", 59+ characters
-  if (cid.startsWith('ba') && cid.length >= 59) return true;
-  
+  // CIDv0: base58 SHA-256, always "Qm" + 44 base58 chars (46 total)
+  if (/^Qm[1-9A-HJ-NP-Za-km-z]{44}$/.test(cid)) return true;
+
+  // CIDv1: multibase prefix (base32 "bafy"/"bafk"/"bafyb"…), 59+ chars.
+  // Match the "baf" prefix + base32 alphabet rather than a bare "ba" so
+  // arbitrary "ba…" strings don't pass validation.
+  if (/^baf[a-z2-7]{56,}$/.test(cid)) return true;
+
   return false;
 }
 
@@ -209,7 +220,7 @@ function isValidCidHex(cidHex: string): boolean {
 
 // Usage
 if (!isValidCidString(userInput)) {
-  throw new Error('Invalid CID format. Must start with Qm or ba.');
+  throw new Error('Invalid CID format. Must be a CIDv0 (Qm…) or CIDv1 (baf…).');
 }
 ```
 
@@ -260,6 +271,6 @@ async function testCidRoundTrip() {
 
 ## See Also
 
-- **[Factory Flow Reference](/docs/factory-flow)** - how Factory uses ValueConfigs with CIDs for TRUST configuration
-- **[Solana Program Anchor Documentation](https://www.anchor-lang.com/)** - for on-chain serialization patterns
+- **[Factory Flow Reference](/docs/factory-flow)** - how the Factory uses ValueConfigs with CIDs for Company configuration (EVM `registerTRUST`)
 - **[IPFS Content Addressing](https://docs.ipfs.tech/concepts/content-addressing/)** - CID specification and format versions
+- **[Anchor framework](https://www.anchor-lang.com/)** - the Borsh-based serialization used by aeqi's Solana programs (a different on-chain layer from the EVM `0x${hex}` encoding above)

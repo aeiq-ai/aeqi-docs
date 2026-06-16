@@ -50,8 +50,12 @@ small: roles, agents, quests, ideas, events, sessions, and memory.
 - [Memory](/docs/concepts/memory) - durable context, strategy, procedures, and operating history.
 - [Events](/docs/concepts/events) - signals that wake the system and make work happen.
 - [Sessions](/docs/concepts/sessions) - conversations, execution traces, and handoffs.
-- [TRUST](/docs/concepts/trust) - the protocol/runtime vehicle behind Company authority, treasury, governance, and ownership.
 - [Wallets & identity](/docs/concepts/wallets-and-identity) - passkeys, wallets, and signer state.
+
+The protocol layer beneath the Company is deployment-dependent and not part of
+the core mental model:
+
+- [TRUST](/docs/concepts/trust) - the on-chain vehicle (deployment-dependent) behind Company authority, treasury, governance, and ownership.
 
 ## How the pieces fit
 
@@ -107,7 +111,7 @@ and authority credible.
 - [IPC verbs](/docs/reference/ipc) - runtime command catalog.
 - [Blueprint schema](/docs/reference/blueprint-schema) - company and stack blueprint shapes.
 - [CLI](/docs/reference/cli) - `aeqi` command reference.
-- [Factory flow](/docs/factory-flow) - company genesis and TRUST registration.
+- [Factory flow](/docs/factory-flow) - company genesis and on-chain company registration.
 
 ## Guides
 

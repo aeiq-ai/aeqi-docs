@@ -2,8 +2,10 @@
 
 The aeqi platform exposes a REST API for Company management, authentication,
 billing, integrations, and the catch-all proxy that forwards `/api/*` into a
-Company runtime. Lower-level headers and routes still use `trust` / `X-Trust`
-as the runtime selection term.
+Company runtime. The canonical runtime selector is the `X-Company` header
+(fallback `X-Entity`) and the `company_id` query parameter (legacy alias
+`trust_id`). Some on-chain and protocol-level fields still carry the `trust`
+term.
 
 Use the REST API when software needs to operate aeqi over HTTP: account flows,
 Company launch, runtime provisioning, integrations, billing, public profiles,
@@ -19,7 +21,7 @@ intelligence as tools.
 | Self-hosted    | `http://127.0.0.1:8443/api`      | Default platform port.                                 |
 | Tenant runtime | `http://127.0.0.1:8400+/api`     | Per-Company runtime; reached through the platform proxy, not directly. |
 
-`/api/*` routes are served by the platform binary (`aeqi-platform.service`). Anything not registered explicitly is forwarded through `routes::proxy::catch_all_proxy_handler` to the tenant runtime selected by `X-Trust` or a `trust` / `trust_id` query parameter.
+`/api/*` routes are served by the platform binary (`aeqi-platform.service`). Anything not registered explicitly is forwarded through `routes::proxy::catch_all_proxy_handler` to the tenant runtime selected by the `X-Company` header (fallback `X-Entity`) or a `company_id` / `trust_id` query parameter.
 
 ## Authentication
 
@@ -29,9 +31,11 @@ Most endpoints require a JWT bearer token. The token is obtained from one of sev
 Authorization: Bearer <jwt>
 ```
 
-The `X-Trust` header selects which Company runtime a proxied call routes to.
-Proxied runtime calls return `400` if no runtime is supplied. Non-tenant platform
-routes such as login, billing, API keys, and `/api/trusts` do not need it.
+The `X-Company` header selects which Company runtime a proxied call routes to
+(the platform still accepts `X-Entity` as a fallback). Proxied runtime calls
+return `400 { "error": "X-Company header required" }` if no runtime is supplied.
+Non-tenant platform routes such as login, billing, API keys, and `/api/companies`
+do not need it.
 
 A small number of endpoints use other auth modes:
 
@@ -165,16 +169,25 @@ POST /api/webhooks/telegram/{token}
 POST /api/webhooks/whatsapp
 ```
 
-### Blueprint catalog
+### Blueprint and template catalog
 
 ```
 GET /api/blueprints
 GET /api/blueprints/default
 GET /api/blueprints/{slug}
+GET /api/templates
+GET /api/templates/default
+GET /api/templates/{slug}
 ```
 
-Public, no `X-Trust` required. The catalog is platform-shared static content.
+Public, no `X-Company` required. The catalog is platform-shared static content.
 `/api/blueprints/default` returns the configured default launch blueprint.
+
+`/api/templates` is the company-launch catalog the `/launch` flow reads before
+any Company runtime exists; it returns the same two shipped company templates
+(`new-company`, `existing-company`). `/api/templates/default` resolves to the
+default launch template (`new-company`); `/api/templates/{slug}` returns one
+template's full JSON. See [Blueprint schema](/docs/reference/blueprint-schema).
 
 ### Spawn (proxied)
 
@@ -183,24 +196,36 @@ POST /api/blueprints/spawn
 POST /api/blueprints/spawn-into
 ```
 
-Registered in the public router so they shadow `/api/blueprints/{slug}`; the catch-all proxy forwards them to the per-TRUST orchestrator selected by `X-Trust`.
+Registered in the public router so they shadow `/api/blueprints/{slug}`; the catch-all proxy forwards them to the per-Company orchestrator selected by `X-Company`.
 
 ### Economy + public profiles
 
 ```
 GET /api/economy/list
 GET /api/public/entities/{slug}
-GET /api/public/trust/{address}
-GET /api/public/trust/{address}/assets
-GET /api/public/trust/{address}/incorporation
+GET /api/public/company/{address}
+GET /api/public/company/{address}/assets
+GET /api/public/company/{address}/incorporation
 GET /api/public/status/walks
 ```
 
-`/api/economy/list` returns every TRUST whose placement has `public=true`, with on-chain TRUST address — drives `/economy`. `/api/public/entities/{slug}` returns the public profile JSON for a TRUST that has `public=true`; returns 404 for private workspaces (indistinguishable from non-existent). `/api/public/trust/{address}` returns the public composite viewer payload for an on-chain TRUST address when the linked workspace is public.
+`/api/economy/list` returns every Company whose placement has `public=true`, with on-chain address — drives `/economy`. `/api/public/entities/{slug}` returns the public profile JSON for a Company that has `public=true`; returns 404 for private workspaces (indistinguishable from non-existent). `/api/public/company/{address}` returns the public composite viewer payload (on-chain + IPFS + indexer) for an on-chain address when the linked workspace is public.
 The `/assets` and `/incorporation` subresources expose public document bundles
-for a public TRUST address when those modules are present.
+for a public Company address when those modules are present.
 `/api/public/status/walks` returns recent public walk status rows for the
 landing status surface.
+
+### Public launch-site forms
+
+```
+POST /api/public/website/waitlist
+POST /api/public/website/support-checkout
+```
+
+Public, resolved from the `Host` header of the Company subdomain serving the
+form. `/api/public/website/waitlist` joins the per-Company launch-site waitlist.
+`/api/public/website/support-checkout` opens a day-one support purchase as a
+destination charge via the Company's Express account.
 
 ### Role invitations
 
@@ -218,7 +243,7 @@ POST /api/mcp/validate
 ```
 
 `POST /api/mcp` accepts an MCP JSON-RPC request and returns its response.
-`/api/mcp/validate` echoes back which actor and TRUST a key resolves to. Auth is
+`/api/mcp/validate` echoes back which actor and Company a key resolves to. Auth is
 `Authorization: Bearer sk_…`; pass `X-Api-Key: ak_…` as well when binding the
 call to a user account. `GET` and `DELETE` are not callable MCP transports on
 the hosted platform today.
@@ -236,7 +261,8 @@ Forwards OpenAI-compatible chat traffic to the upstream LLM provider configured 
 ## Authenticated Endpoints
 
 Require a valid JWT bearer. Proxied runtime endpoints additionally require a
-Company runtime context via `X-Trust` or `trust` / `trust_id`.
+Company runtime context via `X-Company` (fallback `X-Entity`) or the
+`company_id` / `trust_id` query parameter.
 
 ### Account
 
@@ -298,39 +324,43 @@ POST /api/billing/checkout
 GET  /api/billing/subscription
 POST /api/billing/portal
 GET  /api/billing/overview
-POST /api/billing/switch-to-usdc
+POST /api/billing/credit-addon
+POST /api/billing/top-up
+POST /api/billing/plan-change/preview
+POST /api/billing/plan-change/confirm
+POST /api/billing/annual/confirm
+POST /api/billing/plan-cancel
 ```
 
-Subscription and payment management via Stripe (USD or USDC).
+Subscription and payment management via Stripe. `checkout` opens a subscription
+checkout; `subscription` and `overview` read current plan + balance state;
+`portal` opens the Stripe customer portal. `credit-addon` and its alias
+`top-up` purchase one-time credit. `plan-change/preview` returns the proration
+preview for a plan switch and `plan-change/confirm` applies it; `annual/confirm`
+confirms an annual upgrade. `plan-cancel` cancels the active subscription.
 
-### TRUSTs and legacy entity aliases
-
-```
-GET    /api/trusts
-POST   /api/trusts
-DELETE /api/trusts/{trust_id}
-PUT    /api/trusts/{trust_id}
-GET    /api/trusts/{trust_id}/assets
-GET    /api/trusts/{trust_id}/incorporation
-GET    /api/trusts/{trust_id}/email/messages
-POST   /api/trusts/{trust_id}/email/test
-GET    /api/trusts/{trust_id}/website/analytics
-GET    /api/entities
-POST   /api/entities
-DELETE /api/entities/{name}
-PUT    /api/entities/{name}
-```
+### Companies
 
 ```
-GET    /api/roots
-POST   /api/roots
-DELETE /api/roots/{name}
+GET    /api/companies
+POST   /api/companies
+DELETE /api/companies/{company_id}
+PUT    /api/companies/{company_id}
+GET    /api/companies/{company_id}/assets
+GET    /api/companies/{company_id}/incorporation
+GET    /api/companies/{company_id}/email/messages
+POST   /api/companies/{company_id}/email/test
+GET    /api/companies/{company_id}/website/analytics
 ```
 
-`/api/trusts` is the canonical user-owned TRUST collection. `/api/entities/*`
-and `/api/roots/*` are legacy aliases for older clients.
+`/api/companies` is the user-owned Company collection. It is registered
+platform-side (before the catch-all proxy) so it returns the caller's
+cross-runtime list rather than whatever single runtime the scoped Company
+header currently points at. `POST` creates a Company, `GET` lists; the
+`{company_id}` routes update or delete one.
 The `assets`, `incorporation`, `email`, and `website/analytics` subroutes back
-Company website, document, inbox, and analytics panels for a selected runtime.
+the Company document, incorporation, inbox, and analytics panels for a selected
+runtime.
 
 ### /start launch
 
@@ -338,9 +368,17 @@ Company website, document, inbox, and analytics panels for a selected runtime.
 POST /api/start/launch
 POST /api/start/check-name
 GET  /api/start/launch/status/{trust_id}
+GET  /api/start/share/{trust_id}
+POST /api/start/share/{trust_id}/verify
 ```
 
 `launch` provisions a personal Company via the `/start` experience. Gated by subscription status (`subscription_required` HTTP 402 if missing) and a workspace cap of 10 companies per user (`workspace_cap_exceeded` HTTP 402; admins exempt).
+
+`launch/status/{trust_id}` polls provisioning progress for a launched Company.
+`share/{trust_id}` returns the launch-announcement share code and prefilled
+post; `share/{trust_id}/verify` runs platform-side post verification and awards
+a one-time flat credit bonus (the platform checks the post, never the tenant
+runtime).
 
 **Request:**
 
@@ -360,12 +398,15 @@ GET  /api/start/launch/status/{trust_id}
 ```json
 {
   "ok": true,
-  "entity_id": "uuid",
-  "display_name": "My Company"
+  "trust_id": "company-id",
+  "display_name": "My Company",
+  "website_domain": "my-company.aeqi.ai",
+  "website_url": "https://my-company.aeqi.ai",
+  "email_address": null
 }
 ```
 
-Placement provisioning (sandbox / host / VPS) proceeds async; poll the placement until its `status` flips from `pending` to `ready`. `check-name` returns whether a display name is available for the caller.
+The `trust_id` field carries the new Company's id. Placement provisioning (sandbox / host / VPS) proceeds async; poll `GET /api/start/launch/status/{trust_id}` until its `status` flips from `pending` to `ready`. `check-name` returns whether a display name is available for the caller.
 
 ### Runtime provisioning
 
@@ -375,7 +416,7 @@ POST /api/runtime/provision-treasury
 GET  /api/runtime/status
 ```
 
-Provision attaches managed runtime capacity to a TRUST. The Stripe and treasury
+Provision attaches managed runtime capacity to a Company. The Stripe and treasury
 paths converge on the same placement lifecycle; `status` reads the live
 placement and service state.
 
@@ -402,8 +443,8 @@ GET  /api/curves/{trust_id}/state
 These authenticated routes back staged protocol modules: genesis, first-buy,
 curves, token operations, vesting, budgets, and funding requests. Treat them as
 deployment-dependent protocol surfaces, not baseline hosted-app requirements.
-Normal hosted users create TRUSTs through `/api/trusts` or `/api/start/launch`;
-protocol genesis is for Solana-enabled deployments.
+Normal hosted users create Companies through `/api/companies` or
+`/api/start/launch`; protocol genesis is for Solana-enabled deployments.
 
 ### Architect deploy
 
@@ -457,25 +498,28 @@ POST /api/account/api-key
 GET    /api/hosting/domains
 POST   /api/hosting/domains
 DELETE /api/hosting/domains/{domain}
+GET    /api/hosting/waitlist
 ```
 
-Manage custom domains for Company runtimes.
+Manage custom domains for Company runtimes. `/api/hosting/waitlist` lists the
+launch-site waitlist signups for a Company the caller owns (the public join
+form is `POST /api/public/website/waitlist`).
 
 ### Role invitations
 
 ```
-POST /api/trusts/{trust_id}/roles/{role_id}/invitations
-GET  /api/trusts/{trust_id}/invitations
-POST /api/entities/{trust_id}/roles/{role_id}/invitations
-GET  /api/entities/{trust_id}/invitations
+POST /api/companies/{company_id}/roles/{role_id}/invitations
+GET  /api/companies/{company_id}/invitations
 POST /api/invitations/{token}/accept
 POST /api/invitations/{token}/decline
 GET  /api/me/directed-entities
 ```
 
-Invite users to roles within a TRUST; accept or decline. `/api/trusts/*` is the
-canonical surface. `/api/entities/*` is the legacy alias. `/api/me/directed-entities`
-lists every entity the caller has been granted directed access to.
+Invite users to roles within a Company; accept or decline. Creating an
+invitation is scoped to a `{company_id}` and `{role_id}`; the token-based
+accept/decline routes pair with the public `GET /api/invitations/{token}`
+resolver. `/api/me/directed-entities` lists every Company the caller has been
+granted directed access to.
 
 ### Identity resolver
 
@@ -489,8 +533,9 @@ batch size is capped by the platform resolver.
 ## Proxied Runtime Endpoints
 
 Everything under `/api/*` that is not explicitly listed above is forwarded by
-`catch_all_proxy_handler` to the runtime selected by `X-Trust` or `trust` /
-`trust_id`. Examples handled this way:
+`catch_all_proxy_handler` to the runtime selected by `X-Company` (fallback
+`X-Entity`) or the `company_id` / `trust_id` query parameter. Examples handled
+this way:
 
 ```
 GET    /api/agents
@@ -513,7 +558,7 @@ A few proxied paths have platform-side specialisation registered explicitly so t
 ### Runtime ideas surface
 
 The runtime registers the following routes under `/api/ideas/*`. Use them
-through the platform proxy with `X-Trust` set, not directly against the
+through the platform proxy with `X-Company` set, not directly against the
 per-tenant runtime port.
 
 ```
@@ -571,7 +616,7 @@ POST /api/admin/vps/spawn-test
 Responses are not wrapped in a uniform envelope — different handlers return different shapes. Common patterns:
 
 ```json
-{ "ok": true, "entity_id": "..." }
+{ "ok": true, "id": "..." }
 ```
 
 ```json

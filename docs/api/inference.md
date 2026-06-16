@@ -18,9 +18,10 @@ REST API:
 
 - `Authorization: Bearer <token>` — a user JWT or an account API key
   (`ak_...`).
-- `X-Trust: <trust_id>` — selects which TRUST runtime the request is scoped to.
+- `X-Company: <company_id>` — selects which Company runtime the request is
+  scoped to. `X-Entity` is accepted as a fallback header.
 
-Missing or invalid auth returns `401 Unauthorized`. Missing `X-Trust` returns
+Missing or invalid auth returns `401 Unauthorized`. Missing `X-Company` returns
 `400 Bad Request`.
 
 `GET /v1/models` is authenticated on the hosted platform because the `/v1`
@@ -32,11 +33,11 @@ Three planned payment lanes for inference:
 
 | Lane | Status | How it bills |
 |------|--------|--------------|
-| Subscription | Auth wired; balance enforcement staged | Pooled per-TRUST credit, debited on each call when the billing layer is mounted. |
+| Subscription | Auth wired; balance enforcement staged | Pooled per-Company credit, debited on each call when the billing layer is mounted. |
 | Treasury | Scaffolded | Direct USDC debit from the Company's on-chain treasury. |
 | x402 | Planned | HTTP 402 + EIP-3009 USDC per request. |
 
-The hosted mount currently enforces platform auth and TRUST selection. Balance
+The hosted mount currently enforces platform auth and Company selection. Balance
 debit and treasury/x402 payment rails are staged behind the inference billing
 layer and should not be treated as universally enforced by the current hosted
 router.
@@ -187,7 +188,7 @@ const response = await fetch("https://app.aeqi.ai/v1/chat/completions", {
   headers: {
     "Content-Type": "application/json",
     "Authorization": `Bearer ${token}`,
-    "X-Trust": trustId,
+    "X-Company": companyId,
   },
   body: JSON.stringify({
     model: "meta-llama/Meta-Llama-3.1-70B-Instruct",
@@ -208,7 +209,7 @@ const response = await fetch("https://app.aeqi.ai/v1/chat/completions", {
   headers: {
     "Content-Type": "application/json",
     "Authorization": `Bearer ${token}`,
-    "X-Trust": trustId,
+    "X-Company": companyId,
   },
   body: JSON.stringify({
     model: "meta-llama/Meta-Llama-3.1-70B-Instruct",
@@ -240,7 +241,7 @@ while (true) {
 const response = await fetch("https://app.aeqi.ai/v1/models", {
   headers: {
     "Authorization": `Bearer ${token}`,
-    "X-Trust": trustId,
+    "X-Company": companyId,
   },
 });
 const models = await response.json();
@@ -257,7 +258,7 @@ from openai import OpenAI
 client = OpenAI(
     api_key="<bearer-token>",
     base_url="https://app.aeqi.ai/v1",
-    default_headers={"X-Trust": "<trust_id>"},
+    default_headers={"X-Company": "<company_id>"},
 )
 
 response = client.chat.completions.create(
@@ -273,7 +274,7 @@ import OpenAI from "openai";
 const client = new OpenAI({
   apiKey: "<bearer-token>",
   baseURL: "https://app.aeqi.ai/v1",
-  defaultHeaders: { "X-Trust": "<trust_id>" },
+  defaultHeaders: { "X-Company": "<company_id>" },
 });
 
 const response = await client.chat.completions.create({

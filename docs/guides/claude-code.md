@@ -4,8 +4,7 @@ Connect Claude Code to your aeqi runtime over MCP. Claude Code gets persistent m
 
 ## Prerequisites
 
-- aeqi account with a company at [app.aeqi.ai](https://app.aeqi.ai)
-- Active workspace subscription
+- aeqi account with a company at [app.aeqi.ai](https://app.aeqi.ai) — a trial company is enough; no paid subscription required to connect
 - Claude Code
 - `aeqi` CLI access — see [Installation](/docs/installation)
 
