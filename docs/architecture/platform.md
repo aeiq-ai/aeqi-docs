@@ -119,6 +119,6 @@ The retired `aeqi-runtime.service` is no longer used — its responsibilities sp
 ## Related
 
 - [Runtime](/docs/architecture/runtime)
-- [TRUST](/docs/concepts/trust) — the on-chain layer behind a Company
+- [TRUST](/docs/concepts/company) — the on-chain layer behind a Company
 - [REST API](/docs/api/rest)
 - [Authentication](/docs/api/authentication)

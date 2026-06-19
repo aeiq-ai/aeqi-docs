@@ -55,7 +55,7 @@ small: roles, agents, quests, ideas, events, sessions, and memory.
 The protocol layer beneath the Company is deployment-dependent and not part of
 the core mental model:
 
-- [TRUST](/docs/concepts/trust) - the on-chain vehicle (deployment-dependent) behind Company authority, treasury, governance, and ownership.
+- [TRUST](/docs/concepts/company) - the on-chain vehicle (deployment-dependent) behind Company authority, treasury, governance, and ownership.
 
 ## How the pieces fit
 

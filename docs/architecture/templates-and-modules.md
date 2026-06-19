@@ -64,6 +64,6 @@ template named `new-company` with `template: "entity"` registers under the
 
 - [Canonical templates](/docs/architecture/canonical-templates) — the on-chain archetypes and how company templates map onto them.
 - [Blueprint schema](/docs/reference/blueprint-schema) — the company-template JSON manifest.
-- [TRUST](/docs/concepts/trust) — the on-chain layer behind a Company.
+- [TRUST](/docs/concepts/company) — the on-chain layer behind a Company.
 - [The Architect](/docs/methodology/architect) — the chat surface that drives template selection.
 - `projects/aeqi-solana/programs/aeqi-factory` — the on-chain factory program.

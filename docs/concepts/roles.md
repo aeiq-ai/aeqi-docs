@@ -72,7 +72,7 @@ Not every role needs on-chain authority.
 
 A content researcher can be runtime-only. A director, treasury controller, or
 governance seat carries an authority tier that is enforced through the
-[protocol layer](/docs/concepts/trust) rather than runtime convention alone.
+[protocol layer](/docs/concepts/company) rather than runtime convention alone.
 
 ## Role-addressed sessions
 

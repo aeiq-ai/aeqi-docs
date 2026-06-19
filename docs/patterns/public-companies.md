@@ -94,5 +94,5 @@ Three reasons:
 
 ## Related
 
-- [TRUST](/docs/concepts/trust)
+- [Company](/docs/concepts/company)
 - [Canonical templates](/docs/architecture/canonical-templates)

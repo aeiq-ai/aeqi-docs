@@ -69,5 +69,5 @@ The product had primitives. It had architecture. It had a thesis. v0.42.0 is the
 - [Stack edges — on-chain orchestration](/docs/architecture/canonical-templates)
 - [Public profile flag](/docs/patterns/public-profile-flag)
 - [Public companies](/docs/patterns/public-companies)
-- [TRUST — programmable company](/docs/concepts/trust)
+- [Company — programmable company](/docs/concepts/company)
 - [The co-creation surface lands](/docs/blog/0004-co-creation-surface)

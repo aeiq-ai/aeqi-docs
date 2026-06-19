@@ -9,7 +9,7 @@
 The Factory is the on-chain component for registering the TRUST contract behind a Company in aeqi. It is the multi-stage path that registers a programmable company's on-chain state — governance, vesting, and funding structures — when a deployment opts into the protocol layer.
 
 **Companion docs:**
-- [TRUST](/docs/concepts/trust) - the on-chain vehicle behind a Company.
+- [TRUST](/docs/concepts/company) - the on-chain vehicle behind a Company.
 - [Canonical templates](/docs/architecture/canonical-templates) - the four canonical Company archetypes.
 
 ## Architecture Philosophy

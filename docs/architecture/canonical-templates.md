@@ -105,4 +105,4 @@ never knows or cares about the off-chain template's name.
 
 - [Templates and modules](/docs/architecture/templates-and-modules) — the off-chain/on-chain split and the chain layer.
 - [Blueprint schema](/docs/reference/blueprint-schema) — the company-template JSON manifest.
-- [TRUST](/docs/concepts/trust) — the on-chain layer behind a Company.
+- [TRUST](/docs/concepts/company) — the on-chain layer behind a Company.

@@ -149,6 +149,6 @@ The wizard provisions all entities in topo-sorted order. The cross-company on-ch
 ## Related
 
 - [Roles](/docs/concepts/roles)
-- [TRUST](/docs/concepts/trust)
+- [Company](/docs/concepts/company)
 - [Canonical templates](/docs/architecture/canonical-templates)
 - [Wallets & identity](/docs/concepts/wallets-and-identity)

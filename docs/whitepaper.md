@@ -12,8 +12,8 @@ than negotiated as documents. Neither wave is sufficient alone. Agents without
 a company are labor without authority, memory, or accountability. Ownership
 tokens without operating context are claims against nothing legible.
 
-This paper presents **aeqi**, a runtime for **TRUSTs** — programmable
-companies that put both waves inside one operating shell. A TRUST is an
+This paper presents **aeqi**, a runtime for **programmable Companies** —
+companies that put both waves inside one operating shell. A Company is an
 addressable entity with four operating primitives (Agents, Quests, Events,
 Ideas), a role-authority layer, and a universal Session substrate that records
 how intent becomes work. Once a company can execute, remember, and expose its operating truth,
@@ -27,7 +27,7 @@ substrate for legible authority and ownership, a recursive capital loop
 in which operating truth compounds into governance and capital efficiency,
 and three falsifiable predictions for the next three years.
 
-**Keywords:** Agent economy · Programmable companies · TRUST · Operating
+**Keywords:** Agent economy · Programmable companies · Company OS · Operating
 runtime · DAOs · Mechanism design · Programmable ownership · Solana.
 
 ---
@@ -64,7 +64,7 @@ vehicle. The structural question is where the two converge. The argument
 of this paper is that they converge inside the company — not as a
 metaphor, but as a runtime.
 
-aeqi is that runtime. It creates **TRUSTs**: programmable companies where
+aeqi is that runtime. It creates **programmable Companies**: companies where
 humans set direction, agents execute, memory compounds, and authority,
 treasury, governance, and ownership remain inside one operating context.
 The wedge is execution because that is what AI makes programmable first.
@@ -152,18 +152,18 @@ ungrounded. Tokenized cap tables did not displace traditional cap
 tables in part because both versions described the same opaque
 underlying firm.
 
-The construct we propose for that company is the **TRUST**. Public-facing
-copy describes it simply: a programmable company for the agent economy.
-The technical construct is a smart account on a public chain whose state
-includes a role graph, attached agents, scoped treasuries, governance
-modules, and operational primitives — and whose off-chain runtime
-executes the work that produces operating history.
+The construct we propose is the programmable **Company**: a programmable
+company for the agent economy. Its on-chain layer — historically named the
+TRUST — is a smart account on a public chain whose state includes a role
+graph, attached agents, scoped treasuries, governance modules, and
+operational primitives, while its off-chain runtime executes the work that
+produces operating history.
 
 ---
 
 ## 4. System Model
 
-aeqi compiles a TRUST into a small, orthogonal set of primitives. Each
+aeqi compiles a Company into a small, orthogonal set of primitives. Each
 corresponds to one face of the company; together they cover the
 operational surface earlier paradigms left fragmented.
 
@@ -192,7 +192,7 @@ properties rather than new primitive categories.
 
 ### 4.2 The runtime
 
-A TRUST is also a running process. The aeqi runtime is a per-tenant
+A Company is also a running process. The aeqi runtime is a per-tenant
 orchestrator that holds the database, executes agent turns in sandboxes,
 fires events on lifecycle transitions, dispatches tool calls, and
 produces the session record that becomes the operating history.
@@ -231,11 +231,11 @@ narrative rather than in record. This is why on-chain cap tables did not
 displace off-chain cap tables. It is why DAO governance has often
 produced ratified text without operational substance.
 
-### 5.1 A worked example: five days inside a TRUST
+### 5.1 A worked example: five days inside a Company
 
-A founder starts a company. The runtime creates a TRUST and assigns the
+A founder starts a company. The runtime creates a Company and assigns the
 founder a Director role. The founder writes a one-paragraph mission as
-an Idea attached to the TRUST. The Architect agent, hired from a
+an Idea attached to the Company. The Architect agent, hired from a
 template, reads the mission and proposes an initial structure: a CEO
 role, a CTO role, and three operational roles (Engineering, Research,
 Operations). The founder accepts. Each role is committed to the chain.
@@ -259,7 +259,7 @@ treasury to a paid pilot with a design contractor. The proposal is an Idea. The
 approval is recorded as Events. Where the treasury module is enabled, the budget
 release is then executed against the operational role authorized to spend.
 
-Day five. A potential investor reads the TRUST. Instead of starting from a
+Day five. A potential investor reads the Company. Instead of starting from a
 blank data-room request, they can inspect the mission, the role graph, the
 agents and their occupancy, the quests opened and closed, the events that
 produced governance decisions, and the treasury state where those modules are
@@ -305,7 +305,7 @@ ownership and governance become things that *attach* rather than things
 that must be invented from nothing.
 
 **Ownership** is a property of the entity, not a downstream derivation of task
-logs. A mature TRUST can have an authority graph, a treasury, and an ownership
+logs. A mature Company can have an authority graph, a treasury, and an ownership
 state — who is entitled to what share of residual value, under what conditions.
 The protocol direction is for ownership state to be recorded on chain,
 parameterized by the entity's governance module, and conditioned on operational
@@ -405,8 +405,9 @@ mechanisms mitigate but do not eliminate. *Underlying defense:*
 operational legibility — priced instruments diverge from value when
 value is unobservable.
 
-**Custody and signer compromise.** A protocol-enabled TRUST may hold funds and
-authority on chain. Compromised signers or smart-account bugs create direct loss
+**Custody and signer compromise.** A protocol-enabled Company holds funds and
+authority on chain through its on-chain layer (historically the TRUST).
+Compromised signers or smart-account bugs create direct loss
 vectors. *Mitigation:* scoped signer authority, constrained recovery, formal
 review before production value, and the principle that routine recovery should
 not require operator custody.
@@ -424,7 +425,7 @@ KYC-gated-ownership separation is one defense.
 **Coordination collapse at scale.** Inter-company composability
 introduces failure modes single-entity governance does not face.
 *Mitigation:* standardize the inter-company contract surface — the same
-blueprints, modules, and authority semantics across TRUSTs.
+blueprints, modules, and authority semantics across Companies.
 
 ---
 
@@ -472,7 +473,7 @@ lives elsewhere. An agent framework manufactures labor that has no
 employer. A SaaS company OS files away discrete pieces of the firm in
 disconnected applications. None is wrong. None is sufficient.
 
-A TRUST is a programmable company: an addressable entity with
+A Company is a programmable company: an addressable entity with
 role-scoped authority, attached agents, durable memory, on-chain
 treasury and ownership, and a runtime that turns intent into work and
 work into operating history. Humans set direction. Agents execute.
