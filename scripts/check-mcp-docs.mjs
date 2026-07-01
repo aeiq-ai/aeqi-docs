@@ -70,7 +70,7 @@ function requireSnippet(file, snippet, message) {
 
 const currentToolRows = [
   "| `me` | `profile`, `permissions` |",
-  "| `ideas` | `store`, `search`, `update`, `delete`, `link`, `feedback`, `walk` |",
+  "| `ideas` | `store`, `search`, `list`, `update`, `delete`, `link`, `feedback`, `walk` |",
   "| `quests` | `create`, `list`, `show`, `update`, `close`, `cancel` |",
   "| `agents` | `get`, `hire`, `retire`, `list`, `projects` |",
   "| `events` | `create`, `list`, `enable`, `disable`, `delete`, `trigger`, `trace` |",
