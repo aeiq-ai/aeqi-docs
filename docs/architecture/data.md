@@ -159,7 +159,7 @@ session_messages(
 quests(
   id, entity_id, agent_id,
   subject, description,
-  status,                         -- pending | in_progress | done | blocked | cancelled
+  status,                         -- backlog | todo | in_progress | in_review | done | cancelled
   priority,
   parent_id?, depends_on?,
   idea_id?,                       -- the artifact this work produces or refines
@@ -178,7 +178,7 @@ Quest wraps Idea. See [Composition](/docs/methodology/composition).
 
 ## Migrations
 
-Forward-only migrations under `crates/aeqi-runtime/migrations/`. The runtime applies them at startup before opening the API. Never drop a column without a migration; never rename in-place.
+Forward-only migrations under `crates/aeqi-orchestrator/migrations/`. The runtime applies them at startup before opening the API. Never drop a column without a migration; never rename in-place.
 
 Phase 4 (2026-04-29) retired:
 

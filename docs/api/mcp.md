@@ -263,7 +263,7 @@ Codex may display those tools with the MCP server prefix. For example, raw
 | Tool | Actions | Use it for |
 |---|---|---|
 | `me` | `profile`, `permissions` | Confirm the authenticated user, Company runtime, and grants. |
-| `ideas` | `store`, `search`, `update`, `delete`, `link`, `feedback`, `walk` | Durable memory, decisions, procedures, strategy, and graph-linked knowledge. |
+| `ideas` | `store`, `search`, `list`, `update`, `delete`, `link`, `feedback`, `walk` | Durable memory, decisions, procedures, strategy, and graph-linked knowledge. |
 | `quests` | `create`, `list`, `show`, `update`, `close`, `cancel` | Work tracking, handoff, audit trail, and completion records. |
 | `agents` | `get`, `hire`, `retire`, `list`, `projects` | Runtime workers, delegation targets, and project registry. |
 | `events` | `create`, `list`, `enable`, `disable`, `delete`, `trigger`, `trace` | Schedules, session lifecycle context, and event automation. |
@@ -299,7 +299,7 @@ The error vocabulary is stable; the human-readable `message` may change. Match o
 
 ### `IdeasTool` (in-runtime LLM tool) vs MCP `ideas` (external)
 
-The in-runtime LLM tool registered at `aeqi_orchestrator::tools::ideas::IdeasTool` advertises **only** `store / search / update / delete`. The MCP `ideas` surface adds three more verbs (`link`, `feedback`, `walk`) that the orchestrator's IPC layer handles directly, not through the LLM tool registry.
+The in-runtime LLM tool registered at `aeqi_orchestrator::tools::ideas::IdeasTool` advertises **only** `store / search / update / delete`. The MCP `ideas` surface adds four more verbs (`list`, `link`, `feedback`, `walk`) that the orchestrator's IPC layer handles directly, not through the LLM tool registry.
 
 This is **intentional**: graph-mutation and feedback verbs are operator/MCP-driven, not LLM-driven. An agent inside the runtime cannot fire `ideas.link` or `ideas.feedback` via its tool registry — only an external MCP caller (or an event-driven dispatch) can. If you need an agent to mutate the graph, route it through an event handler or expose a wrapping tool with the correct `CallerKind` ACL.
 

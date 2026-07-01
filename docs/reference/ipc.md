@@ -17,7 +17,7 @@ Every MCP tool takes an `action` parameter plus tool-specific args. Caller-kind 
 |------|---------|-------------|
 | `me` | `profile`, `permissions` | Authenticated actor + runtime metadata. |
 | `agents` | `get`, `hire`, `retire`, `list`, `projects` | Runtime workers, delegation targets, project registry. |
-| `ideas` | `store`, `search`, `update`, `delete`, `link`, `feedback`, `walk` | Durable memory, decisions, idea graph. |
+| `ideas` | `store`, `search`, `list`, `update`, `delete`, `link`, `feedback`, `walk` | Durable memory, decisions, idea graph. |
 | `quests` | `create`, `list`, `show`, `update`, `close`, `cancel` | Work ledger. |
 | `events` | `create`, `list`, `enable`, `disable`, `delete`, `trigger`, `trace` | Pattern handlers, lifecycle automation. |
 | `code` | `search`, `context`, `impact`, `diff_impact`, `file`, `file_summary`, `stats`, `index`, `incremental`, `synthesize` | Code intelligence graph. |

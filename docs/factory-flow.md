@@ -1,426 +1,48 @@
 # Factory Flow Reference
 
-> **Protocol / contract reference — deployment-dependent.** This page describes
-> the on-chain registration path for a Company's TRUST contract. Most operators
-> never touch it: launching a Company through the App, Architect, or API does not
-> require reading this. The canonical chain is **Solana**; the code shapes below
-> are illustrative of the provisioning model, not a literal current ABI.
-
-The Factory is the on-chain component for registering the TRUST contract behind a Company in aeqi. It is the multi-stage path that registers a programmable company's on-chain state — governance, vesting, and funding structures — when a deployment opts into the protocol layer.
+> **Protocol reference — deployment-dependent.** This page describes the
+> on-chain path for provisioning a Company on Solana. Most operators never
+> touch it: launching a Company through the App, Architect, or API does not
+> require reading this. The canonical chain is **Solana/Anchor**. The prior
+> EVM/Solidity factory (`registerTRUST`, `Factory.sol`) is **retired**.
 
 **Companion docs:**
-- [TRUST](/docs/concepts/company) - the on-chain vehicle behind a Company.
-- [Canonical templates](/docs/architecture/canonical-templates) - the four canonical Company archetypes.
+- [Templates & modules](/docs/architecture/templates-and-modules) — company templates and the module system.
+- [Company template schema](/docs/reference/blueprint-schema) — the JSON manifest spawned into a runtime Company.
 
-## Architecture Philosophy
+## Programs
 
-### Design Patterns
+The on-chain factory lives at `projects/aeqi-solana/programs/aeqi-factory`. It
+composes CPI calls into per-module Anchor programs: `aeqi-company` (the
+Company account itself), `aeqi-role`, `aeqi-token`, `aeqi-governance`,
+`aeqi-treasury`, `aeqi-budget`, `aeqi-vesting`, `aeqi-fund`, `aeqi-funding`,
+and `aeqi-unifutures`.
 
-1. **Multi-Stage Wizard Pattern**: Factory flow uses stage-based UX (Idea → Setup → Launch), decoupled from contract encoding complexity.
-2. **Optimistic UI Updates**: State updates happen immediately in the frontend while blockchain operations follow asynchronously.
-3. **Value-Configs System**: All TRUST configuration is serialized as a Vec<ValueConfig> (key-value pairs with encoded bytes), allowing arbitrary extensibility without contract changes.
-4. **Two-Level Budget/Role Hierarchy**: Budgets allocate pools to role types; roles assign addresses to specific amounts within those pools.
-5. **Progressive Enhancement**: Start with minimal config, add complexity as needed.
+## Accounts
 
-## Value Configs System
+- **Company PDA** — `[b"company", company_id]` under the `aeqi-company` program. Created via `aeqi_company::initialize`; the caller becomes the company authority.
+- **Template PDA** — `[b"template", template_id]` under `aeqi-factory`. Stores a registered module set (`ModuleSpec[]`) and an ACL edge list (`AclEdgeSpec[]`) so it can be replayed against a fresh Company.
+- **ModuleSpec** — `{ module_id, program_id, provider, implementation_version, implementation_metadata_hash, company_acl }`, one per module a template declares.
+- **AclEdgeSpec** — `{ source_module_id, target_module_id, flags }`, an inter-module authority edge applied via `aeqi_company::set_module_acl`.
 
-The core data structure for TRUST configuration is `ValueConfig`:
+## Instructions
 
-```rust
-struct ValueConfig {
-    valueId: bytes32,      // ref to parent TRUST (e.g., sha3('role.trustConfig'))
-    key: bytes32,          // config type key (e.g., sha3('token'), sha3('roles'))
-    value: Vec<u8>,        // encoded bytes (ABI-encoded or custom binary)
-    valueType: u32,        // config type indicator
-}
-```
+`aeqi-factory` exposes these instructions (all in `src/lib.rs`):
 
-### Config Types
+- `create_company(company_id)` — initializes a fresh Company PDA. Skeleton path; no modules.
+- `create_with_modules(company_id, modules)` — initializes the Company and registers each declared module, but **does not finalize** — the caller still owes each module's `init` CPI plus a final `aeqi_company::finalize` once those land.
+- `create_company_full(company_id, role_module_id, token_module_id, gov_module_id, ...)` — the fully atomic path: initialize, register the role/token/governance modules, CPI each module's `init`, write the token config bytes, finalize each module, then finalize the Company — all in one transaction.
+- `register_template(template_id, modules, acl_edges)` — stores a reusable module + ACL graph in a Template PDA.
+- `instantiate_template(company_id)` — reads a registered Template PDA and replays its module set and ACL edges against a fresh Company. Like `create_with_modules`, it **does not finalize**; the caller runs the per-module `init` CPIs and the Company finalize afterward.
 
-1. **Token Config**: Token name, symbol, supply allocations
-2. **Budget Config**: Budget allocations and vesting schedules
-3. **Role Config**: Role assignments, vesting positions, and account links
-4. **Funding Config**: Valuation and funding rounds
-5. **Governance Config**: Voting parameters, delays, thresholds
+## Flow
 
-### Encoding/Decoding Pattern
+1. **Register** (once per template) — an admin calls `register_template` with the module set and ACL graph. This is the on-chain analog of a company template manifest.
+2. **Provision** (once per Company) — either the atomic `create_company_full` for the common role + token + governance shape, or the two-step `create_with_modules` / `instantiate_template` path followed by per-module `init` CPIs and a final `aeqi_company::finalize`.
+3. **Operate** — once finalized, the Company's modules are live; further changes to ACL edges or module config go through each module's own instructions, not the factory.
 
-All configs are serialized to `Vec<u8>` via ABI encoding or custom binary protocols. The decoding happens in the runtime (aeqi-platform) during provisioning:
+## Notes
 
-```rust
-// aeqi-platform/src/dao_provisioner.rs
-fn decode_role_config(encoded: &[u8]) -> Result<RoleConfig> {
-    // ABI decode or custom deserialize
-    // Returns strongly-typed RoleConfig struct
-}
-
-fn encode_role_config(config: &RoleConfig) -> Vec<u8> {
-    // Serialize back for contract storage
-}
-```
-
-This pattern allows:
-- Contract to remain config-agnostic (just stores opaque bytes)
-- Runtime to deserialize into domain models
-- Future config types to be added without contract upgrade
-
-## Budget & Role System (Deep Dive)
-
-### Two-Level Hierarchy
-
-The system uses a two-level structure for sophisticated allocation patterns:
-
-#### Level 1: Budget Allocations
-
-```rust
-BudgetRequest {
-    id: bytes32,                    // sha3('budget.vesting.founder')
-    sourceBudgetId: bytes32,        // parent budget
-    targetModuleId: bytes32,        // target (e.g., sha3('vesting'))
-    amount: u256,                   // total allocation
-    config: Vec<u8>,                // encoded role types array
-}
-```
-
-#### Level 2: Role Assignments
-
-```rust
-RoleRequest {
-    account: Address,               // wallet address
-    roleType: bytes32,              // sha3('director'), sha3('advisor'), etc.
-    vestingPositionRequests: [{
-        sourceBudgetId: bytes32,    // links back to budget
-        amount: u256,               // individual allocation
-    }]
-}
-```
-
-### Budget ID Pattern
-
-Budget IDs follow a consistent naming convention:
-
-```
-sha3('budget.vesting.founder')   → DIRECTOR role pool
-sha3('budget.vesting.team')      → EXECUTIVE, OFFICER, LEAD, CONTRIBUTOR pool
-sha3('budget.vesting.advisor')   → ADVISOR role pool
-sha3('budget.vesting.dealflow')  → DEALFLOW role pool
-sha3('budget.vesting.holder')    → HOLDER role pool
-```
-
-This allows template-agnostic discovery: instead of hardcoding budget IDs, the provisioner queries all budgets and discovers which ones support each role type.
-
-## Template Types
-
-The Factory ships with the four canonical template families (matching
-[Canonical templates](/docs/architecture/canonical-templates) and
-[Org architecture](/docs/methodology/org-architecture)):
-
-### 1. Entity Template
-
-- **Default**: 100% to directors
-- **Modules**: Roles, Treasury, Budget
-- **Use Case**: Minimal organizational structure (e.g., a service company)
-
-### 2. Venture Template
-
-- **Default Allocations**:
-  - Founder Pool: 28%
-  - Core Team: 12%
-  - Advisor: 2%
-  - Dealflow: 2%
-  - Holder: 2%
-- **Modules**: Token, Governance, Roles, Vesting, Budget, AMM
-- **Use Case**: Startup cap tables with founder lockup and team vesting
-
-### 3. Foundation Template
-
-- **Default**: No ownership token minted; mission-locked
-- **Modules**: Roles, Governance, Treasury, Budget
-- **Use Case**: Steward entity — governance and budget, no fundraising
-
-### 4. Fund Template
-
-- **Modules**: Fund, Governance, Roles, Treasury, Budget
-- **Use Case**: Venture fund with LP/GP governance and fund management
-
-## Role Types
-
-Standard role types across all templates:
-
-```rust
-sha3('director')    → Founders/Leaders
-sha3('executive')   → C-level team
-sha3('officer')     → Senior team
-sha3('lead')        → Team leads
-sha3('contributor') → Team members
-sha3('advisor')     → External advisors
-sha3('dealflow')    → Business development
-sha3('holder')      → Token holders (no allocation)
-```
-
-## Flow Stages
-
-### Stage 1: Idea
-
-**Purpose**: Capture basic TRUST metadata (off-chain)
-
-**What gets collected:**
-- Organization name, description, avatar
-- Token ticker and supply
-- Social links, documentation URLs
-- Which template to use
-
-**Output**: IPFS CID of the off-chain metadata
-
-### Stage 2: Setup
-
-**Purpose**: Configure on-chain parameters via ValueConfigs
-
-**Sub-stages:**
-
-#### Valuation & Funding
-- Set initial token valuation (affects token allocation percentages)
-- Define funding round parameters
-
-#### Governance
-- Voting delay and period (blocks or time)
-- Quorum threshold, support threshold
-- Early execution settings
-
-#### Roles & Vesting
-- Define budget allocations per role type
-- Assign specific addresses to roles
-- Set vesting schedules per role
-
-### Stage 3: Launch
-
-**Purpose**: Register TRUST on-chain and monitor indexer confirmation
-
-**What happens:**
-1. All ValueConfigs are serialized and passed to Factory.registerTRUST
-2. Only directors with non-zero addresses become declared signers
-3. Contract emits TrustRegistered event
-4. Indexer polls and reads the event, indexes the new TRUST address
-5. Platform writes (trust_id, trust_address, placement) to runtime_placements
-
-**Key: Declared Signers**
-
-Only DIRECTOR roles with non-zero addresses are declared signers:
-
-```rust
-let declared_signers = role_config
-    .roleRequests
-    .iter()
-    .filter(|r| r.role_type == sha3('director') && r.account != ZERO_ADDRESS)
-    .map(|r| r.account)
-    .collect::<Vec<_>>();
-```
-
-This is used for multi-sig and governance weight initialization.
-
-## State Management (Platform-Side)
-
-The provisioning flow is orchestrated in `aeqi-platform/src/dao_provisioner.rs`:
-
-1. **Load Template**: Fetch template from Factory contract
-2. **Deserialize Idea**: Parse user-provided IPFS metadata
-3. **Construct ValueConfigs**: From UI state → encoded bytes
-4. **Build TRUSTConfigRequest**: Aggregate all configs + ipfsCid
-5. **Call registerTRUST**: Send transaction to Factory contract
-6. **Poll Indexer**: Wait for TrustRegistered event to be indexed
-7. **Write Placement**: Record trust_address in runtime_placements
-
-## Transaction Flow
-
-The on-chain registration is a single atomic call:
-
-```rust
-pub fn registerTRUST(
-    trustId: bytes32,
-    templateId: bytes32,
-    ipfsCid: bytes32,
-    valueConfigs: Vec<ValueConfig>,
-    declaredSigners: Vec<Address>,
-)
-```
-
-**What the contract does:**
-1. Validates template exists
-2. Stores ipfsCid reference for agreement docs
-3. Stores all valueConfigs (opaque, contract doesn't interpret them)
-4. Initializes multi-sig signers from declaredSigners
-5. Emits TrustRegistered(trustId, templateId, ipfsCid)
-
-## DaoConfig Structure (Runtime View)
-
-Once provisioned, the runtime views the TRUST as:
-
-```rust
-struct DaoConfig {
-    trust_id: bytes32,
-    template: TemplateRef,
-    ipfs_cid: String,
-    ipfs_data: {
-        name: String,
-        description: String,
-        tokenTicker: String,
-        avatarUrl: String,
-    },
-    value_configs: Vec<ValueConfig>,
-}
-```
-
-Decoding happens on-demand in the provisioner, transforming ValueConfig arrays into:
-
-```rust
-struct ResolvedConfig {
-    token: TokenConfig,
-    budgets: Vec<BudgetRequest>,
-    roles: Vec<RoleRequest>,
-    funding: FundingConfig,
-    governance: GovernanceConfig,
-}
-```
-
-## Validation
-
-### Multi-Level Validation
-
-1. **Client-side** (in apps/ui):
-   - Name/ticker length and format
-   - URL validity for docs/video links
-   - Total allocations ≤ 100%
-
-2. **Platform-side** (aeqi-platform):
-   - Template exists
-   - Budget IDs match expected pattern
-   - Role types are recognized
-   - All addresses are valid
-
-3. **Contract-side** (the on-chain Factory program):
-   - Template is active
-   - ipfsCid is non-zero
-   - Declared signers array is non-empty
-   - ValueConfigs serialize correctly
-
-### Validation Flow
-
-1. **Real-time**: As user types (debounced), validate in UI
-2. **On blur**: When field loses focus, re-validate
-3. **On submit**: Final validation before sending transaction
-4. **Cross-field**: Total allocations don't exceed pool
-
-## Common Patterns
-
-### Adding a Default Role
-
-When the venture template loads, auto-populate a director role for the connected wallet:
-
-1. Load template and discover director budget
-2. Check if budget has available allocation (usually 2%)
-3. Create a RoleRequest with the connected wallet address
-4. Add to roleRequests in the role config
-
-This happens in the UI *before* the user hits "Launch" — it's an optimistic pre-fill, not a transaction.
-
-### Creating a Custom Budget
-
-To add a new budget type without contract changes:
-
-1. Define a new budget ID: `sha3('budget.vesting.custom')`
-2. Create BudgetRequest with that ID
-3. Encode role types that can draw from it
-4. Add to budgets array in valueConfigs
-
-The contract never needs to know about the semantics — it just stores the bytes.
-
-### Extending Config Types
-
-To add a new config type (e.g., permissions matrix, fee structure):
-
-1. Define a new key: `sha3('permissions')`
-2. Implement encode/decode in aeqi-platform
-3. Create a UI panel for editing
-4. Decode at provisioning time and apply to runtime state
-
-**No contract upgrade required** — it's just another ValueConfig entry.
-
-## Debugging & Operations
-
-On Solana, on-chain addresses are base58 (not `0x`-hex), and the platform
-registry is per-environment Postgres. The checks below are illustrative; consult
-your deployment's runtime for exact endpoints and connection strings.
-
-### Trace a Failed Provisioning
-
-Check the path in order:
-
-```bash
-# 1. Platform received the provisioning request
-sudo journalctl -u aeqi-platform.service -n 100 | grep -i 'provision\|registerTRUST'
-
-# 2. The indexer observed the registration event on chain
-
-# 3. The runtime placement was written to the Postgres registry
-psql "$DATABASE_URL" -c \
-  "SELECT entity_id, trust_address, status FROM runtime_placements WHERE trust_address IS NOT NULL;"
-```
-
-## Best Practices
-
-### Template Agnosticism
-
-Never hardcode budget IDs or role type patterns. Instead:
-
-```rust
-// Good: discover at runtime
-let director_budget = budgets
-    .iter()
-    .find(|b| decode_role_types(&b.config).contains(&sha3('director')))
-    .ok_or("no director budget")?;
-
-// Bad: assume sha3('budget.vesting.founder') always exists
-let budget = budgets.iter().find(|b| b.id == sha3('budget.vesting.founder'))
-```
-
-This allows templates to evolve without breaking provisioning logic.
-
-### Defensive Decoding
-
-Always wrap ValueConfig decoding in proper error handling:
-
-```rust
-fn get_role_config(value_configs: &[ValueConfig]) -> Result<RoleConfig> {
-    let encoded = value_configs
-        .iter()
-        .find(|vc| vc.key == sha3('roles'))
-        .ok_or("missing role config")?
-        .value
-        .as_slice();
-    
-    decode_abi::<RoleConfig>(encoded)
-        .map_err(|e| anyhow!("role config decode failed: {}", e))
-}
-```
-
-### State Immutability
-
-Once a TRUST is registered, its ValueConfigs are immutable (at the contract level). Any modifications create a new proposal/update transaction. This prevents surprises and keeps the audit trail clean.
-
-## Conclusion
-
-The Factory architecture balances:
-
-- **Flexibility**: Config types are opaque to the contract; new types don't require upgrades
-- **Safety**: Multi-level validation catches errors early
-- **Extensibility**: Two-level budget/role system supports complex allocation patterns
-- **Simplicity**: UI remains a three-stage wizard despite on-chain complexity
-
-When working with the Factory:
-
-1. Understand the value-configs serialization model (contract stores opaque bytes, runtime interprets)
-2. Keep template discovery dynamic, never hardcode budget/role IDs
-3. Validate at the appropriate layer (UI for UX, platform for semantics, contract for trust boundary)
-4. Test with the smoke recipe before shipping
-
-The architecture is designed to evolve — new templates, config types, and features can be added without breaking existing registrations.
+- Module ids and template ids are caller-supplied `[u8; 32]` values — the factory does not derive them from a hash of a name; templates are looked up by the PDA seed, not a content hash.
+- `create_with_modules` and `instantiate_template` intentionally leave the Company in creation mode after registering modules — finalizing early there breaks every subsequent module `init` (`CompanyNotInCreationMode`), a bug class fixed on 2026-05-17.
+- Errors are typed (`FactoryError`): empty/oversized module sets, mismatched `remaining_accounts` counts, duplicate module ids, unknown ACL module references, inactive module implementations, and implementation-account mismatches.

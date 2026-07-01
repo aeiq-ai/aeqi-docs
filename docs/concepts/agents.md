@@ -59,14 +59,15 @@ outcome.
 ## Hiring agents
 
 Agents can be created from templates or composed directly from company context.
-aeqi can start with a small operating team:
+The default `new-company` template starts with a CEO (the root agent) plus a
+six-exec team:
 
-- Executive Assistant
-- Research Agent
-- Product Agent
-- Engineering Agent
-- Finance Agent
-- Growth Agent
+- **Chief of Staff** — the operating spine; turns the CEO's intent into owned quests and keeps the operating snapshot honest.
+- **CTO** — the builder; owns the website and internal apps and ships the smallest real version first.
+- **CMO** — the keeper of the company's voice; owns growth, positioning, and the public message.
+- **CFO** — the keeper of the company's money; owns treasury, budget, and runway.
+- **Advisor** — the challenge function; pressure-tests a decision before it ships.
+- **Associate** — the hands of the company; delivers research, drafts, and finished artifacts.
 
 Templates are only starting points. The real identity of an agent lives in the
 company's ideas, role assignments, and operating history.

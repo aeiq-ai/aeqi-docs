@@ -26,25 +26,24 @@ identity until a protocol module is enabled. See [Wallets & identity](/docs/conc
 
 Click **Launch Company** or **+ New Company**.
 
-In the current hosted release, the public catalog is intentionally conservative:
-one default aeqi Blueprint. It starts a minimal Company with a primary agent,
-shared memory, a bootstrap Quest, and a review cadence. Specialized archetypes
-stay out of the public catalog until their product behavior and protocol
-assumptions are audited.
+In the current hosted release, the public catalog ships exactly two company
+templates. Specialized archetypes stay out of the public catalog until their
+product behavior and protocol assumptions are audited.
 
-| Single blueprint | Best for |
+| Template | Best for |
 |---|---|
-| **aeqi** | A general Company shell. The mission defines the operating structure. |
+| **New company** (default) | Start a new company with a full team behind one CEO. |
+| **Existing company** | Import an existing operation: map bottlenecks and open the first improvement quest. |
 
-Pick **aeqi**. Give your Company a name. Click **Create**.
+Pick **New company**. Give your Company a name. Click **Create**.
 
 A few things happen at once:
 
 1. A workspace is provisioned (a fresh tenant on its own managed runtime).
-2. Initial roles and the primary agent are seeded.
+2. A CEO (root agent) plus a six-exec team — Chief of Staff, CTO, CMO, CFO, Advisor, and Associate — are seeded at once.
 3. Ideas are created for the Company mission and operating context.
-4. Events schedule the first operating rhythm.
-5. One kickoff Quest asks you to define the Company mission before adding specialist agents or more structure.
+4. Weekly cadence events are seeded but ship disabled until you turn them on.
+5. One onboarding Quest (`configure_company`) asks the CEO to hold a founder conversation and set the Company up around what you actually want, before more structure is added.
 
 The wizard takes you from goal to live workspace without requiring you to design an org chart first.
 
@@ -54,9 +53,9 @@ underlying runtime/protocol term.
 
 ## 3. Meet your agents
 
-You land on the Company overview tab. The Agents row in the rail shows the agents that just got hired.
+You land on the Company overview tab. The Agents row in the rail shows the seven agents that just got hired: the CEO and the six-exec team.
 
-Open the primary agent. The Sessions tab shows the agent has opened a greeting session: it asks what the Company should make true, then turns the answer into operating context and the first Quests.
+Open the CEO. The Sessions tab shows the agent has opened a greeting session: it asks what the Company should make true, then turns the answer into operating context and the first Quests — this is the `configure_company` onboarding conversation.
 
 This is the **co-creation** loop in action: the agent doesn't sit idle waiting for you to give it work. It introduces itself, captures context via Quests, and uses the answers as Ideas. See [Co-creation](/docs/methodology/co-creation) for the full pattern.
 
@@ -101,7 +100,7 @@ Quests are units of work. Open the **Quests** tab and click **+ New quest**.
 | Subject | "Draft Q3 launch announcement" |
 | Description | "Long-form post for the blog. 600–800 words. Voice: confident, technical, restrained. Reference the co-creation release." |
 | Priority | `high` |
-| Assigned agent | The primary agent |
+| Assigned agent | The CEO |
 
 Click **Create**. The agent picks it up immediately. You'll see:
 

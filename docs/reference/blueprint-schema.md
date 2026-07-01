@@ -36,10 +36,11 @@ The canonical Rust type is `aeqi_orchestrator::ipc::templates::CompanyTemplate`.
     { "key": "my-sessions", "label": "My sessions", "path": "sessions", "search": "?view=mine", "pinned": true }
   ],
 
-  // Optional. Child agents under root. owner is always "root" in v1.
+  // Optional. Child agents under root. owner is "default" (DEFAULT_AGENT_OWNER);
+  // "root" is a legacy alias, still normalized to the same default agent.
   "seed_agents": [
     {
-      "owner": "root",
+      "owner": "default",
       "name": "Steward",
       "model": "anthropic/claude-sonnet-4.6",
       "color": "#5a4fcf",
@@ -51,7 +52,7 @@ The canonical Rust type is `aeqi_orchestrator::ipc::templates::CompanyTemplate`.
   // Optional. Scheduled or pattern-fired event handlers.
   "seed_events": [
     {
-      "owner": "root",
+      "owner": "default",
       "name": "Daily standup",
       "pattern": "schedule:0 9 * * 1-5",
       "cooldown_secs": 0,
@@ -67,7 +68,7 @@ The canonical Rust type is `aeqi_orchestrator::ipc::templates::CompanyTemplate`.
   // Optional. Seed ideas (memory, charters, docs).
   "seed_ideas": [
     {
-      "owner": "root",
+      "owner": "default",
       "name": "Mission",
       "content": "...",
       "tags": ["mission"]
@@ -77,21 +78,25 @@ The canonical Rust type is `aeqi_orchestrator::ipc::templates::CompanyTemplate`.
   // Optional. Seed quests created at spawn.
   "seed_quests": [
     {
-      "owner": "root",
+      "owner": "default",
       "subject": "Define the Company mission",
       "description": "Write the one-sentence mission into the Company mission idea.",
       "labels": ["onboarding"]
     }
   ],
 
-  // Optional. Declared role surface — round-tripped to the dashboard.
-  // The orchestrator does not yet use these at spawn (Phase-B refactor);
-  // until then, declared roles should mirror the agent tree 1:1.
+  // Optional. Declared role surface, actively installed at spawn: when
+  // non-empty, install_declared_roles wipes the auto-derived per-agent
+  // positions and installs this declared structure (plus seed_role_edges
+  // and any operator RoleOverrides) as the company's authority map. When
+  // empty, spawn falls back to the auto-derived one-position-per-agent set.
+  // Declared roles should still mirror the agent tree so the preview stays
+  // honest with what spawns.
   "seed_roles": [
     {
       "key": "founder",
       "title": "Founder",
-      "default_occupant_agent": "root",
+      "default_occupant_agent": "default",
       "role_type": "operational",
       "grants": null
     },
@@ -146,13 +151,13 @@ The canonical Rust type is `aeqi_orchestrator::ipc::templates::CompanyTemplate`.
 
 ### Seed agents
 
-Each `SeedAgentSpec` matches the root shape plus an `owner` field. In v1, `owner` must be `"root"` — nested hierarchies are deferred.
+Each `SeedAgentSpec` matches the root shape plus an `owner` field. `owner` must be `"default"` (`DEFAULT_AGENT_OWNER`, the root/CEO agent); `"root"` is accepted as a legacy alias and normalized to the same default agent. Nested hierarchies beyond root → seed_agent are deferred.
 
 ### Seed events
 
 | Field | Type | Notes |
 |-------|------|-------|
-| `owner` | string | `"root"` or the name of a seed_agent. |
+| `owner` | string | `"default"` (legacy alias `"root"`) or the name of a seed_agent. |
 | `name` | string (required) | Display name for the handler. |
 | `pattern` | string (required) | Full pattern. Cron handlers use the `schedule:<cron>` form, e.g. `schedule:0 9 * * 1-5`. Lifecycle handlers use `session:<event>`, e.g. `session:quest_result`. |
 | `cooldown_secs` | integer | Minimum seconds between fires; `0` for no cooldown. |
@@ -162,7 +167,7 @@ Each `SeedAgentSpec` matches the root shape plus an `owner` field. In v1, `owner
 
 | Field | Type | Notes |
 |-------|------|-------|
-| `owner` | string | `"root"` or a seed_agent name. |
+| `owner` | string | `"default"` (legacy alias `"root"`) or a seed_agent name. |
 | `name` | string (required) | Stable slug. |
 | `content` | string (required) | Body. |
 | `tags` | string[] | Classification tags. |
@@ -171,7 +176,7 @@ Each `SeedAgentSpec` matches the root shape plus an `owner` field. In v1, `owner
 
 | Field | Type | Notes |
 |-------|------|-------|
-| `owner` | string | `"root"` or a seed_agent name. |
+| `owner` | string | `"default"` (legacy alias `"root"`) or a seed_agent name. |
 | `subject` | string (required) | Quest title. |
 | `description` | string | Long form. |
 | `labels` | string[] | Tags. |
@@ -182,7 +187,7 @@ Each `SeedAgentSpec` matches the root shape plus an `owner` field. In v1, `owner
 |-------|------|-------|
 | `key` | string (required) | Stable identifier referenced by `seed_role_edges`. |
 | `title` | string (required) | User-visible label, e.g. `"CTO"`. |
-| `default_occupant_agent` | string | seed_agent name or `"root"`; `null` means vacant. |
+| `default_occupant_agent` | string | seed_agent name or `"default"` (legacy alias `"root"`); `null` means vacant. |
 | `role_type` | enum | `director`, `operational`, etc. Defaults to `operational`. |
 | `grants` | string[] | Explicit grant set. `null` means "use the type-default bundle". |
 
