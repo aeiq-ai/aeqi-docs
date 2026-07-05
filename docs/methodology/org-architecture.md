@@ -1,6 +1,6 @@
 # Org architecture
 
-A Company in aeqi is a graph of slots and edges, not a table of titles. This page explains how the pieces fit: Companies, Roles, ownership tokens, and governance. (The Company's on-chain vehicle is the TRUST contract; this page names it only where the on-chain artifact is what's actually meant.)
+A Company in aeqi is a graph of slots and edges, not a table of titles. This page explains how the pieces fit: Companies, Roles, ownership, and governance. (The Company's on-chain vehicle is its trust contract — the Company's smart account; this page names it only where the on-chain artifact is what's actually meant.)
 
 ## Companies are entities
 
@@ -8,11 +8,8 @@ A Company is the programmable operating shell in aeqi: a workspace with its own 
 
 | URL | Shape |
 |---|---|
-| `/company/<address-or-id>/*` | The canonical operating-system route. Every entity — your personal entity or a joint Company — lives here. Rail: Overview · Roles · Ownership · Treasury · Governance. Single-occupant entities collapse Roles/Ownership/Governance gracefully. |
-| `/trust/<address>/*` | Legacy alias. Replace-redirects to `/company/<address-or-id>/*` after the entity hydrates. Old bookmarks keep working. |
+| `/company/<address-or-id>/*` | The canonical operating-system route. Every entity — your personal entity or a joint Company — lives here. Rail: HQ · Sessions · Views · Roles · Apps · Agents · Events · Quests · Ideas. Single-occupant entities render the same registers gracefully. |
 | `/account` | User-scoped settings only (auth, billing, signers). Not an entity surface — your own entity is at `/company/<your-address-or-id>/*`. |
-
-One canonical URL shape; everything is an entity.
 
 ## Roles are the org chart
 
@@ -38,7 +35,7 @@ Two distinct layers, kept orthogonal.
 
 | Layer | `role_type` | Who | Where it lives | Power |
 |---|---|---|---|---|
-| **Board** | `director` | Founders typically | On-chain TRUST contract + runtime mirror | Governance: signs the smart account, votes proposals. (TRUST here is the literal on-chain contract.) |
+| **Board** | `director` | Founders typically | The Company's trust contract (when protocol state is enabled) + runtime mirror | Governance: signs the smart account, votes proposals. |
 | **Org chart** | `operational` | CEO + C-suite + reports + agents | Runtime only | Operational: spawn agents, configure tools, route work. |
 
 C-suite operational titles are NOT directors. CFO, CMO, CLO, CISO are `role_type='operational'`. They report to CEO via `role_edges`, not via signing authority. They get on-chain bindings only if and when the founder explicitly elects them to the board (rare; usually only founders are board).
@@ -47,9 +44,9 @@ A founder typically holds both — one Director seat plus a CEO seat. Two rows f
 
 Operational seats (CFO/CMO/CLO/CISO) must not be typed as `director`: a director-typed role binds to the on-chain board and inflates the signer count. Reserve `director` for actual board seats.
 
-## Ownership tokens — the cap table
+## Ownership — the cap table (protocol roadmap)
 
-For Venture-template Companies, ownership can become protocol state. The Company tracks ownership issuance, transfer restrictions, and cap-table state when enabled.
+Ownership as protocol state is roadmap, not a shipped surface. The design: for Venture-shaped Companies, the Company tracks ownership issuance, transfer restrictions, and cap-table state on chain when protocol features are enabled.
 
 | Mechanism | Purpose |
 |---|---|
@@ -60,11 +57,9 @@ For Venture-template Companies, ownership can become protocol state. The Company
 
 Ownership tokens are independent from governance tokens. A Director-tier role doesn't automatically hold equity; equity holders don't automatically have a board seat. Two distinct authorities.
 
-For Foundation-template Companies, no ownership token is minted. Mission-locked, governance-only.
+## Governance — proposals and votes (protocol roadmap)
 
-## Governance — proposals and votes
-
-Governance is on-chain when enabled. The flow:
+On-chain governance follows the same staging: the design below describes the protocol layer, which is not exposed as an in-app tab today. The flow:
 
 ```
 draft proposal → table → quorum → timelock → execute
@@ -79,30 +74,18 @@ draft proposal → table → quorum → timelock → execute
 | **Timelock** | Configurable delay between pass and execute (typically 24-72h). |
 | **Execute** | Anyone can execute a passed proposal after timelock. |
 
-Vote weight is configured per template:
+In the runtime today, governance shows up as read authority: the `governance.read` grant gates who can inspect governance state, and `roles.manage` gates who can restructure the org.
 
-| Template | Voting basis |
+## Budgets and Transactions — the financial picture
+
+The shipped financial surfaces are two registers on the Company:
+
+| Register | Content |
 |---|---|
-| Entity | None or Director-tier 1-of-N, depending on the Company's configured roles. |
-| Venture | Token-weighted + Director veto. |
-| Foundation | Director-tier multi-sig + Protector role veto. |
-| Fund | LP/GP weighted. |
+| **Budgets** (`/company/<address-or-id>/budgets`) | Allocated spend per role / per agent / per project — the agentic credits ledger. |
+| **Transactions** (`/company/<address-or-id>/transactions`) | Inbound and outbound history. |
 
-The Treasury tab and Governance tab read directly from the on-chain indexer. Proposals, votes, and execution status all live on-chain.
-
-## Treasury — the financial picture
-
-Treasury is the canonical financial surface. It folds three lenses:
-
-| Lens | Content |
-|---|---|
-| **Balance state** | Current treasury balances and protocol assets. |
-| **Budgets** | Allocated spend per role / per agent / per project. |
-| **Transactions** | Inbound and outbound history. |
-
-A Treasury row is the same primitive at every entity scope — a joint Company's `/company/<address-or-id>/treasury` and your personal entity's `/company/<your-address-or-id>/treasury` render through the same code path and the same UI.
-
-There's no separate "Portfolio" page. Treasury *is* the portfolio.
+These render through the same code path at every entity scope — a joint Company and your personal entity use the same UI. An on-chain treasury (protocol balances and assets folded into the same picture) is roadmap; in the runtime today, treasury shows up as the `treasury.read` grant gating who can see financial state.
 
 ## Three money flows (kept distinct)
 
@@ -114,14 +97,15 @@ There's no separate "Portfolio" page. Treasury *is* the portfolio.
 
 Subscription does NOT debit treasury — failure modes diverge. A Company with no treasury but an active product still needs to keep running. Treasury is the Company's own money.
 
-Three money flows stay distinct: subscription, runtime credit capacity, and treasury.
-
 ## Templates — the canonical shapes
 
-Four canonical Company templates ship today:
+Two Company templates ship today:
 
-- **Entity** — flexible shell. No enforced state machine. Custom org structures.
+- **Company** — flexible shell. No enforced state machine. Custom org structures.
 - **Venture** — growth engine. Cap table, vesting, governance, fundraising rounds.
+
+Two more are roadmap:
+
 - **Foundation** — steward. Mission-locked, no fundraising, governance + budget.
 - **Fund** — capital allocator. LP/GP roles, NAV tracking.
 
@@ -135,16 +119,6 @@ A stack blueprint is a graph of (single-blueprint, name) tuples + cross-Company 
 - **VC fund + 3 portfolio companies** — fund holds 20% + Director role in each.
 
 The wizard provisions all entities in topo-sorted order. The cross-company on-chain edges (ownership transfers, role assignment writes, scheduled treasury flows) are not yet written on chain. See [Stack blueprints](/docs/reference/blueprint-schema).
-
-## Summary
-
-- A Company is the programmable operating shell. It has an entity ID and an optional on-chain address.
-- Roles are the org-chart slots; agents and humans occupy them.
-- Authority is the transitive closure over `role_edges`.
-- Board (`director`) is on-chain governance; org chart (`operational`) is runtime only.
-- Treasury folds balance + budgets + transactions.
-- Templates are canonical Company configurations; pick at creation.
-- Stacks are multi-Company graphs.
 
 ## Related
 

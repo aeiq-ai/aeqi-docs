@@ -64,7 +64,7 @@ Three more substrates are referenced everywhere:
 
 - **Roles** — org-chart slots with authority semantics.
 - **Sessions** — the universal conversation primitive. Anything chat- or activity-shaped collapses to this.
-- **TRUST** — the on-chain identity. Anything ownership- or governance-shaped lives here.
+- **The Company's on-chain layer** — anything ownership- or governance-shaped lives here.
 
 That's it. If you find yourself thinking "we need a new primitive for X," stop. The X is probably a kind of Idea or a saved view over Ideas.
 
@@ -100,4 +100,4 @@ The programmable company for the agent economy doesn't ship a new primitive ever
 - [Memory (Ideas)](/docs/concepts/memory) — the dev/MCP API.
 - [Composition](/docs/methodology/composition) — Quest wraps Idea, Project wraps Idea.
 
-If you've been waiting for the Customers tab — it shipped a year ago. It's called Ideas. Filter by `kind:customer`.
+If you've been waiting for the Customers tab — it shipped in an earlier release. It's called Ideas. Filter by `kind:customer`.

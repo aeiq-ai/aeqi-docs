@@ -38,7 +38,7 @@ The `type` is the event's **pattern** — a colon-prefixed string like `session:
 
 ## Detection patterns
 
-Events fire when patterns match. The Tool-calls unification (2026-04-19) folded the old "middleware" layer into per-pattern detectors — every event is a `(pattern, tool_calls)` pair.
+Events fire when patterns match. The Tool-calls unification folded the old "middleware" layer into per-pattern detectors — every event is a `(pattern, tool_calls)` pair.
 
 Patterns can be:
 
@@ -83,7 +83,7 @@ These are patterns, not dotted names. There is no `agent.spawned`, `quest.assign
 
 ## Detector patterns
 
-The Tool-calls unification folded the old middleware layer into per-pattern detectors. The runtime emits these detector patterns; events own the response via their `tool_calls`:
+The runtime emits these detector patterns; events own the response via their `tool_calls`:
 
 `loop:detected` · `guardrail:violation` · `graph_guardrail:high_impact` · `shell:command_failed` · `agent:premature_completion` · `ideas:threshold_reached`.
 
@@ -117,4 +117,4 @@ A log is a write-only record of past states. An event is a cause. The two share 
 
 - [Quests](/docs/concepts/quests) — events typically fire `quests.create`.
 - [Sessions](/docs/concepts/sessions) — events typically wake an agent in a session.
-- [Tool calls](/docs/concepts/agent-runtime-overview#tool-calls) — events emit tool calls; tool calls are how the LLM and runtime communicate.
+- [Agent runtime overview](/docs/concepts/agent-runtime-overview) — events emit tool calls; tool calls are how the LLM and runtime communicate.

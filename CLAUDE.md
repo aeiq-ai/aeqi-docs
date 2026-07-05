@@ -5,12 +5,17 @@ Content-only repo. No build, no deploy script, no UI.
 
 ```
 docs/
-├── api/             # API reference
+├── api/             # API reference (REST, MCP, auth, inference)
+├── architecture/    # System architecture and canonical templates
+├── blog/            # Dated release notes / public posts
 ├── concepts/        # Mental model, primitives, vocabulary
-├── getting-started/
-├── guides/
-├── platform/
-└── self-hosting/
+├── getting-started/ # First-run walkthroughs
+├── guides/          # Task-oriented how-tos
+├── methodology/     # How aeqi thinks: org architecture, co-creation, composition
+├── patterns/        # Engineering patterns behind shipped features
+├── reference/       # Schemas, CLI, IPC reference
+├── platform/        # Hosted-platform docs (billing is wired)
+└── self-hosting/    # Still empty — landing serves placeholders
 ```
 
 The `marked` dependency is for ad-hoc local rendering only. Production rendering is done by `aeqi-landing` at build time — it pulls this repo's contents and renders them through its own MDX/markdown pipeline.
@@ -24,13 +29,13 @@ The `marked` dependency is for ad-hoc local rendering only. Production rendering
 
 ## Stub sections
 
-`platform/` and `self-hosting/` are intentionally sparse right now. Before adding content there, check `docs/index.md` — every file in those directories must be wired into the index. If a directory has no content yet, leave it empty (git ignores empty dirs); do NOT add placeholder `.gitkeep` or `_index.md` files.
+`platform/` has `billing.md` wired; only `self-hosting/` is still empty (the landing serves placeholders for it). Before adding content there, check `docs/index.md` — every file in those directories must be wired into the index. If a directory has no content yet, leave it empty (git ignores empty dirs); do NOT add placeholder `.gitkeep` or `_index.md` files.
 
 ## Landing renders only what it routes
 
 aeqi-landing renders docs through **explicit `<Route>` declarations** in `aeqi-landing/src/docs/Docs.tsx` — NOT a generic markdown crawler. A new markdown file in this repo is invisible to users until a paired `<Route path="..." element={<MD file="..." />} />` lands in `Docs.tsx`.
 
-When a docs ship adds new files (especially new top-level directories like `methodology/`, `patterns/`, `reference/`, `blog/`):
+When a docs ship adds new files — in any of the established directories (`methodology/`, `patterns/`, `reference/`, `blog/`, …) or a genuinely new one:
 
 1. Land the markdown here (`/ship` in aeqi-docs).
 2. Cut a worktree on aeqi-landing. Add a `<Route>` per new file in `src/docs/Docs.tsx`.
@@ -42,10 +47,12 @@ Until step 2 ships, the markdown lands in main (durable) but `https://aeqi.ai/do
 
 When a subagent scans for doc gaps, the canonical checklist is:
 
-1. Is there a `concepts/<primitive>.md` for each of the four primitives (Agents, Events, Quests, Ideas) **and** for TRUST?
+1. Is there a `concepts/<primitive>.md` for each of the four primitives (Agents, Events, Quests, Ideas), and is `concepts/company.md` current for the Company?
 2. Is `platform/billing.md` current with the latest pricing model?
 3. Are `platform/` and `self-hosting/` still intentionally empty, or do shipped features now warrant content?
 4. Does `docs/index.md` link every file that exists in `docs/**/*.md`?
+
+`docs/index.md` is not rendered; treat it as the repo's nav manifest.
 
 ## Worktree workflow
 
@@ -71,11 +78,18 @@ cd /home/claudedev/aeqi-docs-$BR && npm run check       # MCP catalog + REST rou
 - `check:mcp-docs` — stale MCP tool catalogs, wrong `aeqi mcp` command forms,
   and hosted Codex/Claude config snippets drifting away from the current MCP
   setup.
-- `check:rest-routes` — every `.route("…")` registered in
-  `../aeqi-platform/src/server.rs` must be mentioned in `docs/api` or
-  `docs/reference`, or be on the allow-list at the top of
-  `scripts/check-rest-routes.mjs`. The REST guard auto-skips if the sibling
-  `aeqi-platform` repo is absent (CI without the peer repo cloned).
+- `check:rest-routes` — two directions. Every `.route("…")` registered in the
+  platform router (read via `git -C ../aeqi-platform show
+  origin/main:src/routes/router.rs` — aeqi-platform is a bare repo whose
+  on-disk tree is stale; never read it from disk) or in the scanned
+  `aeqi-web` route files must be mentioned in `docs/api` or `docs/reference`,
+  and every route path documented there must exist in source. Each direction
+  has its own allow-list at the top of `scripts/check-rest-routes.mjs`. The
+  guard auto-skips a source if the sibling repo (or the git ref) is absent
+  (CI without the peer repos cloned).
+
+Note: `docs/index.md` is an in-repo nav manifest — the rendered `/docs` index
+is aeqi-landing's `DocsHome.tsx`, so index changes need a landing-side check.
 
 Content-only repo — no build to fail. Run individual checks (`npm run
 check:mcp-docs` or `npm run check:rest-routes`) when narrowing the surface

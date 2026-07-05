@@ -79,7 +79,7 @@ an owner, and a place in the company's operating history.
 - Not a chatbot platform. Chat is one surface.
 - Not an agent framework. Agents are not the product; the operating company is.
 - Not a task manager. Quests are executable work, not passive tickets.
-- Not a DAO tool. Governance is one primitive, not the category.
+- Not a token-governance product. Governance is one primitive, not the category.
 - Not a legal wrapper. Formation matters, but execution is the wedge.
 - Not autonomous without oversight. Humans set direction; agents execute inside
   scope.
@@ -90,4 +90,4 @@ an owner, and a place in the company's operating history.
 - [Company](/docs/concepts/company)
 - [Agent runtime overview](/docs/concepts/agent-runtime-overview)
 - [CLI](/docs/reference/cli)
-- [MCP](/reference/mcp)
+- [MCP](/docs/mcp)

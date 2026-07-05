@@ -6,9 +6,9 @@ Five things landed.
 
 ## On-chain stack edges
 
-Stack blueprints have shipped since v0.31.0 — pick "VC fund + 3 portfolio companies" or "founder + spinout," fill in the names, click create. What didn't ship until v0.42.0 was the part where the *edges between* the Companies are real on-chain transfers and role grants. Until W33B closed, every edge result came back with `status: "skipped"` and the message "on-chain edge application stubbed in v1."
+Stack blueprints have shipped since v0.31.0 — pick "VC fund + 3 portfolio companies" or "founder + spinout," fill in the names, click create. What didn't ship until v0.42.0 was the part where the *edges between* the Companies are real on-chain transfers and role grants. Until this release, every edge result came back with `status: "skipped"` and the message "on-chain edge application stubbed in v1."
 
-Now they execute. `TokenOwnership { percent_bps: 3000 }` actually transfers a 30% slice of the spinout's token from the spinout to the founder's personal entity. `RoleAssignment { role_type: "founder" }` actually mints a Founder role on the spinout TRUST and binds the personal entity's address to it. `TreasuryFlow` is still scaffolded — the schedule subscription needs a per-TRUST cron that doesn't exist yet — but ownership and role grants are settled the moment the stack provisions.
+Now they execute. `TokenOwnership { percent_bps: 3000 }` actually transfers a 30% slice of the spinout's token from the spinout to the founder's personal entity. `RoleAssignment { role_type: "founder" }` actually mints a Founder role on the spinout Company's on-chain entity and binds the personal entity's address to it. `TreasuryFlow` is still scaffolded — the schedule subscription needs a per-Company cron that doesn't exist yet — but ownership and role grants are settled the moment the stack provisions.
 
 This is the difference between "a directory of related Companies" and "a holding structure." The org chart of the holding structure is the union of the per-Company role graphs, joined by cross-Company role grants. It renders as one tree because it IS one tree.
 
@@ -16,7 +16,7 @@ This is the difference between "a directory of related Companies" and "a holding
 
 Every Company gained a public-facing column on its placement row: `public: 0|1`. Toggling it to `1` opens `app.aeqi.ai/<entity_id>` to anyone — no auth, no login, no Stripe gate. You see the Company's display name, tagline, public roles, and any idea tagged `public` or `public:*`.
 
-The shape is deliberate. There is no separate slug column — the URL segment IS the entity_id. There is no separate `public_ideas` table — visibility is a tag. There is a reserved-slug deny list (`me`, `admin`, `start`, `studio`, `economy`, `blueprints`, every auth path, every static asset prefix) so the public route can never shadow the app shell. The list lives in `apps/ui/src/App.tsx` as `RESERVED_SLUGS` and is the single source of truth.
+The shape is deliberate. There is no separate slug column — the URL segment IS the entity_id. There is no separate `public_ideas` table — visibility is a tag. There is a reserved-slug deny list (`me`, `admin`, `start`, `studio`, `economy`, `blueprints`, every auth path, every static asset prefix) so the public route can never shadow the app shell. The list is maintained as a reserved-slugs list in the app — one source of truth.
 
 The route is read-only and degrades gracefully: if the runtime is asleep, the hero (name + tagline) still returns; roles and ideas just come back empty. A public profile that 503s because the runtime hasn't woken up isn't a public profile.
 
@@ -24,9 +24,9 @@ See [Public profile flag](/docs/patterns/public-profile-flag) for the engineerin
 
 ## The Architect surface, stubbed
 
-The Architect agent is the wedge that makes aeqi uncopyable: describe a Company in English, get a programmable company draft. The full stack ships in waves. v0.42.0 lands the first one.
+The Architect agent is the hardest part of aeqi to replicate: describe a Company in English, get a programmable company draft. The full stack ships in waves. v0.42.0 lands the first one.
 
-`/studio` is now a real surface in the dashboard. It accepts a paragraph of intent, calls a stub LLM that returns a hand-written stack blueprint, and renders the components + edges as a tree you can spawn. The LLM is stubbed today; the wire is real. The architect crate exists, the IPC verb is plumbed, the tools are registered. Every layer below the model call is solid — when Wave 35 wires a real model in, nothing else has to change.
+`/studio` is now a real surface in the dashboard. It accepts a paragraph of intent, calls a stub LLM that returns a hand-written stack blueprint, and renders the components + edges as a tree you can spawn. At the time of this release the LLM was stubbed; a real model landed later. The wire was real: the architect crate existed, the IPC verb was plumbed, the tools were registered. Every layer below the model call was solid — nothing else had to change when the real model arrived.
 
 The shape we're building toward, in one sentence: type "research lab plus five spinout companies, lab holds 30% of each" and the room replies with a stack. You review, you spawn, you're running. Today you have to pick the blueprint by hand. Tomorrow you describe it.
 
@@ -59,8 +59,10 @@ the Architect. The `/studio` room was intended to become a chat surface with
 multi-turn refinement, cost preview, and spawn-on-confirm. The hardest design
 problem was not the model; it was the conversation shape.
 
-The roadmap after that was a dedicated TRUST surface for the personal entity,
-canonical `/trust/<address>` routing, and hireable opt-in for the economy.
+The roadmap after that named a dedicated on-chain identity surface for the
+personal entity, canonical `/trust/<address>` routing, and hireable opt-in for
+the economy — a plan since superseded (the `/trust/<address>` path survives
+only as a legacy route).
 
 The product had primitives. It had architecture. It had a thesis. v0.42.0 is the first release where Companies start talking to each other on-chain, where they have public faces, and where the room that designs them exists.
 

@@ -17,8 +17,8 @@ The word "template" names two different things; keep them apart:
 
 Each company template declares an on-chain archetype via its `template` field.
 The two layers are decoupled: the off-chain catalog can change (new seed
-agents, new copy) without any contract change, because the archetype is just a
-string the factory hashes.
+agents, new copy) without any contract change, because the archetype simply
+resolves to a template id already registered with the factory.
 
 ## The live company-template catalog
 
@@ -47,10 +47,12 @@ The on-chain protocol is shipped as Anchor programs under
   `aeqi-funding`, `aeqi-treasury`, `aeqi-governance`, `aeqi-fund`,
   `aeqi-unifutures` — the module programs an archetype composes.
 
-The factory's `templateId` is derived from the archetype slug (`keccak256` of
-the `template` string), **not** from the company-template slug. A company
-template named `new-company` with `template: "entity"` registers under the
-`entity` archetype; the chain never sees the off-chain slug.
+The factory's `templateId` is a fixed 32-byte identifier holding a short ASCII
+handle (`"BSC"`, `"VNT"`), zero-padded — derived from the archetype's on-chain
+handle, **not** from the company-template slug. Templates live at the PDA
+seeded `[b"template", template_id]`. A company template named `new-company`
+with `template: "entity"` registers under the archetype's on-chain template;
+the chain never sees the off-chain slug.
 
 > **Historical note — the EVM era.** Earlier versions of aeqi ran the protocol
 > on EVM (Solidity contracts, a Foundry `Deploy.s.sol` / `RegisterTemplates.s.sol`
@@ -64,6 +66,6 @@ template named `new-company` with `template: "entity"` registers under the
 
 - [Canonical templates](/docs/architecture/canonical-templates) — the on-chain archetypes and how company templates map onto them.
 - [Blueprint schema](/docs/reference/blueprint-schema) — the company-template JSON manifest.
-- [TRUST](/docs/concepts/company) — the on-chain layer behind a Company.
+- [On-chain layer](/docs/concepts/company) — the chain construct behind a Company.
 - [The Architect](/docs/methodology/architect) — the chat surface that drives template selection.
 - `projects/aeqi-solana/programs/aeqi-factory` — the on-chain factory program.

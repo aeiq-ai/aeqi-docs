@@ -9,7 +9,7 @@ term.
 
 Use the REST API when software needs to operate aeqi over HTTP: account flows,
 Company launch, runtime provisioning, integrations, billing, public profiles,
-inference, and proxied runtime operations. Use [MCP](/reference/mcp) when an AI
+inference, and proxied runtime operations. Use [MCP](/docs/mcp) when an AI
 client should operate Company memory, quests, agents, events, and code
 intelligence as tools.
 
@@ -169,34 +169,30 @@ POST /api/webhooks/telegram/{token}
 POST /api/webhooks/whatsapp
 ```
 
-### Blueprint and template catalog
+### Template catalog
 
 ```
-GET /api/blueprints
-GET /api/blueprints/default
-GET /api/blueprints/{slug}
 GET /api/templates
 GET /api/templates/default
 GET /api/templates/{slug}
 ```
 
 Public, no `X-Company` required. The catalog is platform-shared static content.
-`/api/blueprints/default` returns the configured default launch blueprint.
 
 `/api/templates` is the company-launch catalog the `/launch` flow reads before
-any Company runtime exists; it returns the same two shipped company templates
+any Company runtime exists; it returns the two shipped company templates
 (`new-company`, `existing-company`). `/api/templates/default` resolves to the
 default launch template (`new-company`); `/api/templates/{slug}` returns one
-template's full JSON. See [Blueprint schema](/docs/reference/blueprint-schema).
+template's full JSON. See [Template schema](/docs/reference/blueprint-schema).
 
 ### Spawn (proxied)
 
 ```
-POST /api/blueprints/spawn
-POST /api/blueprints/spawn-into
+POST /api/templates/spawn
+POST /api/templates/spawn-into
 ```
 
-Registered in the public router so they shadow `/api/blueprints/{slug}`; the catch-all proxy forwards them to the per-Company orchestrator selected by `X-Company`.
+Registered in the public router so they shadow `/api/templates/{slug}` (which would otherwise intercept the path and reject the POST); the catch-all proxy forwards them to the per-Company orchestrator selected by `X-Company`.
 
 ### Economy + public profiles
 
@@ -220,12 +216,16 @@ landing status surface.
 ```
 POST /api/public/website/waitlist
 POST /api/public/website/support-checkout
+POST /api/public/slot/waitlist
 ```
 
 Public, resolved from the `Host` header of the Company subdomain serving the
 form. `/api/public/website/waitlist` joins the per-Company launch-site waitlist.
 `/api/public/website/support-checkout` opens a day-one support purchase as a
 destination charge via the Company's Express account.
+`/api/public/slot/waitlist` is the anonymous "launching soon" placeholder
+waitlist for a bare `<slug>` subdomain with no placement yet; it keys on the
+slug rather than a Company.
 
 ### Role invitations
 
@@ -248,7 +248,7 @@ POST /api/mcp/validate
 call to a user account. `GET` and `DELETE` are not callable MCP transports on
 the hosted platform today.
 
-See [MCP](/reference/mcp) for the tool surface.
+See [MCP](/docs/mcp) for the tool surface.
 
 ### LLM proxy
 
@@ -349,8 +349,12 @@ PUT    /api/companies/{company_id}
 GET    /api/companies/{company_id}/assets
 GET    /api/companies/{company_id}/incorporation
 GET    /api/companies/{company_id}/email/messages
+GET    /api/companies/{company_id}/email/stats
 POST   /api/companies/{company_id}/email/test
 GET    /api/companies/{company_id}/website/analytics
+GET    /api/companies/{company_id}/payments
+POST   /api/companies/{company_id}/payouts/connect
+POST   /api/companies/{company_id}/runtime/restart
 ```
 
 `/api/companies` is the user-owned Company collection. It is registered
@@ -360,25 +364,38 @@ header currently points at. `POST` creates a Company, `GET` lists; the
 `{company_id}` routes update or delete one.
 The `assets`, `incorporation`, `email`, and `website/analytics` subroutes back
 the Company document, incorporation, inbox, and analytics panels for a selected
-runtime.
+runtime (`email/stats` returns inbox counters for the panel header). `payments` lists the Company's payment records;
+`payouts/connect` opens Stripe Express onboarding so the Company can receive
+payouts. `runtime/restart` reboots the Company's VPS in place (data and IP
+preserved; owner-only, same auth as the Company `DELETE`).
 
 ### /start launch
 
 ```
 POST /api/start/launch
 POST /api/start/check-name
+POST /api/start/suggest-idea
+POST /api/start/suggest-name
 GET  /api/start/launch/status/{trust_id}
+GET  /api/start/launch/stream/{trust_id}
 GET  /api/start/share/{trust_id}
 POST /api/start/share/{trust_id}/verify
+GET  /api/start/share/{trust_id}/weekly
+POST /api/start/share/{trust_id}/weekly/verify
 ```
 
 `launch` provisions a personal Company via the `/start` experience. Gated by subscription status (`subscription_required` HTTP 402 if missing) and a workspace cap of 10 companies per user (`workspace_cap_exceeded` HTTP 402; admins exempt).
 
-`launch/status/{trust_id}` polls provisioning progress for a launched Company.
+`launch/status/{trust_id}` polls provisioning progress for a launched Company;
+`launch/stream/{trust_id}` is the SSE variant streaming the same progress live.
+`suggest-idea` and `suggest-name` back the `/start` flow's LLM suggestions for
+a company idea and an available display name.
 `share/{trust_id}` returns the launch-announcement share code and prefilled
 post; `share/{trust_id}/verify` runs platform-side post verification and awards
 a one-time flat credit bonus (the platform checks the post, never the tenant
-runtime).
+runtime). The `weekly` pair is the weekly progress-post share loop: same
+platform-side post verification, but the reward is a bounded top-up of the
+monthly operating-credit grant, claimable once per ISO week.
 
 **Request:**
 
@@ -467,6 +484,22 @@ GET /api/trust/{trust_ref}/apps/etsy/start
 GET /api/trust/{trust_ref}/apps/etsy/status
 ```
 
+Telegram gateway for a Company (the `trust_ref` path segment is the
+lower-level runtime selector behind the Company):
+
+```
+POST   /api/trust/{trust_ref}/apps/telegram/link-code
+GET    /api/trust/{trust_ref}/apps/telegram/status
+GET    /api/trust/{trust_ref}/apps/telegram/bindings
+DELETE /api/trust/{trust_ref}/apps/telegram/bindings/{binding_id}
+```
+
+`link-code` mints a `/start` link code that binds a Telegram chat to the
+Company's CEO via the shared central bot; `status` reports the gateway state.
+`bindings` lists the Telegram accounts connected to this Company, and the
+`{binding_id}` route revokes one. Both are scoped so a Company only ever sees
+and revokes its own bindings.
+
 Per-agent OAuth, one start/status pair per provider:
 
 ```
@@ -499,11 +532,15 @@ GET    /api/hosting/domains
 POST   /api/hosting/domains
 DELETE /api/hosting/domains/{domain}
 GET    /api/hosting/waitlist
+POST   /api/hosting/deploy
 ```
 
 Manage custom domains for Company runtimes. `/api/hosting/waitlist` lists the
 launch-site waitlist signups for a Company the caller owns (the public join
-form is `POST /api/public/website/waitlist`).
+form is `POST /api/public/website/waitlist`). `/api/hosting/deploy` is the
+entrypoint for the runtime `apps.deploy` tool: it builds the Company's seeded
+site and flips the Company domain from the launch page to the built site
+(owner-authenticated).
 
 ### Role invitations
 
@@ -643,5 +680,5 @@ Platform-side: no per-endpoint quotas are published. The tenant runtime applies 
 
 - [Authentication](/docs/api/authentication) — JWT lifecycle, signup, login flows.
 - [Inference](/docs/api/inference) — `/v1/*` OpenAI-compatible chat.
-- [MCP](/reference/mcp) — operate the same surface programmatically.
+- [MCP](/docs/mcp) — operate the same surface programmatically.
 - [Concepts](/docs/concepts/agents) — the four primitives.

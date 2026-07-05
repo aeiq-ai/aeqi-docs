@@ -40,7 +40,7 @@ Three reasons:
 
 The same shape applies at every level of the org:
 
-- A founder writes a brief (Idea) and tags `quest:create`. A Quest is created from it; assigned to an agent.
+- A founder writes a brief (Idea). A Quest is created around it — quest creation either points at the existing Idea by `idea_id` or mints the Idea inline in the same call, so the wrapper always references its artifact. The Quest is assigned to an agent.
 - The agent breaks the work into sub-Quests, each with its own `idea_id`.
 - A sub-Quest's output is a child Idea; the parent Quest's output is a parent Idea that aggregates.
 - The whole tree of Quests and Ideas is queryable, traceable, and resumable.

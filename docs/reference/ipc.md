@@ -49,7 +49,7 @@ Each lives in its own module (`ipc/ideas.rs`, `ipc/quests.rs`, `ipc/events.rs`).
 
 ### Sessions + messaging
 
-`ipc/sessions.rs` + `ipc/messages.rs` implement the canonical conversation primitive. The three semantic verbs locked by [`architecture_session_primitive.md`](/) are:
+`ipc/sessions.rs` + `ipc/messages.rs` implement the canonical conversation primitive. The three semantic verbs locked by the [session primitive](/docs/concepts/sessions) are:
 
 - `message_to` — append a message to a target's session (target may be `session_id`, `agent_id`, `user_id`, `role_id`, or `idea_id`).
 - `add_participant` — add a participant to an existing session.
@@ -85,7 +85,7 @@ These are runtime-internal verbs. From MCP/REST you reach them through the proxi
 
 The on-chain protocol layer (Company registration, treasury transfers, governance proposals) is shipped as Solana programs under `projects/aeqi-solana/programs/` (`aeqi-factory`, `aeqi-company`, `aeqi-governance`, `aeqi-treasury`, plus module programs) but is **not yet exposed as IPC verbs** from the orchestrator. Today these flow through:
 
-- **Platform-side** — `POST /api/companies/create` (Solana company genesis), the `/api/solana/*` operation routes, and orchestrator-internal calls into `solana_provisioner` / `dao_provisioner`.
+- **Platform-side** — `POST /api/companies/create` (Solana company genesis), the `/api/solana/*` operation routes, and orchestrator-internal calls into `solana_provisioner`.
 
 Per the protocol roadmap, the next slice exposes `treasury.transfer`, `treasury.swap`, `governance.propose`, `governance.vote`, `governance.execute`, and `trust.update` as first-class verbs gated by role authority. The doc that landed earlier listing them as already-shipped IPC verbs was aspirational — they don't yet exist in the orchestrator's IPC module.
 
@@ -98,7 +98,7 @@ For shipped verbs, authority checks happen inside the handler (or, for tools, in
 - **Quest verbs** — caller must be the assignee, the assignee's authority chain, or the entity's Director.
 - **Sessions** — anyone can `message_to` a session they participate in; `add_participant` requires authority over the target.
 
-Once on-chain verbs land, they will be board-tier gated (treasury / governance / TRUST writes).
+Once on-chain verbs land, they will be board-tier gated (treasury, governance, and on-chain company-record writes).
 
 ## Tool deny lists
 
@@ -123,5 +123,5 @@ Events fired during verb execution emit from the verb's actual side-effect point
 ## Related
 
 - [REST API](/docs/api/rest) — HTTP surface for the platform.
-- [MCP](/reference/mcp) — Model Context Protocol catalog (the stable external surface).
+- [MCP](/docs/mcp) — Model Context Protocol catalog (the stable external surface).
 - [Authentication](/docs/api/authentication) — JWT and API key models.

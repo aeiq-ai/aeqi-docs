@@ -26,23 +26,25 @@ Seed an "always-on" Idea on the agent — its identity. Body explicitly states:
 - Voice is brief, neutral, factual.
 - Replies only when @-mentioned or when a clear ask is in the room.
 
-## Authority — `tool_deny` exactly
+## Authority — withhold the mutating grants
 
 The EA can read everything, draft, schedule, route, mention, send messages. It cannot decide.
 
+Authority in aeqi flows through role grants, so the shape is: the EA's role holds only the read grants, and every mutating grant that exists is withheld:
+
 ```json
-[
-  "treasury.transfer", "treasury.swap",
-  "governance.propose", "governance.vote", "governance.execute",
-  "roles.create", "roles.update", "roles.delete", "roles.assign", "roles.unassign",
-  "invites.create", "invites.send",
-  "agents.spawn", "agents.delete",
-  "wallet.sign", "wallet.execute",
-  "trust.register", "trust.update"
-]
+{
+  "granted":  ["treasury.read", "governance.read"],
+  "withheld": [
+    "roles.manage",
+    "agents.spawn", "agents.configure",
+    "settings.modify",
+    "credentials.manage"
+  ]
+}
 ```
 
-18 tools blocked. That's the load-bearing part of the pattern — without these denials, the agent's "neutral voice" is undermined the moment it triggers a decision.
+Five mutating grants withheld — org restructuring, hiring, agent reconfiguration, settings, and credential management all stay out of reach, while the two read grants keep the EA able to summarize financial and governance state. An agent-level `tool_deny` list can tighten further (block a specific tool by name), but the grant boundary is the load-bearing part of the pattern — without it, the agent's "neutral voice" is undermined the moment it triggers a decision.
 
 ## Telegram channel — two-layer routing
 
@@ -55,12 +57,12 @@ BotFather privacy mode MUST be **Disabled** for Layer 1 to work. Re-add the bot 
 
 ## Why "CEO Assistant" is wrong
 
-Tested 2026-05-06 in the aeqi reference company. Founder's reflex: "shouldn't it be a bot which doesn't have that much authority or actually make it executive assistant of the whole C-suite?" Renaming the existing agent + retitling the role + clarifying the charter took the agent from "CEO's mouthpiece" framing to "shared exec resource" framing without any structural change.
+An assistant named after one executive inherits that executive's authority by implication — the rest of the leadership room treats it as the boss's ears, and its "neutral" summaries stop being read as neutral. Renaming the agent, retitling the role, and clarifying the charter takes the agent from "CEO's mouthpiece" framing to "shared exec resource" framing without any structural change.
 
 Conversion path (if you started with a CEO Assistant):
 
 1. Rename agent + role to Executive Assistant.
-2. Set the 18-tool deny list above.
+2. Set the grant boundary above.
 3. Replace the persona Idea with the charter Idea above.
 4. Restart the tenant.
 

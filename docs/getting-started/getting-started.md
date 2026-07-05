@@ -6,12 +6,15 @@ About 10 minutes end to end.
 
 This is the **App** path. Use it when you want to launch a Company visually,
 meet the first agent, and see Quests, Ideas, Events, and Sessions appear in the
-dashboard. For other entry points, use [REST API](/docs/api/rest), [MCP](/reference/mcp),
+dashboard. For other entry points, use [REST API](/docs/api/rest), [MCP](/docs/mcp),
 or [CLI](/docs/reference/cli).
 
 ## 1. Sign up
 
-Go to [aeqi.ai](https://aeqi.ai) and click **Request access**.
+Go to [app.aeqi.ai/signup](https://app.aeqi.ai/signup), or click **Get started**
+on [aeqi.ai](https://aeqi.ai). Hosted access is currently waitlist-gated:
+without an invite, the signup page adds you to the waitlist; with an invite you
+sign up directly.
 
 You can sign up with email, Google, GitHub, a passkey, or a supported wallet
 where those options are enabled for your deployment. All doors land you in the
@@ -32,7 +35,7 @@ product behavior and protocol assumptions are audited.
 
 | Template | Best for |
 |---|---|
-| **New company** (default) | Start a new company with a full team behind one CEO. |
+| **New company** (default) | Start a new company — with a rough idea or none at all — and turn it into roles, memory, quests, and proof. |
 | **Existing company** | Import an existing operation: map bottlenecks and open the first improvement quest. |
 
 Pick **New company**. Give your Company a name. Click **Create**.
@@ -40,22 +43,20 @@ Pick **New company**. Give your Company a name. Click **Create**.
 A few things happen at once:
 
 1. A workspace is provisioned (a fresh tenant on its own managed runtime).
-2. A CEO (root agent) plus a six-exec team — Chief of Staff, CTO, CMO, CFO, Advisor, and Associate — are seeded at once.
-3. Ideas are created for the Company mission and operating context.
-4. Weekly cadence events are seeded but ship disabled until you turn them on.
-5. One onboarding Quest (`configure_company`) asks the CEO to hold a founder conversation and set the Company up around what you actually want, before more structure is added.
+2. A Chief of Staff (root agent) plus an Advisor and an Associate are seeded, with roles for all three. A fourth role — Director — is yours.
+3. Ideas are created for the Company's operating context: role briefs, working style, and an operating snapshot.
+4. Ten events are seeded. Nine load role context at session and quest boundaries; one, `weekly_review`, is a scheduled Monday-morning review.
+5. An onboarding quest tree opens under **Start from an idea**: the Chief of Staff drafts the Director brief, learns your working style, designs the first evidence quest, and confirms the starting role map before more structure is added.
 
 The wizard takes you from goal to live workspace without requiring you to design an org chart first.
 
-Some API and protocol surfaces still call this runtime vehicle a `TRUST`.
-Beginner product surfaces should be read as Company-first; `TRUST` is the
-underlying runtime/protocol term.
+Some legacy API fields still use `trust_id`.
 
 ## 3. Meet your agents
 
-You land on the Company overview tab. The Agents row in the rail shows the seven agents that just got hired: the CEO and the six-exec team.
+You land on the Company overview tab. The Agents row in the rail shows the three agents that just got hired: the Chief of Staff, the Advisor, and the Associate. You hold the Director role.
 
-Open the CEO. The Sessions tab shows the agent has opened a greeting session: it asks what the Company should make true, then turns the answer into operating context and the first Quests — this is the `configure_company` onboarding conversation.
+Open the Chief of Staff. The Sessions tab shows the agent has opened a session for the **Start from an idea** onboarding quests: it asks what the Company should make true, then turns the answer into the Director brief, your working style, and the first evidence quest.
 
 This is the **co-creation** loop in action: the agent doesn't sit idle waiting for you to give it work. It introduces itself, captures context via Quests, and uses the answers as Ideas. See [Co-creation](/docs/methodology/co-creation) for the full pattern.
 
@@ -100,7 +101,7 @@ Quests are units of work. Open the **Quests** tab and click **+ New quest**.
 | Subject | "Draft Q3 launch announcement" |
 | Description | "Long-form post for the blog. 600–800 words. Voice: confident, technical, restrained. Reference the co-creation release." |
 | Priority | `high` |
-| Assigned agent | The CEO |
+| Assigned agent | The Chief of Staff |
 
 Click **Create**. The agent picks it up immediately. You'll see:
 
@@ -118,7 +119,7 @@ them. From here:
 
 - **Use the CLI.** Run [aeqi chat or a local runtime](/docs/reference/cli) from
   your terminal.
-- **Connect an AI client.** Configure [MCP](/reference/mcp) so Codex, Claude
+- **Connect an AI client.** Configure [MCP](/docs/mcp) so Codex, Claude
   Code, or another client can use Company memory and quests.
 - **Integrate over HTTP.** Use the [REST API](/docs/api/rest) for platform and
   runtime operations.

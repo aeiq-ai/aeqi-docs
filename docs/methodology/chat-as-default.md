@@ -1,19 +1,19 @@
 # Chat as default
 
-Every conversation-primary surface in aeqi opens on the chat. The other things — settings, configuration, tools, integrations — live one click deeper, in a `/settings/` sub-surface. The rail is in settings, not next to the chat.
+Every conversation-primary surface in aeqi opens on the chat. The other things — settings, configuration, tools, integrations — live one click deeper, or inline on the same page beneath the conversation. The chat leads; the chrome follows.
 
 ## The rule
 
 A surface whose primary verb is "talk" defaults to its transcript.
 
-| Surface | Default URL | Settings URL |
+| Surface | Default URL | Configuration |
 |---|---|---|
-| Agent (drilled) | `/company/<address-or-id>/agents/<id>/` | `/company/<address-or-id>/agents/<id>/settings/` |
-| Entity inbox | `/company/<address-or-id>/inbox` | (no separate settings — config lives on `/account` and per-agent rails) |
+| Agent (drilled) | `/company/<address-or-id>/agents/<id>` | Inline on the same agent detail page — persona, tools, model, all one scroll from the chat |
+| Entity sessions | `/company/<address-or-id>/sessions` | Company settings at `/company/<address-or-id>/settings` |
 | Idea detail | `/ideas/<id>` | (no separate settings — the body is the thread) |
-| Company channels | `/company/<address-or-id>/channels/<sid>` | `/company/<address-or-id>/settings` |
+| Gateways (Telegram, WhatsApp, …) | bridged sessions render in `/company/<address-or-id>/sessions` | The Apps register, filtered to gateways (`/company/<address-or-id>/apps?category=gateway`) |
 
-The default surface ships header + chat. Settings ships header + rail + body. The two never overlap; you don't see the rail while you're typing, and you don't see the composer while you're flipping tools on and off.
+The default surface leads with the chat. Configuration never interposes itself between the user and the composer; you don't wade through a tab tray to say something.
 
 ## Why
 
@@ -27,35 +27,26 @@ This matches the [inbox-is-the-chat](/docs/methodology/inbox-is-the-chat) lock f
 
 A drilled-agent surface is the canonical reference.
 
-**Default** (`/company/<address-or-id>/agents/<id>/` or `.../inbox/<session>`):
-- Header: back · agent name · `+ New session` · Settings link
-- Body: full-width chat — `SessionsRail` on the left if the agent has multiple sessions, `SessionDetail` + `Composer` on the right
-- No nav rail
-
-**Settings** (`/company/<address-or-id>/agents/<id>/settings/<tab>`):
-- Header: back · agent name · breadcrumb (one level deeper)
-- Left rail: Overview · Personality · Quests · Events · Ideas · Channels · Treasury · Tools · Integrations
-- Body: the selected tab
-
-The rail is the agent's full configuration surface. It is not removed; it is moved. The default URL stops being a tab tray and starts being a chat.
+**Agent detail** (`/company/<address-or-id>/agents/<id>`):
+- The chat leads. The agent's conversation is the first thing on the page.
+- Configuration — persona, tools, model — lives on the same page, one scroll below. No tab tray, no separate settings rail. There used to be one; it collapsed into the detail page because a drilled agent doesn't need the whole app recreated under it.
 
 The same shape extends:
 
 - **Idea detail** already shipped this way. The body **is** the thread; "settings" is degenerate because an Idea's properties are inline-editable in the header. Reference shape.
-- **Personal inbox** and **Company channels** follow when their settings sub-surfaces ship.
-- **Future channel detail surfaces** (Telegram, Slack, email per-thread views) inherit the rule by default.
+- **Gateway-bridged sessions** (Telegram, WhatsApp, email per-thread views) inherit the rule by default — the bridged session renders like any other session; gateway configuration lives in the Apps register.
 
 ## Backward compatibility
 
-Old `/<scope>/agents/<id>/<tab>` URLs replace-navigate to `/<scope>/agents/<id>/settings/<tab>` via a `RELOCATED_AGENT_TABS` map in the router. The SPA equivalent of a 308 — the bookmark survives, the URL upgrades silently, the user lands on the new shape.
+Old `/<scope>/agents/<id>/<tab>` URLs — the retired per-agent tab tray (overview, quests, events, ideas, integrations) and the old settings sub-URLs — replace-navigate to the bare agent URL, the chat, via a `RELOCATED_AGENT_TABS` map in the router. The SPA equivalent of a 308 — the bookmark survives, the URL upgrades silently, the user lands on the new shape.
 
-When a future surface relocates its rail this way, mirror the pattern: a constant map, a router-level redirect, no broken links.
+When a future surface relocates a rail this way, mirror the pattern: a constant map, a router-level redirect, no broken links.
 
 ## What this is not
 
 This is not "hide the configuration." Settings is one click away, linked from the surface header, discoverable. The point is the **default** — what a returning user sees when they type the URL or click the agent in the sidebar.
 
-This is also not "every page is a chat." Surfaces whose primary verb is configuration (`/settings/*`, `/company/<address-or-id>/governance`, billing) default to their config. The rule is asymmetric: chat-primary defaults to chat; config-primary defaults to config. Neither steals the other's default.
+This is also not "every page is a chat." Surfaces whose primary verb is configuration (`/company/<address-or-id>/settings`, `/account`, billing) default to their config. The rule is asymmetric: chat-primary defaults to chat; config-primary defaults to config. Neither steals the other's default.
 
 ## Related
 

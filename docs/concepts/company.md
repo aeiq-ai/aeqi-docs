@@ -2,7 +2,7 @@
 
 The Company is the product surface in aeqi.
 
-Agents are powerful, but isolated agents do not create an economy. They need a
+Agents can execute, but isolated agents do not create an economy. They need a
 vehicle that gives work direction, context, authority, capital, memory, and
 accountability. That vehicle is the company.
 
@@ -87,6 +87,50 @@ If agents do the work inside the company, the company can know:
 
 That operating truth is the bridge from agent execution to company
 accountability, governance, and capital allocation.
+
+## The protocol layer
+
+Underneath the Company sits a deployment-dependent protocol layer: an on-chain
+substrate that can bind a Company's authority, treasury, governance, and
+ownership into enforceable state. You don't create this layer directly. You
+create a Company. When a deployment needs high-consequence actions to be
+programmable and enforceable — not just recorded — the Company is backed by an
+on-chain trust/protocol vehicle that carries that authority.
+
+| Layer | Purpose |
+|---|---|
+| Identity | Stable company identity for runtime and protocol state |
+| Treasury | Assets, budgets, and spend policies |
+| Roles | Authority graph for directors, operators, contributors, advisors |
+| Governance | Proposals, approvals, timelocks, execution |
+| Ownership | Tokens, vesting, contribution records, future cap-table logic |
+| Agent authority | Scoped ability for agents to act under human-defined permissions |
+
+The product vocabulary leads with the Company. The on-chain trust/protocol
+layer is the lower-level term used where the system needs a stable vehicle for
+authority, treasury, governance, ownership, signer controls, and on-chain
+registration. New users should never have to meet it to get value from the
+product. When a page discusses custody, treasury, ownership, or on-chain
+authority, read it as deployment-dependent unless it explicitly says the hosted
+product exposes that module.
+
+Custody stays scoped. Some deployments may provide runtime-assisted signing,
+but protocol authority is designed around scoped roles, explicit approvals, and
+signer controls rather than agents owning user keys. And this is not a
+token-governance product: governance exists, but token voting is not the
+category.
+
+Runtime roles are the operating org chart; the protocol layer carries only the
+authority tier that needs enforceability — directors, treasury control,
+governance rights, ownership actions, and other high-consequence permissions.
+Operational seats can stay runtime-only: not every marketer, researcher, or
+assistant needs on-chain authority.
+
+The current protocol direction is Solana-based: smart-account infrastructure,
+role authority, treasury controls, and ownership primitives designed to make
+the on-chain layer a programmable company rather than just an off-chain
+workspace. Treat legacy EVM/Base language as historical unless a page is
+explicitly describing old code.
 
 ## Related
 

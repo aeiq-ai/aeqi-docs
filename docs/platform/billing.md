@@ -36,22 +36,25 @@ Runtime credits are USD-subunits for hosted execution capacity:
 100 credits = $1 of runtime capacity (1 credit = 1 cent)
 ```
 
-Plan credits are a monthly allowance. Runtime pauses at zero instead of creating
-surprise overage invoices.
+Plan credits refill monthly and unused credits roll over — the balance carries
+forward instead of resetting each cycle. Runtime pauses at zero instead of
+creating surprise overage invoices.
 
 Personal starts with 100 trial credits during the 3-day card-required trial.
 After the trial converts, Personal receives 1,000 runtime credits/month.
 
 ## Monthly credit add-ons
 
-Paid-plan credit add-ons are separate monthly subscriptions:
+Paid-plan credit add-ons are separate monthly subscriptions, sold in packs:
 
-- **Pack:** 250 extra credits/month.
-- **Price:** $25/month.
-- **Self-serve limit:** up to 250 extra credits/month.
+- **Pack:** +1,000 credits/month.
+- **Price:** $25/month per pack.
+- **Self-serve limit:** up to 80 packs — $2,000/month for +80,000 credits/month.
 
-Personal add-ons unlock after the trial converts. Larger committed runtime
-credit packages are Enterprise.
+Add-on credits follow the same rollover rule as plan credits: unused balance
+carries forward. Add-ons require an active subscription — Personal add-ons
+unlock after the trial converts. Larger committed runtime credit packages are
+Enterprise.
 
 ## Annual billing
 
@@ -79,6 +82,6 @@ billing.
 
 ## See also
 
-- [Company](/docs/concepts/company) - the operating context behind Company authority
+- [Company](/docs/concepts/company) - the operating context a plan pays for
 - [Inference API](/docs/api/inference) - inference endpoints and limits
-- [MCP](/reference/mcp) - exposing aeqi as tools to agent clients
+- [MCP](/docs/mcp) - exposing aeqi as tools to agent clients

@@ -1,8 +1,10 @@
 # Canonical on-chain archetypes
 
-aeqi recognises four on-chain **archetypes** — `entity`, `venture`, `foundation`,
-and `fund`. Each is a fixed module set for one company shape. Many off-chain
-**company templates** can map to one archetype (N-to-1).
+aeqi defines a small set of on-chain **archetypes** — `entity`, `venture`,
+`foundation`, and `fund`. Each is a fixed module set for one company shape.
+Two on-chain templates are registered with the Solana factory today — BASIC
+and VENTURE; the rest of the archetype set is protocol direction. Many
+off-chain **company templates** can map to one archetype (N-to-1).
 
 Don't confuse the two layers: the archetype is the protocol module set the
 chain registers; the company template is the off-chain starter kit a user
@@ -11,9 +13,12 @@ for the distinction.
 
 ## The two-layer architecture
 
-**On-chain:** the four archetypes, registered with the Solana factory program
+**On-chain:** archetype templates registered with the Solana factory program
 (`projects/aeqi-solana/programs/aeqi-factory`). Each archetype is a set of module
-programs. This is what the chain sees.
+programs; this is what the chain sees. The factory registry today holds two
+shipped templates — **BASIC** (role + token + governance) and **VENTURE**
+(BASIC + treasury + vesting + unifutures). The four archetypes below describe
+the protocol direction those registrations grow into.
 
 **Off-chain:** company templates in JSON (`aeqi/presets/templates/*.json`). Each
 declares a `template` field selecting one archetype, then layers agent role
@@ -21,7 +26,7 @@ trees, ideas, events, views, and default personas on top. The shipped public
 catalog is two templates — `new-company` and `existing-company` — both on the
 `entity` archetype. Other manifests are draft inventory.
 
-## The four archetypes
+## The four archetypes (protocol direction)
 
 ### Foundation
 
@@ -35,7 +40,7 @@ catalog is two templates — `new-company` and `existing-company` — both on th
 
 ### Venture
 
-- **Module set:** role + budget + token + vesting + funding + uniswap + unifutures
+- **Module set:** role + budget + token + vesting + funding + treasury + unifutures
 - **Use case:** full economic stack — equity issuance, AMM positions, token-curated funding.
 
 ### Fund
@@ -86,14 +91,15 @@ audit of its operating copy, seed roles, seed quests, and protocol assumptions.
 When the platform provisions a new Company for a template:
 
 1. Read the template's `template` field → one of `entity`, `venture`, `foundation`, `fund`.
-2. Derive the on-chain `templateId` from the archetype slug (the factory hashes the slug).
+2. Resolve the archetype to its registered on-chain `templateId` — a fixed 32-byte identifier holding a short ASCII handle (`"BSC"`, `"VNT"`), zero-padded.
 3. Pass the `templateId` when registering the Company with the Solana factory.
 4. The factory looks up the registered archetype by its template PDA (`[b"template", template_id]`) and instantiates its module set on the new Company account.
 
-**Key invariant:** the `templateId` is derived from the archetype slug, never
-from the company-template slug. A company template named `new-company` with
-`template: "entity"` registers under the `entity` archetype; the on-chain world
-never knows or cares about the off-chain template's name.
+**Key invariant:** the `templateId` is derived from the archetype's on-chain
+handle, never from the company-template slug. A company template named
+`new-company` with `template: "entity"` registers under the archetype's
+on-chain template; the on-chain world never knows or cares about the off-chain
+template's name.
 
 ## Decision authority
 
@@ -105,4 +111,4 @@ never knows or cares about the off-chain template's name.
 
 - [Templates and modules](/docs/architecture/templates-and-modules) — the off-chain/on-chain split and the chain layer.
 - [Blueprint schema](/docs/reference/blueprint-schema) — the company-template JSON manifest.
-- [TRUST](/docs/concepts/company) — the on-chain layer behind a Company.
+- [On-chain layer](/docs/concepts/company) — the chain construct behind a Company.

@@ -2,7 +2,7 @@
 
 A Session is the universal conversation primitive in aeqi. Multi-participant by default. Subsumes chat, inbox, comments, activity, channels, mentions — every conversation- or activity-shaped concept reduces to it.
 
-Locked 2026-05-02. If you find a separate `comments` table, `subscribers` table, `watchers` table, or `notifications` table — that's not us. Use Sessions.
+Sessions subsume comments, subscribers, watchers, and notifications; there are no separate tables.
 
 ## What a Session is
 
@@ -78,7 +78,7 @@ The runtime renders system messages differently — no avatar, no bubble, just a
 
 ## Channel-bridged sessions
 
-A channel (Telegram, WhatsApp, email — see [Channels](/docs/concepts/agent-runtime-overview)) is a transport, not a chat primitive. When attached to a session via `gateway_channel_id`, outbound messages dispatch through the channel's transport (Telegram bot, SMTP, etc.), and inbound messages from the remote side fire `session.message_received` against the bridged session.
+A channel (Telegram, WhatsApp, email — see the [Agent runtime overview](/docs/concepts/agent-runtime-overview)) is a transport, not a chat primitive. When attached to a session via `gateway_channel_id`, outbound messages dispatch through the channel's transport (Telegram bot, SMTP, etc.), and inbound messages from the remote side fire `session.message_received` against the bridged session.
 
 Every external party gets a `session_participants` row with `identity_kind=external` so the participant strip stays honest.
 
@@ -103,6 +103,6 @@ The legacy `awaiting_at` column is planned to retire; the canonical mechanism is
 - [Agents](/docs/concepts/agents) — agents talk inside sessions.
 - [Roles](/docs/concepts/roles) — role-addressed routing.
 - [Quests](/docs/concepts/quests) — Quests have an attached session for activity + tool calls.
-- [Channels](/docs/concepts/agent-runtime-overview) — the transport layer for bridged sessions.
+- [Agent runtime overview](/docs/concepts/agent-runtime-overview) — how bridged messages become execution.
 - [Mention-gating](/docs/patterns/mention-gating) — how channel mentions wake agents.
 - [Inline mention spawn](/docs/patterns/inline-mention-spawn) — mentioning an unknown name spawns the agent.

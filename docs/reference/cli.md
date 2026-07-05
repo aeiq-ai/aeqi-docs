@@ -98,7 +98,7 @@ aeqi mcp
 ```
 
 Most users do not run `aeqi mcp` by hand. They configure Codex, Claude Code, or
-another MCP client to spawn it. See [MCP](/reference/mcp).
+another MCP client to spawn it. See [MCP](/docs/mcp).
 
 ## Hosted user stories
 
@@ -317,6 +317,35 @@ aeqi close <quest_id> --reason "shipped"
 For hosted Quest operations from Codex or Claude Code, prefer MCP
 `quests(...)`.
 
+### `aeqi events`
+
+Manage event handlers. `list` shows configured handlers; `install-defaults`
+installs the two standard schedule events (`daily-digest`,
+`weekly-consolidate`) on every existing agent — idempotent, existing rows are
+skipped.
+
+```bash
+aeqi events list
+aeqi events install-defaults
+```
+
+### `aeqi work`
+
+Start or resume quest work with context, graph hints, and worktree setup.
+`work start` prepares the local workspace for a quest.
+
+```bash
+aeqi work start <quest_id>
+```
+
+### `aeqi paths`
+
+Show the effective config and runtime paths.
+
+```bash
+aeqi paths
+```
+
 ### `aeqi graph`
 
 Operate the local code intelligence graph.
@@ -444,7 +473,7 @@ Run `aeqi <cmd> --help` for the current flags.
 
 ## Related
 
-- [MCP](/reference/mcp)
+- [MCP](/docs/mcp)
 - [Authentication](/docs/api/authentication)
 - [REST API](/docs/api/rest)
 - [IPC verbs](/docs/reference/ipc)

@@ -48,7 +48,7 @@ Both arms emit the same JSON shape. Clients can't tell — and don't need to —
 
 ## Why JSON body shape matters
 
-`apps/ui/src/lib/useResource` and equivalent fetchers branch on `response.headers.get('retry-after')` to pick a backoff. They branch on the JSON `status` field to render "Spinning up your company…" instead of "Service unavailable." A bare `503` with no body forces the client to guess; the structured body removes the guess.
+The API client (`apps/ui/src/api/client.ts`, with `lib/rateLimit.ts`) branches on `response.headers.get('Retry-After')` to pick a backoff. They branch on the JSON `status` field to render "Spinning up your company…" instead of "Service unavailable." A bare `503` with no body forces the client to guess; the structured body removes the guess.
 
 It also keeps the `Retry-After` and the body in lockstep — five seconds in the header, `retry_after_seconds: 5` in the body. One source of truth, two delivery vectors.
 

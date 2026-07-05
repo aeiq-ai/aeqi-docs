@@ -19,10 +19,10 @@ Ideas), a role-authority layer, and a universal Session substrate that records
 how intent becomes work. Once a company can execute, remember, and expose its operating truth,
 governance, treasury, and ownership have something real to attach to.
 
-We position aeqi against three classes of antecedents — Decentralized
-Autonomous Organizations, agent frameworks, and SaaS company-management
-tools — and argue each is structurally incomplete in ways the others
-cannot patch. We describe the system model, the role of execution as the
+We position aeqi against four classes of antecedents — the traditional
+firm, Decentralized Autonomous Organizations, agent frameworks, and SaaS
+company-management tools — and argue each is structurally incomplete in
+ways the others cannot patch. We describe the system model, the role of execution as the
 substrate for legible authority and ownership, a recursive capital loop
 in which operating truth compounds into governance and capital efficiency,
 and three falsifiable predictions for the next three years.
@@ -153,8 +153,8 @@ tables in part because both versions described the same opaque
 underlying firm.
 
 The construct we propose is the programmable **Company**: a programmable
-company for the agent economy. Its on-chain layer — historically named the
-TRUST — is a smart account on a public chain whose state includes a role
+company for the agent economy. Its on-chain layer — historically the
+"trust" program — is a smart account on a public chain whose state includes a role
 graph, attached agents, scoped treasuries, governance modules, and
 operational primitives, while its off-chain runtime executes the work that
 produces operating history.
@@ -171,7 +171,7 @@ operational surface earlier paradigms left fragmented.
 
 | Primitive | Question | Role |
 |---|---|---|
-| **Agents** | *Who* executes | Configured workers (CEO agent, research agent, engineering agent) that occupy roles, hold tools, and run as ephemeral processes spawned per turn. |
+| **Agents** | *Who* executes | Configured workers (CEO agent, research agent, engineering agent) that occupy roles, hold tools, and run in ephemeral execution contexts within a persistent per-tenant runtime. |
 | **Quests** | *What* gets done | Units of work with a goal, scope, owner, optional budget, and a lifecycle that produces a durable record. The surface against which contribution and progress are observed. |
 | **Events** | *When* and *what happened* | Append-only operating history. Lifecycle transitions, decisions, tool invocations, governance outcomes, runtime signals. The organization's machine-readable memory of itself. |
 | **Ideas** | *How* the company thinks | Reusable knowledge: strategy, procedures, principles, decisions, identities, documents. Addressable, taggable, linkable. The substrate of organizational learning. |
@@ -196,9 +196,11 @@ A Company is also a running process. The aeqi runtime is a per-tenant
 orchestrator that holds the database, executes agent turns in sandboxes,
 fires events on lifecycle transitions, dispatches tool calls, and
 produces the session record that becomes the operating history.
-Ephemerality is a feature: every execution is one turn, the process
-exits on completion, the next trigger spawns fresh context. Continuity
-is a property of the persistent state, not of any process. The runtime
+Ephemerality is a feature of execution, not of the runtime: each turn
+runs in an ephemeral execution context within a persistent per-tenant
+runtime, discarded on completion; the next trigger opens a fresh one.
+Continuity is a property of the persistent state, not of any execution
+context. The runtime
 is consumed through three interface families: a web UI, a REST API, and
 an MCP server that exposes the runtime as a tool surface to external
 coding agents.
@@ -238,7 +240,8 @@ founder a Director role. The founder writes a one-paragraph mission as
 an Idea attached to the Company. The Architect agent, hired from a
 template, reads the mission and proposes an initial structure: a CEO
 role, a CTO role, and three operational roles (Engineering, Research,
-Operations). The founder accepts. Each role is committed to the chain.
+Operations). The founder accepts. Where the chain module is enabled, each
+role is committed to the chain.
 
 Day two. The founder hires a CEO agent into the CEO role and a Research
 agent into the Research role. The CEO agent's first quest is *draft a
@@ -355,7 +358,7 @@ operating systems have over the applications running on them. The
 highest-leverage company is the one whose existence improves how other
 companies are created, operated, funded, governed, and owned.
 
-The naming — *programmable capitalism* — is accurate. The ordering
+The ordering
 matters: programmable capitalism becomes adoptable when its first
 sentence is operational rather than financial. Founders need leverage
 before they need structure. The wedge sells execution; the protocol
@@ -406,7 +409,7 @@ operational legibility — priced instruments diverge from value when
 value is unobservable.
 
 **Custody and signer compromise.** A protocol-enabled Company holds funds and
-authority on chain through its on-chain layer (historically the TRUST).
+authority on chain through its on-chain layer.
 Compromised signers or smart-account bugs create direct loss
 vectors. *Mitigation:* scoped signer authority, constrained recovery, formal
 review before production value, and the principle that routine recovery should

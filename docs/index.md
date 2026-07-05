@@ -29,7 +29,7 @@ aeqi is one Company OS with four ways in:
 |---|---|---|
 | **App** | You want to launch a Company, work with agents, review sessions, manage roles, and inspect operating state visually. | [Getting started](/docs/getting-started/getting-started) |
 | **API** | You want HTTP control over platform, runtime, billing, integrations, inference, and Company operations. | [REST API](/docs/api/rest) |
-| **MCP** | You want Codex, Claude Code, or another AI client to use Company memory, quests, agents, events, code intelligence, and browser evidence as tools. | [MCP](/reference/mcp) |
+| **MCP** | You want Codex, Claude Code, or another AI client to use Company memory, quests, agents, events, code intelligence, and browser evidence as tools. | [MCP](/docs/mcp) |
 | **CLI** | You want terminal chat or a stdio bridge for AI clients. | [CLI](/docs/reference/cli) |
 
 The surfaces are not separate products. They all operate the same Company
@@ -38,8 +38,9 @@ authority.
 
 ## Core model
 
-The Company is the product surface. The runtime primitives are deliberately
-small: roles, agents, quests, ideas, events, sessions, and memory.
+The Company is the product surface. Four primitives do the work — agents,
+ideas, quests, and events — with roles, sessions, and memory as supporting
+structures around them.
 
 - [Company](/docs/concepts/company) - the operating model where humans, agents, work, memory, and authority live.
 - [Agent runtime overview](/docs/concepts/agent-runtime-overview) - how intent becomes execution.
@@ -55,7 +56,7 @@ small: roles, agents, quests, ideas, events, sessions, and memory.
 The protocol layer beneath the Company is deployment-dependent and not part of
 the core mental model:
 
-- [TRUST](/docs/concepts/company) - the on-chain vehicle (deployment-dependent) behind Company authority, treasury, governance, and ownership.
+- [Protocol layer — authority, treasury & ownership](/docs/concepts/company) - the deployment-dependent on-chain substrate behind Company authority, treasury, governance, and ownership.
 
 ## How the pieces fit
 
@@ -105,7 +106,7 @@ and authority credible.
 ## API and developer reference
 
 - [REST API](/docs/api/rest) - dashboard operations over HTTP.
-- [MCP](/reference/mcp) - expose aeqi as tools to Codex, Claude Code, and other clients.
+- [MCP](/docs/mcp) - expose aeqi as tools to Codex, Claude Code, and other clients.
 - [Inference API](/docs/api/inference) - OpenAI-compatible chat, embeddings, models.
 - [Authentication](/docs/api/authentication) - programmatic access model.
 - [IPC verbs](/docs/reference/ipc) - runtime command catalog.

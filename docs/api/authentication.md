@@ -192,7 +192,7 @@ Authenticated with JWT. Mints (or rotates) the user's `ak_…`. Response:
 { "ok": true, "id": "...", "api_key": "ak_...", "rotated": false }
 ```
 
-A user has at most one account key at a time; calling again returns the existing key with `rotated: true` and revokes the old value.
+A user has at most one account key at a time; calling again mints a new `ak_…` value with `rotated: true` and revokes the old one — the previous value stops working immediately.
 
 ### Create a secret key
 
@@ -290,5 +290,5 @@ See [Billing](/docs/platform/billing) for current pricing.
 ## Next Steps
 
 - [REST API](/docs/api/rest) — endpoint reference
-- [MCP](/reference/mcp) — tool catalog and JSON-RPC shape
+- [MCP](/docs/mcp) — tool catalog and JSON-RPC shape
 - [Claude Code + aeqi](/docs/guides/claude-code) — IDE setup walkthrough

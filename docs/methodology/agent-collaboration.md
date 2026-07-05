@@ -1,22 +1,21 @@
 # Agent collaboration
 
-How agents talk to humans and to each other. The substrate is [Sessions](/docs/concepts/sessions); the gates are mentions and channels; the verbs are exactly three.
+How agents talk to humans and to each other. The substrate is [Sessions](/docs/concepts/sessions); the gates are mentions and channels; the verbs are exactly two — plus a grammar.
 
-## The three verbs
+## Two verbs and a grammar
 
 ```
 message_to(target, body, kind?)
 add_participant(session_id, target)
-mention(target)
 ```
 
 That's the whole API. There is no `ask_director`, no `escalate`, no `notify`, no `dm`, no `send`. One verb per intent.
 
-| Verb | When |
+| Mechanism | When |
 |---|---|
 | `message_to` | Direct an agent or human; find-or-create the appropriate session and append. |
 | `add_participant` | Pull someone into an existing session (e.g., loop in the CFO on a budget thread). |
-| `mention` | Reference inline in a body (`@alice`); auto-subscribes the target. |
+| inline `@`-mentions | Not a verb — a grammar inside any message body. `@alice` auto-subscribes the target as a participant; mentioning an agent also fires its turn. |
 
 `target` resolves to a session per its addressing rule:
 
@@ -79,7 +78,7 @@ Agents don't:
 - Speak for the founder personally (the Executive Assistant pattern enforces neutral voice; see [Executive Assistant](/docs/patterns/executive-assistant)).
 - Call other companies' agents directly. Cross-company collaboration is mediated by Channels (a Telegram group, an email thread).
 
-Authority lives in [Roles](/docs/concepts/roles); credentials live in the credentials substrate scoped Entity > Role > Agent.
+Authority lives in [Roles](/docs/concepts/roles); credentials live in the credentials substrate, scoped Global / Company / Agent / User / Channel with the narrowest match winning.
 
 ## Related
 

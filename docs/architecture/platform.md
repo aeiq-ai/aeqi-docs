@@ -42,16 +42,20 @@ Five paths, all canonical (see [Wallets & identity](/docs/concepts/wallets-and-i
 
 ## Proxy + tenancy
 
-Inbound API requests carry an `X-Company` header (fallback `X-Entity`, or a `company_id` / `trust_id` query param) identifying the target Company. The platform looks up `runtime_placements`:
+Inbound API requests carry an `X-Company` header (fallback `X-Entity`, or a `company_id` / `trust_id` query param) identifying the target Company. The platform looks up `runtime_placements` (schematic — column names are in flight as the trust→company rename lands):
 
 ```
 runtime_placements {
-  entity_id, agent_id, port, state_dir,
-  trust_address?, status, ...
+  workspace id (the Company UUID; today `trust_id`),
+  placement: target host/port, service name, state dir,
+  billing: plan, tier,
+  lifecycle: status, org_lifecycle,
+  chain: on-chain address once indexer-confirmed,
+  ...
 }
 ```
 
-The proxy resolves the selector to a placement, then forwards the request to the runtime at its recorded `state_dir` socket. Per-tenant runtimes are systemd units (`aeqi-host-<entity_id>.service`), bound to localhost.
+The proxy resolves the selector to a placement, then forwards the request to the runtime at its recorded target port. Per-tenant runtimes are systemd units (`aeqi-host-<entity_id>.service`), bound to localhost.
 
 ## Provisioning flow
 
@@ -110,15 +114,15 @@ This bites cleanly enough that the platform's route builders register the specif
 | Service | Port | Owner |
 |---|---|---|
 | `aeqi-platform.service` | 8443 | Platform: auth, proxy, OAuth callbacks, programmatic lanes, billing |
-| `aeqi-host-<entity_id>.service` | 8400+ | Per-tenant runtime |
+| `aeqi-sandbox-<entity_id>.service` / `aeqi-host-<entity_id>.service` | 8401–8500 (sandbox) / 8501–8599 (host) | Per-tenant runtime |
 | `aeqi-ipfs.service` | 5001 | IPFS daemon (kubo) for content addressing |
-| `aeqi-indexer.service` | 8501 | Solana indexer (programSubscribe + signature backfill) |
+| `aeqi-solana-indexer.service` | — (worker; connects out to the Solana RPC/WS endpoints) | Solana indexer (programSubscribe + signature backfill) |
 
-The retired `aeqi-runtime.service` is no longer used — its responsibilities split into per-tenant `aeqi-host-*` units (2026-04-29). The retired `aeqi-paymaster.service` and `aeqi-bundler.service` units are gone with the EVM stack — Solana uses native fee payment, no bundler or paymaster service required.
+The retired `aeqi-runtime.service` is no longer used — its responsibilities split into per-tenant `aeqi-host-*` units. The `aeqi-paymaster.service` and `aeqi-bundler.service` units are retired from production with the EVM stack — Solana uses native fee payment, no bundler or paymaster service required.
 
 ## Related
 
 - [Runtime](/docs/architecture/runtime)
-- [TRUST](/docs/concepts/company) — the on-chain layer behind a Company
+- [On-chain layer](/docs/concepts/company) — the chain construct behind a Company
 - [REST API](/docs/api/rest)
 - [Authentication](/docs/api/authentication)

@@ -14,36 +14,25 @@ A new Company is visible only to its participants. On-chain addresses can be dis
 
 | Opt-in | Effect | Status |
 |---|---|---|
-| **Discoverable** | Listed in the economy directory when public profile support is enabled. | Live where the public profile flag is enabled |
+| **Discoverable** | Public profile served, listed in the Markets directory as it comes online. | Live where the public profile flag is enabled |
 | **Hireable** | Posts open roles and bounties to a hiring board. External agents or humans can apply. | Planned |
 | **Investable** | Lists ownership instruments for primary issuance or secondary trades. | Planned; not public by default |
 
 Each opt-in is independent. A Company can be discoverable but not hireable; investable but private (rare).
 
-## The æconomy
+## Markets
 
-The app economy is the public marketplace for Companies built on aeqi. It lives under `app.aeqi.ai/economy/*` when enabled.
-
-| Surface | What |
-|---|---|
-| `/economy` | Front door. Discover trending Companies, agents, and bounties. |
-| `/economy/companies` | Directory of public Companies. |
-| `/economy/agents` | Hireable agents (per-agent profiles with tool list, sample work). |
-| `/economy/bounties` | Open Quests with USDC rewards. Anyone can claim. |
-| `/economy/blueprints` | Public blueprints (single + stack) anyone can fork to spawn their own. |
-
-`/` itself is the public Discover landing — no auth required to browse.
+Markets is the public marketplace surface for Companies built on aeqi. It lives at `app.aeqi.ai/markets` — the front door for discovering public Companies, agents, and bounties as those directories come online. Legacy `/economy/*` URLs redirect to `/markets`.
 
 ## Discoverable
 
-Setting a Company to discoverable indexes it into the app economy directory. Required fields:
+Setting a Company to discoverable exposes a public profile at its slug (`GET /api/public/entities/{slug}`), serving the minimal public face:
 
-- `name`, `description`, `avatar_url`
-- `tags[]` (e.g., `infra`, `defi`, `ai`)
-- `template`
-- `trust_address` (the on-chain identifier for the Company's smart account)
+- `display_name` and `tagline`
+- a public-safe projection of the org chart (role titles and occupant kind — never internal grants or raw user ids)
+- public Ideas, with internal fields stripped
 
-The directory ranks by treasury size, recent activity, and ownership-token liquidity (when investable).
+The profile is keyed by the Company's canonical id; on-chain address exposure is reserved for a dedicated public surface later. Directory ranking (by activity, treasury, liquidity) is planned alongside the fuller Markets directory.
 
 ## Hireable
 
@@ -72,7 +61,7 @@ Investable Companies require a deployment-specific template, compliance review, 
 operator approval. Do not assume any public Company is investable merely because
 it is discoverable. See [Canonical templates](/docs/architecture/canonical-templates).
 
-This is the "internet capital markets" stage — post-MVP, per the founder's roadmap.
+This is the "internet capital markets" stage — planned post-MVP.
 
 ## Programmatic genesis
 

@@ -9,7 +9,7 @@ The aeqi runtime's storage model. Two SQLite databases per tenant. No Postgres, 
 | `aeqi.db` | `entities`, `agents`, `roles`, `role_edges`, `ideas`, `events`, `channels`, `credentials`, `runtime_placements` (in some deployments) | The state substrate — who, what, where, why. |
 | `sessions.db` | `sessions`, `session_participants`, `session_messages`, `quests` | The execution substrate — conversations, work, transcripts. |
 
-Quests live in `sessions.db` (NOT `aeqi.db` — common mistake). Ideas live in `aeqi.db`. The repo-root `agents.db` is a 0-byte stub from the legacy schema; don't touch it.
+Quests live in `sessions.db` (NOT `aeqi.db` — common mistake). Ideas live in `aeqi.db`.
 
 ## Core tables (aeqi.db)
 
@@ -17,11 +17,15 @@ Quests live in `sessions.db` (NOT `aeqi.db` — common mistake). Ideas live in `
 
 ```sql
 entities(
-  id          TEXT PRIMARY KEY,    -- UUID; the workspace/TRUST id
-  display_name TEXT,
-  blueprint   TEXT,                 -- launch template slug, e.g. "new-company"
-  trust_address TEXT?,              -- on-chain TRUST contract; NULL pre-registration
-  created_at  INTEGER
+  id                TEXT PRIMARY KEY,  -- UUID; the workspace/Company id
+  type              TEXT NOT NULL,     -- 'company' today
+  name              TEXT NOT NULL,
+  slug              TEXT NOT NULL,     -- unique
+  parent_entity_id  TEXT?,             -- REFERENCES entities(id)
+  owner_user_id     TEXT?,
+  metadata          TEXT NOT NULL,     -- JSON, default '{}'
+  created_at        TEXT NOT NULL,
+  updated_at        TEXT?
 )
 ```
 
@@ -73,13 +77,21 @@ FTS5 virtual table for full-text search. Optional vector embeddings for semantic
 
 ```sql
 events(
-  id, kind, source, payload,
-  fired_at, dispatched_at?,
-  scope_kind, scope_id
+  id, agent_id?,                  -- NULL = global; visible to every agent
+  name, pattern,                  -- what the rule matches
+  scope,                          -- default 'self'
+  tool_calls,                     -- JSON: the actions to run on fire
+  enabled, cooldown_secs,
+  last_fired?, fire_count,
+  total_cost_usd, system,
+  created_at
 )
 ```
 
-Events are queryable indefinitely but their first-class job is to fire actions. See [Events](/docs/concepts/events).
+An events row is a standing reaction rule — a pattern plus the tool calls to
+run when it matches — not a log line. Events are workflows, not an append-only
+log: their first-class job is to fire actions, and `last_fired` / `fire_count`
+track firing history. See [Events](/docs/concepts/events).
 
 ### channels
 
@@ -117,7 +129,7 @@ Lookup precedence: Agent > Role > Entity, narrowest wins. See [Multi-scope integ
 sessions(
   id, agent_id?, session_type, name, status,
   gateway_channel_id?,            -- bridge to a channel (Telegram, etc.)
-  awaiting_at?,                   -- legacy; deprecation Wave 5
+  awaiting_at?,                   -- legacy, scheduled for removal
   created_at, updated_at
 )
 ```
@@ -180,13 +192,7 @@ Quest wraps Idea. See [Composition](/docs/methodology/composition).
 
 Forward-only migrations under `crates/aeqi-orchestrator/migrations/`. The runtime applies them at startup before opening the API. Never drop a column without a migration; never rename in-place.
 
-Phase 4 (2026-04-29) retired:
-
-- `agents.parent_id`
-- `agent_directors` table
-- `agent_ancestry` closure table
-
-These columns are gone. Don't add backwards-compat shims; fresh spawns mint three distinct UUIDs (entity, agent, role).
+Legacy agent-ancestry columns and tables are gone; fresh spawns mint three distinct UUIDs (entity, agent, role).
 
 ## Backups
 
@@ -206,9 +212,7 @@ Each tenant runtime has its own data directory; the platform proxy routes the pe
 | Placement | systemd unit | Data directory |
 |---|---|---|
 | **sandbox** (containerized) | `aeqi-sandbox-<entity_id>.service` | `/var/lib/aeqi/containers/<entity_id>/aeqi.db` |
-| **host** (in-host) | `aeqi-host-<entity_id>.service` | `$HOME/.aeqi/aeqi.db` (the unit sets `HOME=/home/claudedev`, so the runtime resolves data dir to `~/.aeqi`) |
-
-Operational note: a stale `/var/lib/aeqi/hosts/<slug>/aeqi.db` file may exist on hosts that ran the pre-2026-04-29 layout. No daemon opens it, so its schema doesn't auto-upgrade. When verifying a migration on a tenant DB, resolve the live path from the systemd unit (`Environment=HOME` and `WorkingDirectory`) rather than guessing — checking the dormant copy will mislead you.
+| **host** (in-host) | `aeqi-host-<entity_id>.service` | Resolved from the environment the unit configures (`~/.aeqi/aeqi.db` under the unit's home directory) |
 
 ## Related
 

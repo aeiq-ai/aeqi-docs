@@ -58,15 +58,13 @@ The point of programmable companies for the agent economy is not that agents exi
 
 ## What's next
 
-The Architect agent. As of the v0.41.0 release note, Wave 34 Phase 1 had landed:
+The Architect agent. As of the v0.41.0 release note, the first phase had landed:
 an `aeqi-architect` crate, a brief-to-blueprint IPC path, and a `/studio` page.
 At that point the model path was still staged; the wire was real.
 
 The shape: type a paragraph at `/studio` describing the company you want — the team, the voice, the cadences — and the architect drafts a stack blueprint, components, edges, and seed Ideas. You review, you spawn, you're running.
 
 The co-creation surface is the workspace responding to your stream of thought. The Architect is the workspace responding to your stream of thought *before* the workspace exists. Same loop. Earlier turn.
-
-That was the next release thread from this dated release note.
 
 ## Related
 

@@ -1,62 +1,69 @@
 # IPFS Content Addressing (CID Handling)
 
-This guide explains how aeqi handles IPFS Content Identifiers (CIDs) — the standard format depends on whether the CID is stored on-chain in smart contracts or off-chain in IPFS documents.
+This guide explains how aeqi handles IPFS Content Identifiers (CIDs). The
+format depends on the storage layer: on-chain account fields on Solana, or
+off-chain JSON documents in IPFS.
 
 ## Overview
 
-The core principle: **IPFS CIDs are serialized differently depending on their storage layer.**
+The core principle: **IPFS CIDs are serialized differently depending on their
+storage layer.**
 
-- **On-chain (smart contracts)**: hex-encoded with `0x` prefix
-- **Off-chain (IPFS documents)**: standard string format (Qm... or bafy...)
+- **On-chain (Solana programs)**: the ASCII bytes of the CID string in a
+  fixed-size `[u8; 64]` account field, serialized with Borsh.
+- **Off-chain (IPFS documents)**: standard string format (`Qm...` or
+  `bafy...`).
 
-This separation ensures compatibility with contract ABIs while maintaining IPFS conventions for document references.
+aeqi's on-chain layer is the Solana/Anchor program suite under
+`projects/aeqi-solana/`. An earlier EVM layer used a different convention
+(`0x`-prefixed hex encoding); that layer is retired and covered at the end of
+this guide for historical context only.
 
-> **Chain context.** The code in this guide is the **EVM** layer: TypeChain
-> factories (`Factory__factory`, `TRUST__factory`), `writeContractAsync`, and
-> `0x`-prefixed hex encoding. The hex-encoding step exists because EVM `bytes`
-> arguments are not UTF-8 strings. aeqi's Solana programs (under
-> `projects/aeqi-solana/`) serialize CIDs through Anchor/Borsh instead and do
-> not use this `0x${hex}` convention — apply the encoding rules below only to
-> EVM contract calls. `registerTRUST` is the on-chain contract function name
-> and is kept verbatim; the product noun in prose is "Company".
+## On-Chain: Solana Account Fields
 
-## Storage Formats
+Solana program accounts that reference IPFS content carry the CID as a
+fixed-size byte array:
 
-### On-Chain: Hex-Encoded CIDs
+```rust
+// aeqi-role/src/state.rs
+pub ipfs_cid: [u8; 64],
 
-All CIDs stored in smart contracts MUST be hex-encoded with a `0x` prefix.
-
-**Format:** `0x${hexEncodedCID}`
-
-**Used in:**
-
-- `Factory.registerTRUST()` — ipfsCid parameter
-- Role configurations — ipfsCid field
-- Budget configurations — ipfsCid field
-- Treasury / transaction records — any field referencing IPFS content
-- Any contract function accepting a CID parameter
-
-**Example:**
-
-```typescript
-// Original CID (standard string)
-const cidString = 'QmXyzABC123...';
-
-// Convert for on-chain storage
-const cidForContract = `0x${Buffer.from(cidString).toString('hex')}` as `0x${string}`;
-
-// Usage in contract interaction
-await writeContractAsync({
-  address: factoryAddress,
-  abi: Factory__factory.abi,
-  functionName: 'registerTRUST',
-  args: [cidForContract, /* ... other args ... */],
-});
+// aeqi-governance — proposals carry the same field shape
+pub ipfs_cid: [u8; 64],
 ```
 
-### Off-Chain: Standard String Format
+The field holds the ASCII bytes of the standard CID string, padded to 64
+bytes. Both CIDv0 (`Qm...`, 46 characters) and CIDv1 base32 (`baf...`, 59+
+characters) fit. Anchor serializes the array with Borsh — there is no hex
+encoding and no `0x` prefix anywhere on this path.
 
-All CIDs stored within IPFS documents use standard string format — no hex encoding.
+```typescript
+// Pack a CID string into the fixed 64-byte on-chain field
+function cidToBytes(cidString: string): Uint8Array {
+  const bytes = new TextEncoder().encode(cidString);
+  if (bytes.length > 64) throw new Error("CID exceeds 64 bytes");
+  const out = new Uint8Array(64); // zero-padded
+  out.set(bytes);
+  return out;
+}
+
+// Read it back for display or IPFS retrieval
+function bytesToCid(field: Uint8Array): string {
+  let end = field.length;
+  while (end > 0 && field[end - 1] === 0) end--;
+  return new TextDecoder().decode(field.subarray(0, end));
+}
+```
+
+Used in:
+
+- `aeqi-role` — role configuration documents (`ipfs_cid` on the role account).
+- `aeqi-governance` — proposal documents (`ipfs_cid` on the proposal account).
+
+## Off-Chain: Standard String Format
+
+All CIDs stored within IPFS documents use standard string format — no
+encoding of any kind.
 
 **Format:** Regular CID strings (`Qm...` or `bafy...`)
 
@@ -91,114 +98,32 @@ const ipfsData = {
 const resultCid = await pinToIPFS(JSON.stringify(ipfsData));
 ```
 
-## Conversion Patterns
-
-### String to Contract (Encoding)
-
-Use when sending a CID to any contract function:
-
-```typescript
-function encodeCidForContract(cidString: string): `0x${string}` {
-  return `0x${Buffer.from(cidString).toString('hex')}` as `0x${string}`;
-}
-
-// Usage
-const ipfsCid = 'QmABC...';
-const encoded = encodeCidForContract(ipfsCid);
-// Result: '0xQm...' (hex-encoded)
-```
-
-### Contract to String (Decoding)
-
-Use when reading a CID from contract storage for display or IPFS retrieval:
-
-```typescript
-function decodeCidFromContract(cidHex: `0x${string}`): string {
-  return Buffer.from(cidHex.slice(2), 'hex').toString();
-}
-
-// Usage
-const hexCid = '0xABC...'; // from contract read
-const cidString = decodeCidFromContract(hexCid);
-// Result: 'QmABC...' (standard string)
-```
-
-## Implementation Recipes
-
-### Recipe 1: Upload to IPFS and Store on-Chain
-
-```typescript
-// 1. Generate data
-const trustConfig = {
-  version: 1,
-  roles: [{ id: 'founder', address: '0x123...' }],
-};
-
-// 2. Upload to IPFS (returns standard string CID)
-const ipfsCid = await pinToIPFS(JSON.stringify(trustConfig));
-// ipfsCid: 'QmXyzABC123...'
-
-// 3. Encode for contract
-const cidForContract = encodeCidForContract(ipfsCid);
-
-// 4. Store on-chain
-await writeContractAsync({
-  address: factoryAddress,
-  abi: Factory__factory.abi,
-  functionName: 'registerTRUST',
-  args: [cidForContract, /* ... */],
-});
-```
-
-### Recipe 2: Read from Chain and Fetch from IPFS
-
-```typescript
-// 1. Read from smart contract
-const trustConfig = await readContract({
-  address: trustAddress,
-  abi: TRUST__factory.abi,
-  functionName: 'getConfig',
-});
-// trustConfig.ipfsCid: '0xABC...' (hex-encoded)
-
-// 2. Decode to standard format
-const cidString = decodeCidFromContract(trustConfig.ipfsCid);
-
-// 3. Fetch from IPFS
-const ipfsData = await fetchFromIPFS(cidString);
-// ipfsData: the original JSON document
-```
-
-### Recipe 3: Nested IPFS References
+Nested references stay in string form at every depth — only the final
+on-chain write converts to the fixed byte-array field:
 
 ```typescript
 // 1. Create inner documents (e.g., operating agreement)
 const agreementCid = await pinToIPFS(operatingAgreementPDF);
 
-// 2. Create parent document with references (use string format)
+// 2. Create parent document with references (string format)
 const parentData = {
   version: 1,
   name: 'My Company',
   references: [
-    {
-      type: 'operating-agreement',
-      ipfsCid: agreementCid, // Standard string — no encoding!
-      description: 'Operating Agreement',
-    },
+    { type: 'operating-agreement', ipfsCid: agreementCid, description: 'Operating Agreement' },
   ],
 };
 
 // 3. Upload parent
 const parentCid = await pinToIPFS(JSON.stringify(parentData));
 
-// 4. Store parent on-chain (now with encoding)
-const cidForContract = encodeCidForContract(parentCid);
-await registerWithFactory(cidForContract);
+// 4. Store parent on-chain (fixed 64-byte field, Borsh-serialized)
+const cidField = cidToBytes(parentCid);
 ```
 
 ## CID Format Validation
 
-Validate CID format before encoding or decoding:
+Validate CID format before packing or after unpacking:
 
 ```typescript
 function isValidCidString(cid: string): boolean {
@@ -213,11 +138,6 @@ function isValidCidString(cid: string): boolean {
   return false;
 }
 
-function isValidCidHex(cidHex: string): boolean {
-  // Must start with 0x and be valid hex
-  return /^0x[0-9a-f]+$/i.test(cidHex);
-}
-
 // Usage
 if (!isValidCidString(userInput)) {
   throw new Error('Invalid CID format. Must be a CIDv0 (Qm…) or CIDv1 (baf…).');
@@ -226,51 +146,45 @@ if (!isValidCidString(userInput)) {
 
 ## Common Pitfalls
 
-1. **DO NOT** hex-encode CIDs within IPFS documents.
+1. **DO NOT** encode CIDs within IPFS documents.
    - Inside IPFS JSON, CIDs are always standard strings.
-   - Only encode at the contract boundary.
+   - Only convert to the byte-array form at the on-chain write.
 
-2. **DO NOT** send raw CID strings to contract functions.
-   - Contracts expect hex-encoded bytes, not UTF-8 strings.
-   - Always encode before contract interaction.
+2. **DO NOT** mix formats within the same storage layer.
+   - On-chain: the fixed `[u8; 64]` ASCII field.
+   - Off-chain (IPFS): standard strings.
 
-3. **DO NOT** mix formats within the same storage layer.
-   - On-chain: all hex-encoded.
-   - Off-chain (IPFS): all standard strings.
+3. **ALWAYS** validate CID format before conversion.
+   - Malformed CIDs can cause silent errors downstream.
 
-4. **ALWAYS** validate CID format before conversion.
-   - Malformed CIDs can cause silent encoding errors.
-   - Use validation functions before processing.
+4. **ALWAYS** test round-trip conversions.
+   - Pack → store → unpack → fetch should yield the original document.
 
-5. **ALWAYS** test round-trip conversions.
-   - Encode → store → decode → fetch should yield original data.
+## Historical: The Retired EVM Encoding
 
-## Testing CID Round-Trips
+aeqi's earlier EVM contract layer stored CIDs hex-encoded with a `0x` prefix,
+because EVM `bytes` arguments are not UTF-8 strings:
 
 ```typescript
-// Test both directions
-async function testCidRoundTrip() {
-  // Original CID (standard string)
-  const originalCid = 'QmXyzABC123...';
-  
-  // Encode for contract
-  const encoded = encodeCidForContract(originalCid);
-  console.assert(encoded.startsWith('0x'), 'Should be hex-prefixed');
-  
-  // Decode back
-  const decoded = decodeCidFromContract(encoded);
-  
-  // Should match original
-  console.assert(decoded === originalCid, 'Round-trip should preserve CID');
-  
-  // Verify via IPFS fetch
-  const ipfsContent = await fetchFromIPFS(decoded);
-  console.assert(ipfsContent, 'IPFS fetch should work');
+// Retired EVM pattern — do not use on the Solana layer.
+function encodeCidForContract(cidString: string): `0x${string}` {
+  return `0x${Buffer.from(cidString).toString('hex')}` as `0x${string}`;
+}
+
+function decodeCidFromContract(cidHex: `0x${string}`): string {
+  return Buffer.from(cidHex.slice(2), 'hex').toString();
 }
 ```
 
+This convention accompanied the retired EVM factory (`registerTRUST`,
+TypeChain factories, `writeContractAsync`). None of it applies to the current
+Solana programs — if you encounter `0x`-hex CID handling in older material,
+treat it as historical. `registerTRUST` was an on-chain contract function
+name kept verbatim in that era's code; the product noun in prose is
+"Company".
+
 ## See Also
 
-- **[Factory Flow Reference](/docs/factory-flow)** - how the Factory uses ValueConfigs with CIDs for Company configuration (EVM `registerTRUST`)
+- **[Factory Flow Reference](/docs/factory-flow)** - the current Solana/Anchor factory: programs, Company and Template PDAs, and the create/register/instantiate instructions
 - **[IPFS Content Addressing](https://docs.ipfs.tech/concepts/content-addressing/)** - CID specification and format versions
-- **[Anchor framework](https://www.anchor-lang.com/)** - the Borsh-based serialization used by aeqi's Solana programs (a different on-chain layer from the EVM `0x${hex}` encoding above)
+- **[Anchor framework](https://www.anchor-lang.com/)** - the Borsh-based serialization used by aeqi's Solana programs

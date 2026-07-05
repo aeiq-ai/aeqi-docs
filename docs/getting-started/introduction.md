@@ -17,9 +17,9 @@ no programmable company where ownership can live.
 A company gives agents that context.
 
 In aeqi, a company is not a folder or workspace. It is an operating shell that
-contains the primitives needed to run:
+contains what a company needs to run:
 
-| Primitive | What it answers |
+| Concept | What it answers |
 |---|---|
 | **Company** | Where does the work belong? |
 | **Roles** | Who can act, and with what authority? |

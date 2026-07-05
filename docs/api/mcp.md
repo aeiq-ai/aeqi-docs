@@ -112,31 +112,28 @@ selector. The aeqi connection comes from the MCP server and the `ak_...` /
 
 ## Claude Code Setup
 
-Claude Code reads MCP servers from `~/.claude/settings.json` (or a project
-`.claude/settings.json`). Add an `aeqi` server under `mcpServers`:
+Claude Code registers MCP servers with the `claude mcp add` command (stored in
+`~/.claude.json`), or from a project-level `.mcp.json` file at the repository
+root — not from `settings.json`. Register the `aeqi` server:
 
-```json
-{
-  "mcpServers": {
-    "aeqi": {
-      "command": "aeqi",
-      "args": ["mcp"],
-      "env": {
-        "AEQI_SECRET_KEY": "sk_...",
-        "AEQI_API_KEY": "ak_...",
-        "AEQI_PLATFORM_URL": "https://app.aeqi.ai"
-      }
-    }
-  }
-}
+```bash
+claude mcp add aeqi \
+  --env AEQI_SECRET_KEY=sk_... \
+  --env AEQI_API_KEY=ak_... \
+  --env AEQI_PLATFORM_URL=https://app.aeqi.ai \
+  -- aeqi mcp
 ```
 
-Use an absolute path for `command` if `aeqi` is not on Claude Code's `PATH`.
+Use an absolute path to the `aeqi` binary if it is not on Claude Code's
+`PATH`. Confirm the registration with `claude mcp list`.
 
 Once the server is registered, tools appear as `mcp__aeqi__me`,
 `mcp__aeqi__ideas`, `mcp__aeqi__quests`, `mcp__aeqi__code`,
-`mcp__aeqi__agents`, and `mcp__aeqi__events`. Restart Claude Code (or
-`/clear`) after editing settings so the new server is loaded.
+`mcp__aeqi__agents`, and `mcp__aeqi__events`. Restart Claude Code after
+changing the registration so the new server is loaded.
+
+See [Claude Code + aeqi](/docs/guides/claude-code) for the project-level
+`.mcp.json` form and the hook setup.
 
 ## Verify The Connection
 
@@ -268,6 +265,7 @@ Codex may display those tools with the MCP server prefix. For example, raw
 | `agents` | `get`, `hire`, `retire`, `list`, `projects` | Runtime workers, delegation targets, and project registry. |
 | `events` | `create`, `list`, `enable`, `disable`, `delete`, `trigger`, `trace` | Schedules, session lifecycle context, and event automation. |
 | `code` | `search`, `context`, `impact`, `diff_impact`, `file`, `file_summary`, `stats`, `index`, `incremental`, `synthesize` | Code intelligence graph, call context, blast radius, and indexing. |
+| `sessions` | `search` | Read-only FTS5 search over session transcripts, scoped to the calling agent. |
 
 ### Ideas tool — response envelopes and error shapes
 

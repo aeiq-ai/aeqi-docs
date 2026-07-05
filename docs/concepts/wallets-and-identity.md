@@ -74,8 +74,8 @@ This keeps the agent useful without making it the owner of company authority.
 
 - aeqi is not legal, financial, tax, or custody advice.
 - Public docs describe the product model, not a formal security audit.
-- Wallet and protocol features may differ between hosted, private, and
-  private deployments.
+- Wallet and protocol features may differ between hosted and private
+  deployments.
 - Do not send funds or assign production authority to an on-chain protocol
   module until the deployment's signer, recovery, and governance behavior has
   been reviewed.

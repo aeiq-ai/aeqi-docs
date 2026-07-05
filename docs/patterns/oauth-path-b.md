@@ -2,7 +2,7 @@
 
 Agents OAuth into third-party providers (Gmail, Calendar, Slack, GitHub, Notion) with **per-agent credentials**. The agent is the principal; the user consents on the agent's behalf.
 
-This is the canonical aeqi pattern. Founder pick, 2026-05-06: "we should just use the app to connect the hello@aeqi.ai email per oauth to the agent — that's the right path logically."
+This is the canonical aeqi pattern: connect the account to the agent through the app, via OAuth, with the agent as the principal — the same consent shape a human employee would go through, applied to the agent that will actually use the credential.
 
 ## Why per-agent (not per-user)
 
@@ -50,9 +50,9 @@ This prevents:
 - **Replay** — nonce + expiration.
 - **Cross-agent confusion** — state binds `agent_id`; callback can only persist tokens for that agent.
 
-## Required env vars
+## Required env vars (self-hosting)
 
-`/etc/aeqi/secrets.env` on the platform host:
+If you run your own platform host, configure the provider secrets in `/etc/aeqi/secrets.env`:
 
 ```
 GOOGLE_CLIENT_ID=...        # GCP OAuth client (Web application type)
@@ -62,7 +62,7 @@ AEQI_OAUTH_STATE_SECRET=... # openssl rand -hex 32
 
 When unset, routes return 503 `{error: "google_oauth_not_configured", setup_required: true}` — graceful degradation. Restart `aeqi-platform.service` after editing.
 
-GCP redirect URI must match exactly: `https://app.aeqi.ai/api/integrations/google/callback` (no trailing slash).
+Your OAuth client's redirect URI must match your deployment's callback exactly, e.g. `https://<your-host>/api/integrations/google/callback` (no trailing slash). On the hosted platform this is all pre-configured — nothing to set up.
 
 ## Existing tools that consume credentials
 
@@ -93,5 +93,5 @@ Use Path B for anything customer-facing. Service accounts can coexist for intern
 
 ## Related
 
-- [Multi-scope integrations](/docs/patterns/multi-scope-integrations) — Entity > Role > Agent precedence when scopes overlap.
+- [Multi-scope integrations](/docs/patterns/multi-scope-integrations) — Agent > Company > Global precedence when scopes overlap.
 - [Agents](/docs/concepts/agents) — agents own credentials.

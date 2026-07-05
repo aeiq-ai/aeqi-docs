@@ -47,7 +47,7 @@ A channel attached to an agent has an allowed-chat list. Only messages from list
 ```
 channel {
   agent_id, kind: 'telegram',
-  allowed_chats: [-5133857242],   ← allowlist
+  allowed_chats: [-1000000000000],   ← allowlist (placeholder id)
   bot_token: <encrypted>
 }
 ```
@@ -67,21 +67,6 @@ The same gate applies to any channel:
 | Slack | DM | `text.contains('<@<bot_id>>')` |
 
 Layer 1 is always on for everything. Layer 2 fires per channel-specific gate.
-
-## Mention-routes-to-spawn
-
-A channel can also be configured so a mention spawns a **new agent** rather than firing a turn on the existing one. Use case: a generic "@aeqi help" pattern that creates a fresh agent for the asker.
-
-Configuration:
-
-```
-channel {
-  ...,
-  on_mention: 'spawn_from_template:<template_slug>'
-}
-```
-
-The orchestrator spawns the templated agent, opens a session bridged to the same channel, and dispatches the inbound message as the first turn.
 
 ## Why this isn't just rate-limiting
 

@@ -1,6 +1,6 @@
 # The inbox is the chat
 
-Five surfaces in aeqi look like a conversation: the personal inbox, an Agent's session list, a Company's channels, an entity inbox, and the comment thread on an Idea. They all read the same way, render the same way, and address the same primitive. That's not a coincidence — it's the founder's call. The inbox is the chat.
+Several surfaces in aeqi look like a conversation: your own inbox view, an Agent's session list, a Company's full session register, and the comment thread on an Idea. They all read the same way, render the same way, and address the same primitive. That's not a coincidence — it's a deliberate design decision. The inbox is the chat.
 
 ## The mental model
 
@@ -8,12 +8,14 @@ Every conversational surface in aeqi is an inbox scoped to its participants.
 
 | Surface | Scope | URL |
 |---|---|---|
-| Entity inbox | Sessions where you are a participant, scoped to one of your entities | `/company/<address-or-id>/inbox` |
-| Agent inbox | Sessions where the agent is a participant | `/company/<address-or-id>/agents/<id>/inbox` |
-| Company channels | Sessions scoped to the Company | `/company/<address-or-id>/channels` |
+| Your inbox | Sessions where you are a participant, scoped to one of your entities | `/company/<address-or-id>/sessions?view=mine` |
+| Agent inbox | Sessions where the agent is a participant | `/company/<address-or-id>/sessions?agent=<id>` |
+| Company sessions | All sessions scoped to the Company | `/company/<address-or-id>/sessions` |
 | Idea comments | The session attached to an Idea | `/ideas/<id>` |
 
-There is no "inbox" data type, no "channel" data type, no "comments" data type. Each surface is a query against [Sessions](/docs/concepts/sessions) with a different scope predicate. List the sessions where the participant set contains me — that's an inbox. List the sessions where the participant set contains an agent — that's the Agent's session list. List the sessions where the scope is a Company — those are the channels.
+There is no "inbox" data type, no "channel" data type, no "comments" data type. Each surface is a query against [Sessions](/docs/concepts/sessions) with a different scope predicate. List the sessions where the participant set contains me — that's an inbox. List the sessions where the participant set contains an agent — that's the Agent's session list. List every session scoped to the Company — that's the register.
+
+Legacy URLs still resolve: `/company/<id>/inbox` redirects to `sessions?view=mine`, and the retired per-agent `/agents/<id>/inbox` shape redirects into the same sessions register filtered to that agent.
 
 The substrate doesn't care which view you opened.
 
@@ -28,7 +30,7 @@ SessionDetail ← the transcript view (right pane, headers + bubbles)
 Composer    ← the compose box (bottom of every transcript)
 ```
 
-There is one `Composer`, one `SessionRail`, one `SessionDetail`. Five surfaces wire them five different ways. When the Composer changes, every surface gets the change. When the rail changes, every surface gets the change. The toolbar above the rail (search · sort · filter · view · +) is itself a single primitive — `SessionsToolbar` — locked to the same grammar the Quests and Ideas toolbars use.
+There is one `Composer`, one `SessionRail`, one `SessionDetail`. Every surface wires them a different way. When the Composer changes, every surface gets the change. When the rail changes, every surface gets the change. The toolbar above the rail (search · sort · filter · view · +) is itself a single primitive — `SessionsToolbar` — locked to the same grammar the Quests and Ideas toolbars use.
 
 This is a hard rule: if you are about to write a second Composer, stop. The shape exists.
 
@@ -42,18 +44,13 @@ Every session can have N participants. That's not a feature added later — it's
 
 A 1:1 chat between you and your CEO agent is just the degenerate case of a multi-party room. The UI doesn't switch shapes when a third participant joins; it was already that shape.
 
-## Why "Inbox" beats "Sessions" in copy
+## Where the "inbox" word landed
 
-The data primitive is named `Session`. The user-facing surface is named `Inbox`.
+The data primitive is named `Session`, and the chrome says **Sessions** — one register, one label, no vocabulary split between what the substrate stores and what the surface shows.
 
-Two reasons:
+The inbox survives as a *view*, not a separate surface: `sessions?view=mine` is the register filtered to the sessions where you're a participant — the things waiting for you. Email taught a generation what an inbox is; aeqi keeps that concept as the default personal lens over the register rather than as a differently-named page. One name for the primitive, one filter for the "what's waiting for me" question.
 
-1. **"Inbox" is the word humans recognize.** Email taught a generation that an inbox is the place where the things waiting for me show up. Adopting that vocabulary collapses the explanation to zero. "Sessions" requires a sentence; "Inbox" requires nothing.
-2. **The same data primitive renders differently per scope.** A user looking at `/company/<their-address-or-id>/inbox` is looking at the sessions where they're awaited. The agent's view of the same set of sessions is its working queue. Calling both "Sessions" leaks an implementation detail; calling both "Inbox" centers what the surface is doing.
-
-URL paths preserve `/sessions/` for stability — links do not break, runtime IPC verbs do not move. Labels in the chrome say Inbox. The substrate name and the surface name are allowed to diverge when the substrate name is more precise and the surface name is more readable.
-
-Sister rule: this is the same shape as `/studio` — a chat surface for a primitive that the substrate calls a `Blueprint`. The user types into a chat; the system thinks in primitives.
+This keeps the useful property both ways: the substrate name is precise, links and runtime IPC verbs never move, and the personal view still behaves exactly like the inbox humans expect.
 
 ## What this replaces
 
@@ -65,7 +62,7 @@ Every prior shape is now a saved view over Sessions:
 - The "Notifications" tray — gone. Sessions with unread messages where you are awaited.
 - The "Activity" feed — gone. The same session, lensed to `from_kind=system` messages.
 
-The five-surface unification is the operational consequence of the underlying decision: [Sessions are the universal conversation primitive](/docs/concepts/sessions). The methodology page above describes the conceptual lock; this page describes how that lock pays out across the product surface.
+This unification is the operational consequence of the underlying decision: [Sessions are the universal conversation primitive](/docs/concepts/sessions). The methodology page above describes the conceptual lock; this page describes how that lock pays out across the product surface.
 
 ## What's next
 
@@ -77,6 +74,6 @@ The five-surface unification is the operational consequence of the underlying de
 
 - [Sessions](/docs/concepts/sessions) — the data primitive every inbox queries.
 - [Roles](/docs/concepts/roles) — `message_to(<role>)` routes to the current occupant; the inbox follows the seat.
-- [Company](/docs/concepts/company) — what a Company's channels are scoped to.
-- [Architect](/docs/methodology/architect) — `/studio` is the same chat-shape applied one turn earlier, before the Company exists.
+- [Company](/docs/concepts/company) — what a Company's sessions are scoped to.
+- [Architect](/docs/methodology/architect) — the same conversational shape applied one turn earlier, before the Company exists.
 - [Templates and modules](/docs/architecture/templates-and-modules) — sister methodology page on a different unification (templates compose modules; inboxes compose sessions).

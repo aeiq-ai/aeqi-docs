@@ -56,11 +56,11 @@ The marginal cost of forming and operating a company moves toward zero. More ven
 - **aeqi-inference.** OpenAI-compatible chat completions for agent execution.
 - **Payments and billing.** Hosted plans and usage-based inference are live so companies can pay for the runtime and the work it performs.
 
-## What we don't say
+## What aeqi is not
 
-We don't say "DAO" in user-facing copy. A Company is a smart account with role-based authority; "DAO" is shorthand we reserve for blog posts and investor calls.
+aeqi is not a token-governance product. A Company is a smart account with role-based authority; the chain enforces what was agreed, but governance theater is not the product.
 
-We don't say "autonomous companies" in headlines. The category survives in FAQ tags and Terms boilerplate. The current canonical positioning is: "programmable companies for the agent economy." The subline names human direction explicitly. Agents execute; humans set the direction.
+aeqi is not a chatbot wrapper, and it is not "autonomous companies" running unattended. aeqi is the Company OS: agents execute; humans set the direction.
 
 We don't pretend we have features that aren't shipped. If a feature is in flight, it's tagged in the docs.
 

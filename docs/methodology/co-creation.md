@@ -28,9 +28,9 @@ When a blueprint is provisioned (single or stack), the workspace boots with:
 | Ideas | Mission, values, default SOPs, regulatory tracker (when applicable). |
 | Events | Daily/weekly/monthly cadences, paused by default. |
 | Kickoff Quests | One or two open Quests per agent: "Draft your first 30 days," "Connect your shared mailbox," etc. |
-| On-chain registration | The Company's TRUST contract is registered on chain when the user opts in; can be deferred. |
+| Protocol registration | The Company's protocol state is registered when enabled; can be deferred. |
 
-The aeqi reference company ships with roughly seven agents and a dozen-plus roles, plus seeded Ideas, Events, and a handful of open kickoff Quests. That's the reference shape.
+A reference company ships with a full slate of agents and roles, plus seeded Ideas, Events, and a handful of open kickoff Quests. That's the reference shape.
 
 ## Agent-driven onboarding
 
@@ -43,16 +43,16 @@ When you land in the new workspace, the agents are already in motion:
 
 You don't fill out a form to configure your company. The agents interview you.
 
-## When the founder is the bottleneck
+## When the operator is the bottleneck
 
-The same loop applies in reverse — when the founder works with a senior agent:
+The same loop applies in reverse — when a senior agent works for any operator:
 
-- **Capture every direction.** Maintain a backlog that records every thing the founder mentions, even briefly, so nothing valuable is lost between sessions.
+- **Capture every direction.** Maintain a backlog that records every thing the operator mentions, even briefly, so nothing valuable is lost between sessions.
 - **Execute on what's actionable now.** Multiple agents in parallel where work is disjoint. Sequence where dependencies exist.
-- **Surface the rest cleanly.** Items not actionable now are queued with status (now / next / soon / later / future) and re-evaluated each cycle.
-- **Don't ask permission for things in the canonical direction.** Owner-mode: decide and execute. Surface only the calls that genuinely need founder input.
+- **Surface the rest cleanly.** Items not actionable now are queued with a priority status and re-evaluated each cycle.
+- **Don't ask permission for things in the established direction.** Decide and execute within granted authority. Surface only the calls that genuinely need the operator's input.
 
-This is the same shape as the product loop: capture stream of thought, expand into execution, ask back only when blocked. The product captures user thought; the operating model captures founder thought.
+This is the same shape as the product loop: capture stream of thought, expand into execution, ask back only when blocked. The product captures user thought; the operating model captures the operator's thought.
 
 ## Why this matters
 

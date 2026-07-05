@@ -1,57 +1,39 @@
 # Inline mention spawn
 
-How `@`-mentions inside in-app channels turn into agent turns — and, when the mentioned name doesn't exist yet, into a fresh agent.
+How `@`-mentions inside in-app sessions turn into agent turns.
 
 ## The pattern
 
-A user (or another agent) types `@<name>` inside a channel. The channel's bridge layer parses the mention before the message is appended to the session. Three branches:
+A user (or another agent) types `@<name>` inside a session. The message layer parses the mention when the message is appended. Three branches:
 
 | Mention resolves to | Action |
 |---|---|
-| An existing agent in the entity | Add agent as a session participant; fire its turn against the message. |
-| An existing role in the entity | Route to whoever currently occupies the role; fire their turn. |
-| **An unknown name** | If the channel is configured `on_mention: spawn_from_template:<slug>`, spawn a templated agent named `<name>`, attach to the session, fire the first turn. |
+| An agent | Auto-subscribe the agent as a session participant; enqueue an agent run so it reads the message and replies. |
+| A user or a role (`@user:`, `@position:`) | Subscribe as a participant for visibility. No turn fires — humans aren't callable, and role routing is its own addressing path. |
+| **An unknown name** | Skipped silently. Bare `@name` mentions resolve via agent-name lookup only; a name that matches no active agent does nothing. |
 
-Branch 3 is what makes a channel feel alive: the team grows by being talked to.
+The first branch is what makes a session feel alive: you pull a teammate into the room by naming them in the act of asking.
 
-## Configuration
+## Subscribe, then send
 
-```json
-channel {
-  agent_id: "<owning_agent_id>",
-  kind: "in_app",
-  on_mention: "spawn_from_template:generalist",
-  config: {
-    spawn_naming: "from_mention"
-  }
-}
-```
+The mention has to take effect *before* the mentioned agent's turn fires, otherwise the agent's first turn doesn't see itself in the participant list. The order is:
 
-`spawn_from_template:<slug>` resolves to a blueprint component. The component supplies the role, the charter Ideas, the model preference, and any seeded tools. The mention text supplies the name.
+1. The message is appended to the session.
+2. The mention parser resolves each `@`-token against the entity's agents, users, and roles.
+3. Each resolved identity is added as a session participant (idempotently — mentioning someone twice is harmless).
+4. For agent mentions only, a run is enqueued on the session's queue; the agent reads the message and replies.
 
-## Why parse before append
+No separate system message announces the join — the message itself is the notification. This is the Linear / Notion behavior: mentioning someone puts the thing you said in front of them, rather than generating a second artifact about the mention.
 
-The mention has to be parsed *before* the inbound message hits the session, otherwise the session has a turn from a participant that doesn't exist yet. The flow is:
+## Parity with external channels
 
-1. Inbound message arrives at the channel bridge.
-2. Bridge parses `@`-mentions; resolves each one against the entity's agents and roles.
-3. For unresolved mentions, bridge spawns the templated agent + creates the role binding + adds to session participants.
-4. Message gets appended to the session with the mentioned agents already as participants.
-5. Each mentioned agent's turn fires.
-
-Steps 3 and 4 must complete before step 5 — otherwise the agent's first turn doesn't see itself in the participant list.
-
-## In-app channels vs external channels
-
-External channels (Telegram, WhatsApp, Slack) have always supported mention-routes-to-spawn — the existing `on_mention` config from [Mention-gating](/docs/patterns/mention-gating).
-
-What v0.41.0 fixed: the **in-app** channel surface (the Slack-shaped Channels rail) now respects the same gate. Before, in-app `@`-mentions appended to the session but didn't fire a turn or spawn — the chat looked like it was working, but the agent was deaf. The bridge layer is now uniform across in-app and external channels.
+The same gate shape governs external channels (Telegram, WhatsApp — see [Mention-gating](/docs/patterns/mention-gating)): the agent reads everything for context, but a turn fires only when the agent is named. The in-app mention wiring is the front door to the same discipline — one mention grammar, inside the app and out.
 
 ## Why this matters
 
-The fastest path from idea to running agent is one sentence with an `@` in it. No "create agent" form. No blueprint picker for incidental hires. You name the agent in the act of asking it to do something.
+The fastest path from a thought to an agent's attention is one sentence with an `@` in it. No "add participant" form, no separate notification step. You address the agent in the act of asking it to do something.
 
-The opposite — making the user fill out a form before they can talk to a teammate — is the same friction every PM-led product loses to. aeqi declines.
+Spawning a *brand-new* agent from an unresolved mention — the team growing by being talked to — is a possible future direction; today an unknown name is simply skipped.
 
 ## Related
 

@@ -4,7 +4,7 @@ Connect Claude Code to your aeqi runtime over MCP. Claude Code gets persistent m
 
 ## Prerequisites
 
-- aeqi account with a company at [app.aeqi.ai](https://app.aeqi.ai) — a trial company is enough; no paid subscription required to connect
+- aeqi account with a company at [app.aeqi.ai](https://app.aeqi.ai) on a `company` or `owner` tier — API keys and MCP access require a Company subscription; trial and free accounts get `402 Payment Required` (see [Authentication](/docs/api/authentication))
 - Claude Code
 - `aeqi` CLI access — see [Installation](/docs/installation)
 
@@ -19,7 +19,17 @@ See [Authentication](/docs/api/authentication) for rotation.
 
 ## 2. MCP Server
 
-Add the aeqi CLI to `~/.claude/settings.json`:
+Register the aeqi CLI as an MCP server with `claude mcp add` (Claude Code stores the registration in `~/.claude.json`, not `settings.json`):
+
+```bash
+claude mcp add aeqi \
+  --env AEQI_SECRET_KEY=sk_... \
+  --env AEQI_API_KEY=ak_... \
+  --env AEQI_PLATFORM_URL=https://app.aeqi.ai \
+  -- aeqi mcp
+```
+
+To share the server with everyone working in a repository, use a project-level `.mcp.json` at the repo root instead (inject the keys from your environment rather than committing them):
 
 ```json
 {
@@ -37,7 +47,7 @@ Add the aeqi CLI to `~/.claude/settings.json`:
 }
 ```
 
-`aeqi mcp` authenticates with the platform on startup, then routes tool calls directly to your company's runtime.
+`aeqi mcp` authenticates with the platform on startup, then routes tool calls directly to your company's runtime. Verify with `claude mcp list`. Use an absolute path to the `aeqi` binary if it is not on Claude Code's `PATH`.
 
 Private deployments may use a deployment-specific config path instead of hosted keys.
 
@@ -53,8 +63,9 @@ Once connected, Claude Code can call:
 | `agents` | `get`, `hire`, `retire`, `list`, `projects` |
 | `events` | `create`, `list`, `enable`, `disable`, `delete`, `trigger`, `trace` |
 | `code` | `search`, `context`, `impact`, `diff_impact`, `file`, `file_summary`, `stats`, `index`, `incremental`, `synthesize` |
+| `sessions` | `search` |
 
-Full catalog: [MCP Integration](/reference/mcp).
+Full catalog: [MCP Integration](/docs/mcp).
 
 ## 4. Hooks
 
@@ -138,19 +149,10 @@ Knowledge accumulates across sessions. Next time you (or another agent) starts, 
 
 ## Full `settings.json`
 
+The MCP server itself is registered via `claude mcp add` or `.mcp.json` as shown above — `settings.json` carries only the hooks:
+
 ```json
 {
-  "mcpServers": {
-    "aeqi": {
-      "command": "aeqi",
-      "args": ["mcp"],
-      "env": {
-        "AEQI_SECRET_KEY": "sk_...",
-        "AEQI_API_KEY": "ak_...",
-        "AEQI_PLATFORM_URL": "https://app.aeqi.ai"
-      }
-    }
-  },
   "hooks": {
     "SessionStart": [
       {
@@ -186,6 +188,6 @@ Knowledge accumulates across sessions. Next time you (or another agent) starts, 
 
 ## Next Steps
 
-- [MCP Integration](/reference/mcp) — full tool catalog and env vars
+- [MCP Integration](/docs/mcp) — full tool catalog and env vars
 - [Authentication](/docs/api/authentication) — key rotation
 - [Concepts: Agents](/docs/concepts/agents) — what your MCP tools are driving

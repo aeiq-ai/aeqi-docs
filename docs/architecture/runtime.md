@@ -8,7 +8,7 @@ One binary. Per-tenant. Self-hostable.
 
 ```
 aeqi-platform                          aeqi (runtime)
-  ↑ HTTPS                                 :8400+ per tenant
+  ↑ HTTPS                                 :8401–8599 per tenant
   | proxy                                  ↑
   | by entity_id  ─────────────►  one runtime per Company
   ↑                                       │
@@ -27,7 +27,7 @@ A runtime hosts ONE Company's data and agents. The platform spawns and manages t
 | Component | Responsibility |
 |---|---|
 | **Orchestrator** | Picks up events, routes to detectors, dispatches tool calls, runs agent turns. |
-| **REST API** | HTTP surface for the dashboard, CLI, MCP server. `:8400+`. |
+| **REST API** | HTTP surface for the dashboard, CLI, MCP server. Sandbox tenants bind `:8401–8500`, host tenants `:8501–8599`. |
 | **IPC server** | Internal verbs callable from in-process subsystems and the platform's IPC bus. |
 | **Scheduler** | Walks the active scheduled events every minute; fires due cron ticks. |
 | **Channel gateway** | Long-poll / webhook bridges for Telegram, WhatsApp, etc. Bridges inbound to sessions. |
@@ -44,8 +44,6 @@ Two SQLite databases per tenant:
 |---|---|
 | `sessions.db` | Quests, sessions, transcripts. The execution substrate. |
 | `aeqi.db` | Ideas, agents, events, roles, role_edges, channels, credentials. The state substrate. |
-
-The repo-root `agents.db` is a 0-byte stub — historical artifact. Agents live in `aeqi.db`.
 
 No Postgres, no Redis, no message queue. Two SQLite files per tenant; backups are file copies.
 
@@ -71,7 +69,7 @@ Per-tenant runtimes (`aeqi-host-<entity_id>.service`) isolate by:
 - **Network** — bound to `127.0.0.1:<port>`, fronted by the platform proxy.
 - **Credentials** — per-tenant encrypted credentials substrate; platform never sees plaintext.
 
-This is the canonical deploy topology (locked 2026-04-29, retiring the older shared `aeqi-runtime.service`).
+This is the canonical deploy topology: one systemd unit per tenant, no shared runtime process.
 
 ## Self-host
 
@@ -117,15 +115,7 @@ The aeqi-platform's hosted runtime exposes [aeqi-inference](/docs/api/inference)
 
 The dashboard SPA is `rust-embed`'d into the binary. No separate npm install on the deploy host. `aeqi start` serves UI + API from the same port.
 
-For UI-only iteration:
-
-```bash
-cd aeqi/apps/ui
-npm run build
-rsync dist/ /home/claudedev/aeqi-platform/ui-dist/
-```
-
-Skips the Rust rebuild when only TS/CSS changed. See `/docs/guides/claude-code` for hosted dev tips.
+For UI-only iteration, rebuild the SPA (`npm run build` in `apps/ui`) and redeploy the static bundle — no Rust rebuild needed when only TS/CSS changed. See `/docs/guides/claude-code` for hosted dev tips.
 
 ## Observability
 

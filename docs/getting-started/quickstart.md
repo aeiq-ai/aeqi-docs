@@ -20,6 +20,9 @@ Start from the hosted app:
 https://app.aeqi.ai/signup
 ```
 
+Hosted access is currently waitlist-gated: without an invite, the signup page
+adds you to the waitlist; with an invite you sign up directly.
+
 See [Getting started](/docs/getting-started/getting-started) for the full app walkthrough.
 
 ## 2. Configure
@@ -60,5 +63,5 @@ Sign in, open your Company, and run the first Quest.
 - [Concepts: Quests](/docs/concepts/quests) — how work gets dispatched
 - [CLI](/docs/reference/cli) — terminal chat, local runtime, and MCP bridge
 - [REST API](/docs/api/rest) — hosted HTTP surfaces
-- [MCP Integration](/reference/mcp) — drive your hosted Company from Codex, Claude Code, or another MCP client
+- [MCP Integration](/docs/mcp) — drive your hosted Company from Codex, Claude Code, or another MCP client
 - [Claude Code + aeqi](/docs/guides/claude-code) — Claude-specific setup and hooks
