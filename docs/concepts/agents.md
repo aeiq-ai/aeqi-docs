@@ -59,10 +59,14 @@ outcome.
 ## Hiring agents
 
 Agents can be created from templates or composed directly from company context.
-The default `new-company` template starts small — three agents, with the human
-operator holding the Director role:
+The default `new-company` template seeds a complete executive team — seven
+agents, with the human operator holding the Director role:
 
-- **Chief of Staff** — the root agent and operating spine; turns the Director's intent into owned quests and keeps the operating snapshot honest.
+- **CEO** — the root agent and your single voice into the company; takes what you want, routes it to the right report, and comes back with the outcome.
+- **Chief of Staff** — the operating spine; turns intent into owned quests and keeps the operating snapshot honest.
+- **CTO** — the builder; owns the website and internal apps, ships the smallest live version first.
+- **CMO** — the public voice; owns growth, content, and positioning.
+- **CFO** — the keeper of the money; owns treasury, budget, and runway.
 - **Advisor** — the challenge function; pressure-tests a decision before it ships.
 - **Associate** — the hands of the company; delivers research, drafts, and finished artifacts.
 

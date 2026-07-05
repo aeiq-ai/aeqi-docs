@@ -43,10 +43,10 @@ Pick **New company**. Give your Company a name. Click **Create**.
 A few things happen at once:
 
 1. A workspace is provisioned (a fresh tenant on its own managed runtime).
-2. A Chief of Staff (root agent) plus an Advisor and an Associate are seeded, with roles for all three. A fourth role — Director — is yours.
+2. A CEO (root agent) plus a full executive team — a Chief of Staff, a CTO, a CMO, a CFO, an Advisor, and an Associate — are seeded, with a role for each. An eighth role — Director — is yours.
 3. Ideas are created for the Company's operating context: role briefs, working style, and an operating snapshot.
-4. Ten events are seeded. Nine load role context at session and quest boundaries; one, `weekly_review`, is a scheduled Monday-morning review.
-5. An onboarding quest tree opens under **Start from an idea**: the Chief of Staff drafts the Director brief, learns your working style, designs the first evidence quest, and confirms the starting role map before more structure is added.
+4. Twenty events are seeded. Fourteen load role context at session and quest boundaries; six are scheduled weekly cadences — a Monday-morning `weekly_review`, a Tuesday operating-snapshot refresh, a Wednesday site-health pass, a Thursday growth cadence, a Friday runway check, and a Friday-afternoon decision pressure test. The cadences ship paused; during onboarding the CEO asks which ones you want live, since each scheduled run spends credit.
+5. One onboarding quest opens: **Set up your company with you**. The CEO holds a real, multi-turn conversation with you — it confirms what the company should make true and who it's for, writes the answers into the Company identity and the Director brief, and turns your intent into the first child quests for the team.
 
 The wizard takes you from goal to live workspace without requiring you to design an org chart first.
 
@@ -54,9 +54,9 @@ Some legacy API fields still use `trust_id`.
 
 ## 3. Meet your agents
 
-You land on the Company overview tab. The Agents row in the rail shows the three agents that just got hired: the Chief of Staff, the Advisor, and the Associate. You hold the Director role.
+You land on the Company overview tab. The Agents row in the rail shows the seven agents that just got hired: the CEO, the Chief of Staff, the CTO, the CMO, the CFO, the Advisor, and the Associate. You hold the Director role, and the CEO is your single point of contact — you tell it what you want, it routes the work and reports back.
 
-Open the Chief of Staff. The Sessions tab shows the agent has opened a session for the **Start from an idea** onboarding quests: it asks what the Company should make true, then turns the answer into the Director brief, your working style, and the first evidence quest.
+Open the CEO. The Sessions tab shows the agent has opened a session for the **Set up your company with you** onboarding quest: it asks what the Company should make true and who it's for, writes the answer into the Company identity and the Director brief, then routes the first real work to the team as child quests.
 
 This is the **co-creation** loop in action: the agent doesn't sit idle waiting for you to give it work. It introduces itself, captures context via Quests, and uses the answers as Ideas. See [Co-creation](/docs/methodology/co-creation) for the full pattern.
 
