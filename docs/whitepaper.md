@@ -1,4 +1,4 @@
-# aeqi: Programmable Companies for the Agent Economy
+# AEQI: Programmable Companies for the Agent Economy
 
 **L.E. — May 2026**
 
@@ -12,14 +12,14 @@ than negotiated as documents. Neither wave is sufficient alone. Agents without
 a company are labor without authority, memory, or accountability. Ownership
 tokens without operating context are claims against nothing legible.
 
-This paper presents **aeqi**, a runtime for **programmable Companies** —
+This paper presents **AEQI**, a runtime for **programmable Companies** —
 companies that put both waves inside one operating shell. A Company is an
 addressable entity with four operating primitives (Agents, Quests, Events,
 Ideas), a role-authority layer, and a universal Session substrate that records
 how intent becomes work. Once a company can execute, remember, and expose its operating truth,
 governance, treasury, and ownership have something real to attach to.
 
-We position aeqi against four classes of antecedents — the traditional
+We position AEQI against four classes of antecedents — the traditional
 firm, Decentralized Autonomous Organizations, agent frameworks, and SaaS
 company-management tools — and argue each is structurally incomplete in
 ways the others cannot patch. We describe the system model, the role of execution as the
@@ -64,7 +64,7 @@ vehicle. The structural question is where the two converge. The argument
 of this paper is that they converge inside the company — not as a
 metaphor, but as a runtime.
 
-aeqi is that runtime. It creates **programmable Companies**: companies where
+AEQI is that runtime. It creates **programmable Companies**: companies where
 humans set direction, agents execute, memory compounds, and authority,
 treasury, governance, and ownership remain inside one operating context.
 The wedge is execution because that is what AI makes programmable first.
@@ -163,7 +163,7 @@ produces operating history.
 
 ## 4. System Model
 
-aeqi compiles a Company into a small, orthogonal set of primitives. Each
+AEQI compiles a Company into a small, orthogonal set of primitives. Each
 corresponds to one face of the company; together they cover the
 operational surface earlier paradigms left fragmented.
 
@@ -192,7 +192,7 @@ properties rather than new primitive categories.
 
 ### 4.2 The runtime
 
-A Company is also a running process. The aeqi runtime is a per-tenant
+A Company is also a running process. The AEQI runtime is a per-tenant
 orchestrator that holds the database, executes agent turns in sandboxes,
 fires events on lifecycle transitions, dispatches tool calls, and
 produces the session record that becomes the operating history.
@@ -343,7 +343,7 @@ companies build on, and infrastructure that capital can read from.
 
 | Step | Claim |
 |---|---|
-| **1. Execution** | A company running on aeqi generates a machine-readable record of its work as the form the company takes, not as telemetry added on top. |
+| **1. Execution** | A company running on AEQI generates a machine-readable record of its work as the form the company takes, not as telemetry added on top. |
 | **2. Operating history** | The record exposes who did what under what authority. Opacity that historically made firms expensive to coordinate, audit, and trust is replaced by an observable substrate. |
 | **3. Inspectable authority** | Makes treasury, governance, and ownership more credible. A vote committing a budget against a role to fund a quest is an event in operating history, not a freestanding ritual. |
 | **4. Credibility** | Can make capital allocation more efficient. Due diligence can shift from reconstructing the firm from outside to reading it from inside. Information asymmetries that previously priced into capital cost can shrink. |
@@ -490,7 +490,7 @@ individual startup they enable.
 
 Startups fail or exit. Operating systems persist.
 
-aeqi is one answer.
+AEQI is one answer.
 
 ---
 
