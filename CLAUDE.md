@@ -38,7 +38,7 @@ aeqi-landing renders docs through **explicit `<Route>` declarations** in `aeqi-l
 When a docs ship adds new files — in any of the established directories (`methodology/`, `patterns/`, `reference/`, `blog/`, …) or a genuinely new one:
 
 1. Land the markdown here (`/ship` in aeqi-docs).
-2. Cut a worktree on aeqi-landing. Add a `<Route>` per new file in `src/docs/Docs.tsx`.
+2. Cut a worktree on aeqi-landing. Add a `<Route>` per new file in `aeqi-landing/src/docs/Docs.tsx`.
 3. `/ship` from aeqi-landing — its build pulls the latest aeqi-docs and bundles the new content with the new routes.
 
 Until step 2 ships, the markdown lands in main (durable) but `https://aeqi.ai/docs/<new-path>` 404s. Don't claim "shipped to users" without the landing-side wire.
