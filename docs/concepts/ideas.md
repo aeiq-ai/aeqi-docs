@@ -196,6 +196,10 @@ Both speak to the same store; neither shadows the other.
 | `link` | Write a typed edge between two Ideas (`mention` / `embed` / `link`). |
 | `feedback` | Record `used` / `useful` / `ignored` / `corrected` / `wrong` / `pinned` to shape future retrieval. |
 | `walk` | BFS the idea graph from a starting Idea, filtered by relation set and `strength_threshold`. |
+| `inbox` | The unpromoted stewardship queue (auto-derived quest-closure candidates), oldest first, with depth, staleness and a suggested disposition per row. |
+| `promote` | Turn one candidate into ordinary memory: strips the unverified banner and the marker tags; optional `name` / `content` / `tags` correct it as you promote. |
+| `reject` | Record that a candidate is not worth keeping (`id` + `reason`); it leaves recall and the queue, the row and the reason stay for audit. |
+| `health` | The deterministic corpus report for maintenance passes: census by kind/status, verification coverage, inbox depth, and duplicate / contradiction / orphan / thin flags over the most recently touched rows (`window`, default 300). Never writes. Read by the Brain Gardener before and after every run. |
 
 The action enum is pinned by `ideas_mcp_action_enum_drift_guard` in `aeqi-cli/src/cmd/mcp.rs`. Any add/remove/rename fires that test and points back to this table.
 
